@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: @project.name@
+  profiles:
+    active: @profiles.active@
+
+  cloud:
+    nacos:
+      server-addr: "localhost:8848"
+      username: nacos
+      password: mgHnwnY4hz1ou4Nl1pNA5WWjHfrJhRQ2
+      config:
+        namespace: public
+        file-extension: yaml
+      discovery:
+        namespace: public

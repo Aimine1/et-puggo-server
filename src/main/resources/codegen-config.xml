@@ -1,0 +1,84 @@
+<configuration>
+  <jdbc>
+    <user>root</user>
+    <password>h2tZYzn5_osa</password>
+    <url>jdbc:mysql://localhost:3306/etrade_goods?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true
+    </url>
+    <driver>com.mysql.cj.jdbc.Driver</driver>
+  </jdbc>
+  <generator>
+    <!-- The default code generator. You can override this one, to generate your own code style.
+         Supported generators:
+         - org.jooq.codegen.JavaGenerator
+         - org.jooq.codegen.ScalaGenerator
+         Defaults to org.jooq.codegen.JavaGenerator -->
+    <name>org.jooq.codegen.JavaGenerator</name>
+
+    <database>
+      <!-- The database type. The format here is:
+           org.jooq.meta.[database].[database]Database -->
+      <name>org.jooq.meta.mysql.MySQLDatabase</name>
+
+      <!-- The database schema (or in the absence of schema support, in your RDBMS this
+           can be the owner, user, database name) to be generated -->
+      <!-- change me -->
+      <inputSchema>etrade_goods</inputSchema>
+
+      <!-- All elements that are generated from your schema
+           (A Java regular expression. Use the pipe to separate several expressions)
+           Watch out for case-sensitivity. Depending on your database, this might be important! -->
+      <!--      <includes>${includes}</includes>-->
+
+      <!-- All elements that are excluded from your schema
+           (A Java regular expression. Use the pipe to separate several expressions).
+           Excludes match before includes, i.e. excludes have a higher priority -->
+      <excludes>
+
+      </excludes>
+      <unsignedTypes>false</unsignedTypes>
+
+      <!-- The first matching forcedType will be applied to the data type definition. -->
+      <forcedTypes>
+        <forcedType>
+          <name>DECIMAL</name>
+          <userType>java.math.BigDecimal</userType>
+          <includeTypes>FLOAT|DOUBLE</includeTypes>
+          <includeExpression>.*</includeExpression>
+          <objectType>ALL</objectType>
+        </forcedType>
+
+        <forcedType>
+          <name>DATETIME</name>
+          <userType>java.time.LocalDateTime</userType>
+          <includeTypes>DATETIME</includeTypes>
+          <includeExpression>.*</includeExpression>
+          <objectType>ALL</objectType>
+        </forcedType>
+
+        <forcedType>
+          <name>DATE</name>
+          <userType>java.time.LocalDate</userType>
+          <includeTypes>DATE</includeTypes>
+          <includeExpression>.*</includeExpression>
+          <objectType>ALL</objectType>
+        </forcedType>
+      </forcedTypes>
+    </database>
+
+    <target>
+      <!-- The destination package of your generated classes (within the destination directory) -->
+      <packageName>com.etrade.puggo.db</packageName>
+
+      <!-- The destination directory of your generated classes. Using Maven directory layout here -->
+      <directory>src/main/java/</directory>
+    </target>
+
+    <generate>
+      <daos>false</daos>
+      <pojos>false</pojos>
+      <javaTimeTypes>true</javaTimeTypes>
+      <interfaces>false</interfaces>
+      <springAnnotations>true</springAnnotations>
+    </generate>
+  </generator>
+</configuration>
