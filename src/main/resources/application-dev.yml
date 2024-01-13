@@ -79,7 +79,3 @@ tourist-url:
     - path: "/goods.ai/brandList/query"
     - path: "/goods.ai/seriesList/query"
     - path: "/goods.ai/pointList/query"
-
-log:
-  file:
-    path: ./logs
