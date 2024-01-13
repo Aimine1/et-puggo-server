@@ -38,7 +38,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private AuthInterceptor authInterceptor;
 
     private final List<String> swaggers = Arrays.asList("/v2/api-docs", "/swagger-ui.html", "/swagger-resources/**",
-        "webjars/**");
+        "/webjars/**");
 
 
     @Override
