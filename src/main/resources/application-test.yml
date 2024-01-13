@@ -1,0 +1,83 @@
+server:
+  port: 9091
+logging:
+  level:
+    root: info
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  datasource:
+    username: admin
+    password: FujVvne5i3PWq3ZDxCLzl4iWiQkgQHqA
+    url: jdbc:mysql://db-dev-mysql.c6bbks5soqa8.us-west-1.rds.amazonaws.com:3306/etrade_goods?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 2
+
+aws:
+  S3:
+    bucket-name: "everythingtradeltd-awsbucket-test"
+    base-uri: "https://everythingtradeltd-awsbucket-test.s3.ap-southeast-1.amazonaws.com/"
+
+ai:
+  domain-uri: "https://openplatform.turingsenseai.com"
+  open-platform-api-key: "9471eeb8e135cca596b1ac4afc1c3439"
+  open-platform-api-secret: "9471eeb8e135cca596b1ac4afc1c3439"
+  debug-mode: true
+  # 如果开启调试模式，白名单中用户将生效
+  white-users: 3
+
+email:
+  stamp:
+    #    sender: "everythingtradeltd.verify@outlook.com"
+    #    password: "2-LvgtCUpcBEk.L"
+    #    host: "smtp.office365.com"
+    #    port: "587"
+    sender: "etrade.verify@foxmail.com"
+    password: "smisaxlklnmmffib"
+    host: "smtp.qq.com"
+    port: "587"
+
+im:
+  yunxin:
+    appKey: 839958f0410bd8d4b6dcdb04b7d3a594
+    appSecret: b6b3eabd9109
+    domain: https://api-sg.netease.im/nimserver
+
+user:
+  avatar:
+    default:
+      https://everythingtradeltd-awsbucket-test.s3.ap-southeast-1.amazonaws.com/avatar/default.png
+
+ignore-url:
+  list:
+    - path: "/user.account/login"
+    - path: "/user.account/send/verification/code"
+    - path: "/user.account/verify/code"
+    - path: "/user.account/verify/nickname/exists"
+    - path: "/user.account/register"
+    - path: "/user.account/retrieve/password"
+    - path: "/im/route/mockClient/action"
+    - path: "/user.account/user/list"
+    - path: "/user.account/seller/info"
+    - path: "/goods.sales/list"
+    - path: "/goods.sales/detail"
+    - path: "/goods.sales/recommend/list"
+    - path: "/goods.class/list"
+    - path: "/settings/ad/list"
+    - path: "/settings/getMoneyKind"
+    - path: "/settings/getSystemIm"
+    - path: "/goods.ai/kindList/query"
+    - path: "/goods.ai/brandList/query"
+    - path: "/goods.ai/seriesList/query"
+    - path: "/goods.ai/pointList/query"
+
+log:
+  file:
+    path: /home/puggodev/data/logs
