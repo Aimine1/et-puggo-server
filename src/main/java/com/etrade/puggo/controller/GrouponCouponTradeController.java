@@ -4,7 +4,7 @@ import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.page.PageParam;
 import com.etrade.puggo.common.weblog.WebLog;
-import com.etrade.puggo.constants.MobileRegularExp;
+import com.etrade.puggo.common.enums.MobileRegularExpEnum;
 import com.etrade.puggo.service.groupon.NationalCodeVO;
 import com.etrade.puggo.service.groupon.trade.TradeGrouponCouponDTO;
 import com.etrade.puggo.service.groupon.trade.TradeGrouponCouponDetailDTO;
@@ -89,7 +89,7 @@ public class GrouponCouponTradeController {
     public Result<List<NationalCodeVO>> listNationalCode() {
 
         List<NationalCodeVO> list = new ArrayList<>();
-        for (MobileRegularExp value : MobileRegularExp.values()) {
+        for (MobileRegularExpEnum value : MobileRegularExpEnum.values()) {
             list.add(new NationalCodeVO(value.getNationalCode(), value.getNational()));
         }
 

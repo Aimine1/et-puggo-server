@@ -1,6 +1,6 @@
-package com.etrade.puggo.constants;
+package com.etrade.puggo.common.enums;
 
-public enum MobileRegularExp {
+public enum MobileRegularExpEnum {
 
     /* 以上是项目可能设计到的市场，一下是其他国家的手机号校验正则，欢迎补充*/
     CN("中国", 86, "^(\\+?86\\-?)?1[345789]\\d{9}$"),
@@ -81,14 +81,14 @@ public enum MobileRegularExp {
         this.nationalCode = code;
     }
 
-    MobileRegularExp(String national, int code, String regularExp) {
+    MobileRegularExpEnum(String national, int code, String regularExp) {
         this.national = national;
         this.regularExp = regularExp;
         this.nationalCode = code;
     }
 
     public static String getRegularExp(String national) {
-        for (MobileRegularExp exp : values()) {
+        for (MobileRegularExpEnum exp : values()) {
             if (exp.national.equals(national)) {
                 return exp.regularExp;
             }
@@ -97,7 +97,7 @@ public enum MobileRegularExp {
     }
 
     public static String getRegularExp(int code) {
-        for (MobileRegularExp exp : values()) {
+        for (MobileRegularExpEnum exp : values()) {
             if (exp.nationalCode.equals(code)) {
                 return exp.regularExp;
             }

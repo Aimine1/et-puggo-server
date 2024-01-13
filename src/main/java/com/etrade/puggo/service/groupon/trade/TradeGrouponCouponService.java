@@ -5,7 +5,7 @@ import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.page.PageParam;
 import com.etrade.puggo.constants.GrouponTradeState;
-import com.etrade.puggo.constants.MobileRegularExp;
+import com.etrade.puggo.common.enums.MobileRegularExpEnum;
 import com.etrade.puggo.dao.groupon.GrouponCouponDao;
 import com.etrade.puggo.dao.groupon.GrouponCouponPlanDao;
 import com.etrade.puggo.dao.groupon.GrouponCouponRuleDao;
@@ -97,7 +97,7 @@ public class TradeGrouponCouponService extends BaseService {
         }
 
         // 校验区号和手机号
-        Pattern pattern = Pattern.compile(MobileRegularExp.getRegularExp(nationalCode));
+        Pattern pattern = Pattern.compile(MobileRegularExpEnum.getRegularExp(nationalCode));
         Matcher matcher = pattern.matcher(nationalCode + contactPhone);
         if (!matcher.matches()) {
             throw new ServiceException(CommonError.TELEPHONE_IS_ILLEGAL);

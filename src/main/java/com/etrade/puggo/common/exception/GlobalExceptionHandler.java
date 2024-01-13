@@ -1,6 +1,7 @@
 package com.etrade.puggo.common.exception;
 
 import com.etrade.puggo.common.Result;
+import com.etrade.puggo.common.enums.LangErrorEnum;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -180,7 +181,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Result<?> handleException(Throwable t) {
         log.error("统一服务内部异常处理:", t);
-        return Result.error(CommonError.GLOBAL_ERROR);
+        return Result.error(CommonError.GLOBAL_ERROR.getCode(), LangErrorEnum.GLOBAL_ERROR.lang());
     }
 
 }

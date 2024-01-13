@@ -34,7 +34,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
         // pars.add(tokenPar.build());
         //添加head参数end
 
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
+        return new Docket(DocumentationType.SWAGGER_2)
+            .apiInfo(apiInfo())
             // .globalOperationParameters(pars)
             .select()
             .apis(RequestHandlerSelectors.any())

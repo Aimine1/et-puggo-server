@@ -48,7 +48,7 @@ public enum CommonError implements ErrorMsg {
     /**
      * 统一系统运行时错误
      */
-    GLOBAL_ERROR(2001, "The system is busy. Please try again later."),
+    GLOBAL_ERROR(2001, "Sorry, the system is busy."),
 
     S3_UPLOAD_ERROR(2101, "文件上传S3失败"),
     S3_REMOVE_ERROR(2102, "文件从S3删除失败"),

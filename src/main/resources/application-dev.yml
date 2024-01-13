@@ -64,7 +64,9 @@ ignore-url:
     - path: "/user.account/register"
     - path: "/user.account/retrieve/password"
     - path: "/im/route/mockClient/action"
-    - path: "/user.account/user/list"
+
+tourist-url:
+  list:
     - path: "/user.account/seller/info"
     - path: "/goods.sales/list"
     - path: "/goods.sales/detail"

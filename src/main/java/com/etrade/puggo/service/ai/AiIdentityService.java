@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.constants.AIState;
-import com.etrade.puggo.constants.LangErrorEnum;
+import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.dao.ai.AiAvailableBalanceDao;
 import com.etrade.puggo.dao.ai.AiOverallAppraisalDao;
 import com.etrade.puggo.dao.ai.AiPointListDao;

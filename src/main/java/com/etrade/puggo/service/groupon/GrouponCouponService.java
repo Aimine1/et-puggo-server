@@ -4,7 +4,7 @@ import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.page.PageParam;
 import com.etrade.puggo.constants.GrouponState;
-import com.etrade.puggo.constants.MoneyKindEnum;
+import com.etrade.puggo.common.enums.MoneyKindEnum;
 import com.etrade.puggo.dao.groupon.GrouponClassDao;
 import com.etrade.puggo.dao.groupon.GrouponCouponDao;
 import com.etrade.puggo.dao.groupon.GrouponCouponDataDao;

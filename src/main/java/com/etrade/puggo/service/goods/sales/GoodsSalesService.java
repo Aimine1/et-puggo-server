@@ -5,7 +5,7 @@ import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.page.PageParam;
 import com.etrade.puggo.constants.GoodsImgType;
 import com.etrade.puggo.constants.GoodsState;
-import com.etrade.puggo.constants.LangErrorEnum;
+import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsDataDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;

@@ -56,17 +56,6 @@ public class UserAccountController {
 
 
     @WebLog
-    @ApiIgnore
-    @GetMapping("/user/list")
-    @ApiOperation(value = "发布用户简单信息", response = LaunchUserDO.class)
-    public Result<List<LaunchUserDO>> getUserList(
-        @RequestParam("userIdList") @ApiParam("userIdList") List<Long> userIdList) {
-
-        return Result.ok(userAccountService.getUserList(userIdList));
-    }
-
-
-    @WebLog
     @GetMapping("/seller/info")
     @ApiOperation(value = "卖家用户信息", response = SellerInfoVO.class)
     public Result<SellerInfoVO> getSellerInfo(@RequestParam("userId") Long userId) {

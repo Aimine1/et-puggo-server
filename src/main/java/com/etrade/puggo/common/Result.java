@@ -1,7 +1,7 @@
 package com.etrade.puggo.common;
 
 import com.etrade.puggo.common.exception.ErrorMsg;
-import com.etrade.puggo.constants.LangErrorEnum;
+import com.etrade.puggo.common.enums.LangErrorEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

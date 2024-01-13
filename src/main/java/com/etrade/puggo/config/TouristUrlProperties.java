@@ -7,16 +7,16 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 /**
- * 白名单
+ * 游客url
  *
- * @author wendiyou
- * @date 2021-06-03
+ * @author niuzhenyu
+ * @date 2024-01-13
  */
 @Component
 @Data
-@ConfigurationProperties(prefix = "ignore-url")
+@ConfigurationProperties(prefix = "tourist-url")
 @RefreshScope
-public class IgnoreUrl {
+public class TouristUrlProperties {
 
     private List<Permission> list;
 

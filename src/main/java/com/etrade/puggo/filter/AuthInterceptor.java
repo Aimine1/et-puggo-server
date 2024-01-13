@@ -4,7 +4,8 @@ package com.etrade.puggo.filter;
 import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.exception.CommonError;
 import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.config.IgnoreUrl;
+import com.etrade.puggo.config.IgnoreUrlProperties;
+import com.etrade.puggo.config.TouristUrlProperties;
 import com.etrade.puggo.constants.RequestHeaders;
 import com.etrade.puggo.constants.SpringProfiles;
 import com.etrade.puggo.constants.UserRoleConstants;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
@@ -41,10 +43,14 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthInterceptor implements HandlerInterceptor {
 
     @Resource
-    private IgnoreUrl ignoreUrl;
+    private IgnoreUrlProperties ignoreUrlProperties;
+
+    @Resource
+    private TouristUrlProperties touristUrlProperties;
 
     @Value("${security.multi-login:false}")
     private boolean isMultiLogin;
+
     @Value("${spring.profiles.active}")
     private String active;
 
@@ -62,15 +68,20 @@ public class AuthInterceptor implements HandlerInterceptor {
         @NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler)
         throws Exception {
 
+        if (isIgnoreAPI(request)) {
+            log.info("开放接口，跳过token校验");
+            return true;
+        }
+
+        if (isTourist(request)) {
+            log.info("游客身份，跳过token校验");
+            return true;
+        }
+
         // 检查token
         String token = request.getHeader(RequestHeaders.AUTHENTICATION);
 
         if (StrUtils.isEmpty(token)) {
-            // 如果token=null，并且uri在ignore清单中跳过
-            if (isIgnoreAPI(request)) {
-                log.info("游客登录，跳过token校验");
-                return true;
-            }
             log.error("[AUTH] token不存在");
             authError(response, CommonError.USER_AUTH_FAILURE.getMsg());
             return false;
@@ -79,13 +90,13 @@ public class AuthInterceptor implements HandlerInterceptor {
         Claims claims;
         try {
             claims = JwtUtils.getClaimsBody(token);
-        } catch (Throwable e) {
-            log.error("[AUTH] token解析失败");
-            authError(response, CommonError.USER_AUTH_FAILURE.getMsg());
-            return false;
-        }
 
-        if (claims == null) {
+            if (claims == null) {
+                log.error("[AUTH] token解析失败");
+                authError(response, CommonError.USER_AUTH_FAILURE.getMsg());
+                return false;
+            }
+        } catch (Throwable e) {
             log.error("[AUTH] token解析失败");
             authError(response, CommonError.USER_AUTH_FAILURE.getMsg());
             return false;
@@ -117,6 +128,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
+
     /**
      * 认证错误输出
      */
@@ -128,14 +140,18 @@ public class AuthInterceptor implements HandlerInterceptor {
         resp.getWriter().print(json);
     }
 
+
     /**
      * 验证开放接口
+     *
+     * @param servletRequest request
+     * @return 如果是白名单返回true
      */
     private boolean isIgnoreAPI(HttpServletRequest servletRequest) {
 
         String uri = servletRequest.getRequestURI();
 
-        List<IgnoreUrl.Permission> permissionList = ignoreUrl.getList();
+        List<IgnoreUrlProperties.Permission> permissionList = ignoreUrlProperties.getList();
 
         if (permissionList == null) {
             return false;
@@ -143,7 +159,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         List<String> pathList = new ArrayList<>(permissionList.size());
 
-        for (IgnoreUrl.Permission permission : permissionList) {
+        for (IgnoreUrlProperties.Permission permission : permissionList) {
 
             pathList.add(permission.getPath());
 
@@ -158,12 +174,51 @@ public class AuthInterceptor implements HandlerInterceptor {
         return false;
     }
 
+
+    /**
+     * 验证是否有游客登录
+     *
+     * @param servletRequest request
+     * @return 如果是游客登录返回true
+     */
+    private boolean isTourist(HttpServletRequest servletRequest) {
+
+        String uri = servletRequest.getRequestURI();
+
+        List<TouristUrlProperties.Permission> permissionList = touristUrlProperties.getList();
+
+        if (permissionList == null) {
+            return false;
+        }
+
+        String token = servletRequest.getHeader(RequestHeaders.AUTHENTICATION);
+        boolean isNotToken = StringUtils.isBlank(token);
+
+        List<String> pathList = new ArrayList<>(permissionList.size());
+
+        for (TouristUrlProperties.Permission permission : permissionList) {
+
+            pathList.add(permission.getPath());
+
+            if (uri.contains(permission.getPath()) && isNotToken) {
+
+                log.info("[游客登录] URI: {}, permission:{}", uri, pathList);
+                return true;
+            }
+        }
+
+        log.info("[非游客登录] URI: {}, permission:{}", uri, pathList);
+        return false;
+    }
+
+
     @SuppressWarnings("NullableProblems")
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
         Object handler, @Nullable Exception ex) {
         AuthContext.remove();
     }
+
 
     /**
      * 确保是本地网络调用，仅生产环境生效
@@ -187,6 +242,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
     }
 
+
     /**
      * 是否生产环境
      */
@@ -198,6 +254,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             || StrUtils.startsWithIgnoreCase(active, pre);
     }
 
+
     /**
      * 是否生产环境
      */
@@ -206,6 +263,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         log.info("当前的环境是:{}", active);
         return StrUtils.startsWithIgnoreCase(active, test);
     }
+
 
     /**
      * 是否开启多端登录

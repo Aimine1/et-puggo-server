@@ -6,11 +6,11 @@ spring:
 
   cloud:
     nacos:
-      server-addr: http://50.18.226.238:8848
+      server-addr: http://localhost:8848
       username: nacos
-      password: mgHnwnY4hz1ou4Nl1pNA5WWjHfrJhRQ2
+      password: nacos
       config:
-        namespace: puggo-test
+        namespace: public
         file-extension: yaml
       discovery:
-        namespace: puggo-test
+        namespace: public

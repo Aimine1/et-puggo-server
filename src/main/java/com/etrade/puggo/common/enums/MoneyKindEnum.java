@@ -1,4 +1,4 @@
-package com.etrade.puggo.constants;
+package com.etrade.puggo.common.enums;
 
 
 public enum MoneyKindEnum {

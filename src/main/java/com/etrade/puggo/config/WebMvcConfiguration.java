@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +37,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Resource
     private AuthInterceptor authInterceptor;
 
+    private final List<String> swaggers = Arrays.asList("/v2/api-docs", "/swagger-ui.html", "/swagger-resources/**");
+
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -50,7 +54,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration registration = registry.addInterceptor(authInterceptor);
-        registration.excludePathPatterns("/webjars/**");
+        registration.excludePathPatterns(swaggers);
+        registration.excludePathPatterns("/error");
     }
 
     /**
@@ -104,8 +109,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         DateTimeFormatter UTCFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             .withZone(ZoneId.of("UTC"));
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(UTCFormatter));
-        javaTimeModule.addSerializer(
-            LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        javaTimeModule.addSerializer(LocalDate.class,
+            new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         javaTimeModule.addSerializer(
             LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
