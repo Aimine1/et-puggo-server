@@ -45,7 +45,7 @@
     <!--日志文件输出格式-->
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <!--日志文件输出的文件名-->
-      <fileNamePattern>${LOG_HOME}/%d{yyyy-MM,aux}/${APP_NAME}/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <fileNamePattern>${LOG_HOME}/%d{yyyy-MM,aux}/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
       <!--日志最长保留64天-->
       <MaxHistory>60</MaxHistory>
       <maxFileSize>5MB</maxFileSize>
