@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @Api(value = "AI鉴定接口", tags = "AI鉴定接口")
 @RestController
-@RequestMapping("/goods.ai")
+@RequestMapping("/goods/goods.ai")
 public class AiIdentifyController {
 
     @Resource

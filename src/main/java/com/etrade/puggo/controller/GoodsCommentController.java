@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2023/6/25 20:09
  **/
 @Api(value = "商品评论接口", tags = "商品评论接口")
-@RequestMapping("/goods.comment/")
+@RequestMapping("/goods/goods.comment/")
 @RestController
 public class GoodsCommentController {
 

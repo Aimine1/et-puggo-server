@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2023/6/6 15:34
  **/
 @Api(value = "团购券订单接口", tags = "团购券订单接口")
-@RequestMapping("/groupon.trade/")
+@RequestMapping("/goods/groupon.trade/")
 @RestController
 public class GrouponCouponTradeController {
 

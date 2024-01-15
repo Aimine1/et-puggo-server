@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2023/6/28 19:01
  **/
 @Api(value = "商品日志接口", tags = "商品日志接口")
-@RequestMapping("/goods.logs/")
+@RequestMapping("/goods/goods.logs/")
 @RestController
 public class GoodsLogsController {
 

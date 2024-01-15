@@ -26,7 +26,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @date 2023/6/9 13:20
  **/
 @Api(value = "团购券分类接口", tags = "团购券分类接口")
-@RequestMapping("/groupon.class/")
+@RequestMapping("/goods/groupon.class/")
 @RestController
 public class GrouponClassController {
 
