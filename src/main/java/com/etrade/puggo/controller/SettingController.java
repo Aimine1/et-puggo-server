@@ -28,7 +28,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @date 2023/6/30 15:32
  **/
 @Api(value = "设置接口", tags = "设置接口")
-@RequestMapping("/settings/")
+@RequestMapping("/goods/settings/")
 @RestController
 public class SettingController {
 

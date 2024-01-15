@@ -31,7 +31,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @date 2023/6/15 17:15
  **/
 @Api(value = "商品接口", tags = "商品接口")
-@RequestMapping("/goods.sales/")
+@RequestMapping("/goods/goods.sales/")
 @RestController
 public class GoodsController {
 

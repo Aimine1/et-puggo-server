@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "登录注册接口", value = "登录注册接口")
 @Validated
 @RestController
-@RequestMapping("/user.account/")
+@RequestMapping("/user/user.account/")
 public class LoginController {
 
     @Resource

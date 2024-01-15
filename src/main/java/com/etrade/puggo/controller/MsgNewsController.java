@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "用户消息接口", value = "用户消息接口")
 @Validated
 @RestController
-@RequestMapping("/message")
+@RequestMapping("/user/message")
 public class MsgNewsController {
 
 

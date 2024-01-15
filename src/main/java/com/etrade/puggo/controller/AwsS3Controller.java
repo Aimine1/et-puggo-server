@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @Slf4j
 @Api(tags = "S3文件上传控制器")
-@RequestMapping("/base.S3")
+@RequestMapping("/goods/base.S3")
 public class AwsS3Controller {
 
     @Resource

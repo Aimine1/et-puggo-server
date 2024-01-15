@@ -31,7 +31,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @Api(tags = "用户账号相关接口", value = "用户账号相关接口")
 @Validated
 @RestController
-@RequestMapping("/user.account/")
+@RequestMapping("/user/user.account/")
 public class UserAccountController {
 
     @Resource

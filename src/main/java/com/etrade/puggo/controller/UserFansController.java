@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2023/10/8 10:32
  **/
 @Api(tags = "用户粉丝相关接口", value = "用户粉丝相关接口")
-@RequestMapping("/user.fans")
+@RequestMapping("/user/user.fans")
 @RestController
 @Validated
 public class UserFansController {
