@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import software.amazon.awssdk.services.lambda.endpoints.internal.Value;
 
 /**
  * @Description 接口返回值规范
@@ -24,15 +25,27 @@ public class Result<T> {
 
     @ApiModelProperty("状态码")
     private int code;
+
     @ApiModelProperty("提示")
     private String msg;
+
     @ApiModelProperty("业务数据")
     private T data;
+
+    @ApiModelProperty("失败时的原因")
+    private String error;
 
     private Result(int code, T data, String msg) {
         this.code = code;
         this.data = data;
         this.msg = msg;
+    }
+
+    private Result(int code, T data, String msg, String error) {
+        this.code = code;
+        this.data = data;
+        this.msg = msg;
+        this.error = error;
     }
 
     @SuppressWarnings("unchecked")
@@ -58,6 +71,11 @@ public class Result<T> {
     @SuppressWarnings("unchecked")
     public static <T> Result<T> error(int code, String errorMsg) {
         return new Result(code, null, errorMsg);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Result<T> error(int code, String msg, String error) {
+        return new Result(code, null, msg, error);
     }
 
     @SuppressWarnings("unchecked")
