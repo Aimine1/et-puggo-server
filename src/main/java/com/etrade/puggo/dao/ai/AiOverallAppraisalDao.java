@@ -28,35 +28,55 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AiOverallAppraisalDao extends BaseDao {
 
-    public void save(AiOverallAppraisalRecord record) {
-        db.insertInto(AI_OVERALL_APPRAISAL)
-            .columns(
-                AI_OVERALL_APPRAISAL.USER_ID,
-                AI_OVERALL_APPRAISAL.OPERATION_ID,
-                AI_OVERALL_APPRAISAL.KIND_ID,
-                AI_OVERALL_APPRAISAL.BRAND_ID,
-                AI_OVERALL_APPRAISAL.SERIES_ID,
-                AI_OVERALL_APPRAISAL.OAID,
-                AI_OVERALL_APPRAISAL.GENUINE,
-                AI_OVERALL_APPRAISAL.GRADE,
-                AI_OVERALL_APPRAISAL.DESCRIPTION,
-                AI_OVERALL_APPRAISAL.REPORT_URL,
-                AI_OVERALL_APPRAISAL.STATE
-            )
-            .values(
-                record.getUserId(),
-                record.getOperationId(),
-                record.getKindId(),
-                record.getBrandId(),
-                record.getSeriesId(),
-                record.getOaid(),
-                record.getGenuine(),
-                record.getGrade(),
-                record.getDescription(),
-                record.getReportUrl(),
-                record.getState()
-            )
-            .execute();
+    public void saveOrUpdate(AiOverallAppraisalRecord record) {
+        Long userId = record.getUserId();
+        String operationId = record.getOperationId();
+
+        Integer id = db.select(AI_OVERALL_APPRAISAL.ID)
+            .from(AI_OVERALL_APPRAISAL)
+            .where(AI_OVERALL_APPRAISAL.USER_ID.eq(userId).and(AI_OVERALL_APPRAISAL.OPERATION_ID.eq(operationId)))
+            .fetchAnyInto(Integer.class);
+
+        if (id == null) {
+            db.insertInto(AI_OVERALL_APPRAISAL)
+                .columns(
+                    AI_OVERALL_APPRAISAL.USER_ID,
+                    AI_OVERALL_APPRAISAL.OPERATION_ID,
+                    AI_OVERALL_APPRAISAL.KIND_ID,
+                    AI_OVERALL_APPRAISAL.BRAND_ID,
+                    AI_OVERALL_APPRAISAL.SERIES_ID,
+                    AI_OVERALL_APPRAISAL.OAID,
+                    AI_OVERALL_APPRAISAL.GENUINE,
+                    AI_OVERALL_APPRAISAL.GRADE,
+                    AI_OVERALL_APPRAISAL.DESCRIPTION,
+                    AI_OVERALL_APPRAISAL.REPORT_URL,
+                    AI_OVERALL_APPRAISAL.STATE
+                )
+                .values(
+                    record.getUserId(),
+                    record.getOperationId(),
+                    record.getKindId(),
+                    record.getBrandId(),
+                    record.getSeriesId(),
+                    record.getOaid(),
+                    record.getGenuine(),
+                    record.getGrade(),
+                    record.getDescription(),
+                    record.getReportUrl(),
+                    record.getState()
+                )
+                .execute();
+        } else {
+            db.update(AI_OVERALL_APPRAISAL)
+                .set(AI_OVERALL_APPRAISAL.STATE, record.getState())
+                .set(AI_OVERALL_APPRAISAL.OAID, record.getOaid())
+                .set(AI_OVERALL_APPRAISAL.GENUINE, record.getGenuine())
+                .set(AI_OVERALL_APPRAISAL.GRADE, record.getGrade())
+                .set(AI_OVERALL_APPRAISAL.DESCRIPTION, record.getDescription())
+                .set(AI_OVERALL_APPRAISAL.REPORT_URL, record.getReportUrl())
+                .where(AI_OVERALL_APPRAISAL.ID.eq(id))
+                .execute();
+        }
     }
 
 

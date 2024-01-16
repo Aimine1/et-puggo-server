@@ -14,7 +14,6 @@ public enum LangErrorEnum {
     UNKNOWN_POINT("未知的鉴定点", "Unknown authentication point"),
     RE_UPLOAD("未检测到鉴别点，请您选择合适的角度重新上传图片", "Please choose an appropriate angle to upload again"),
     MUST_POINT("请您上传必须的鉴定点", "Please upload the crucial authentication points"),
-    RESULT_IS_TRUE("商品鉴定结果为真", "The authentication result is true"),
     GOODS_CLASS("请选择商品分类", "Please select a category"),
     GOODS_QUALITY("请选择商品成色", "Please select a item condition"),
     EMPTY_DESC("商品描述信息不允许为空", "Description cannot be empty"),
@@ -28,6 +27,10 @@ public enum LangErrorEnum {
     MSG_NEW("您有一条消息待查看", "You have a new message"),
     MSG_LIKE("%s 钟意您的商品", "%s favorite your product"),
 
+    /**
+     * AI鉴定
+     */
+    RESULT_IS_TRUE("商品鉴定结果为真", "The authentication result is true"),
     ;
 
     final String zh_cn;

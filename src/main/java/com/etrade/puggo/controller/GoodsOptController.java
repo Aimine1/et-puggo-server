@@ -31,7 +31,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @Api(value = "商品操作接口", tags = "商品操作接口")
 @RequestMapping("/goods/goods.opt/")
 @RestController
-public class GoodsOptController {
+public class    GoodsOptController {
 
     @Resource
     private GoodsSalesService goodsSalesService;
