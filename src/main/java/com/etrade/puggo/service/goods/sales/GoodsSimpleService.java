@@ -3,6 +3,8 @@ package com.etrade.puggo.service.goods.sales;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.service.BaseService;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsMainPicUrlDTO;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

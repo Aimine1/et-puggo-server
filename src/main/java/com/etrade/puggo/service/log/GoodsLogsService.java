@@ -5,7 +5,7 @@ import com.etrade.puggo.common.page.PageParam;
 import com.etrade.puggo.dao.goods.GoodsLogsDao;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.goods.sales.GoodsSimpleService;
-import com.etrade.puggo.service.goods.sales.GoodsSimpleVO;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package com.etrade.puggo.service.log;
 
-import com.etrade.puggo.service.goods.sales.GoodsSimpleVO;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import lombok.Data;

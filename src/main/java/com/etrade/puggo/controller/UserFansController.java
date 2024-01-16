@@ -5,7 +5,7 @@ import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.weblog.WebLog;
 import com.etrade.puggo.service.fans.UserFansParam;
 import com.etrade.puggo.service.fans.UserFansService;
-import com.etrade.puggo.service.goods.sales.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.annotation.Resource;

@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.goods.sales;
+package com.etrade.puggo.service.goods.sales.pojo;
 
 import com.etrade.puggo.common.page.PageParam;
 import java.util.List;

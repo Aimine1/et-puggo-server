@@ -6,7 +6,7 @@ import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.db.tables.records.GoodsRecord;
 import com.etrade.puggo.service.BaseService;
-import com.etrade.puggo.service.goods.sales.GoodsSimpleVO;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
 import com.etrade.puggo.stream.producer.StreamProducer;
 import com.etrade.puggo.third.im.pojo.SendNewsParam;
 import java.util.Arrays;

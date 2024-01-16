@@ -1,7 +1,7 @@
 package com.etrade.puggo.service.goods.message;
 
-import com.etrade.puggo.service.goods.sales.GoodsSimpleVO;
-import com.etrade.puggo.service.goods.sales.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
+import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;

@@ -54,11 +54,9 @@ public class PublishGoodsParam {
     @ApiModelProperty(value = "是否存为草稿", required = true)
     protected Boolean isDraft;
 
-    @NotNull(message = "deliveryType is null")
-    @ApiModelProperty(value = "交易方式：1邮寄 2面交 3两者均可", required = true)
-    @Min(value = 1, message = "未知的交易方式")
-    @Max(value = 3, message = "未知的交易方式")
-    protected Byte deliveryType;
+    @NotNull(message = "deliveryTypeObj is null")
+    @ApiModelProperty(value = "交易方式", required = true)
+    protected DeliveryTypeDTO deliveryTypeObj;
 
     @ApiModelProperty(value = "品牌, 选填")
     protected String brand;
@@ -70,5 +68,20 @@ public class PublishGoodsParam {
     @Size(max = 9, min = 1)
     @ApiModelProperty("商品图片列表，最多支持上传5张图片，最少上传1张图片")
     protected List<S3PutObjectResult> goodsPicturesList;
+
+
+    @Data
+    public static class DeliveryTypeDTO {
+
+        @ApiModelProperty(value = "邮寄")
+        private Boolean publicMeetup = false;
+
+        @ApiModelProperty(value = "面交")
+        private Boolean shippingOptionAvailable = false;
+
+        @ApiModelProperty(value = "当日达")
+        private Boolean sameDayDelivery = false;
+
+    }
 
 }

@@ -7,7 +7,7 @@ import static com.etrade.puggo.db.Tables.GOODS_TRADE;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.constants.GoodsTradeState;
 import com.etrade.puggo.dao.BaseDao;
-import com.etrade.puggo.service.goods.sales.GoodsTradeDTO;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsTradeDTO;
 import com.etrade.puggo.service.goods.trade.GoodsTradeParam;
 import com.etrade.puggo.service.goods.trade.GoodsTradeVO;
 import com.etrade.puggo.service.goods.trade.MyTradeVO;

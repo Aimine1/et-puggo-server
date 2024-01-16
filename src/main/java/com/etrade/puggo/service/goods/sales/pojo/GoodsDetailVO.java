@@ -1,6 +1,8 @@
-package com.etrade.puggo.service.goods.sales;
+package com.etrade.puggo.service.goods.sales.pojo;
 
+import com.etrade.puggo.service.goods.publish.PublishGoodsParam.DeliveryTypeDTO;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
@@ -36,8 +38,11 @@ public class GoodsDetailVO extends GoodsSimpleVO {
     @ApiModelProperty("分类ID")
     private Integer classId;
 
-    @ApiModelProperty(value = "交易方式：1邮寄 2面交")
+    @JsonIgnore
     private Byte deliveryType;
+
+    @ApiModelProperty(value = "交易方式")
+    private DeliveryTypeDTO deliveryTypeObj;
 
     @ApiModelProperty(value = "品牌")
     private String brand;
