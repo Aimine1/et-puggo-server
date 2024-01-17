@@ -1,18 +1,14 @@
 package com.etrade.puggo.third.aws;
 
 import com.alibaba.fastjson.JSONObject;
-import java.util.List;
+import com.etrade.puggo.common.exception.AwsException;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
-import software.amazon.awssdk.services.lambda.model.FunctionConfiguration;
-import software.amazon.awssdk.services.lambda.model.GetFunctionRequest;
-import software.amazon.awssdk.services.lambda.model.GetFunctionResponse;
-import software.amazon.awssdk.services.lambda.model.InvokeRequest;
-import software.amazon.awssdk.services.lambda.model.InvokeResponse;
-import software.amazon.awssdk.services.lambda.model.LambdaException;
-import software.amazon.awssdk.services.lambda.model.ListFunctionsResponse;
+import software.amazon.awssdk.services.lambda.model.*;
+
+import java.util.List;
 
 /**
  * @author niuzhenyu
@@ -25,29 +21,37 @@ public class AwsLambdaUtils {
     private static final Region US_WEST_1 = Region.US_WEST_1;
 
 
-    public static void invokeFunction(String functionName, JSONObject jsonObj) {
-
+    public static String invokeFunction(String functionName, Object object) {
         InvokeResponse res;
         try {
-            String json = jsonObj.toString();
+            String json = JSONObject.toJSONString(object);
+
+            log.info("Aws lambda invokeFunction functionName={} param={}", functionName, json);
+
             SdkBytes payload = SdkBytes.fromUtf8String(json);
 
             LambdaClient awsLambda = getLambdaClient();
 
             InvokeRequest request = InvokeRequest.builder()
-                .functionName(functionName)
-                .payload(payload)
-                .build();
+                    .functionName(functionName)
+                    .payload(payload)
+                    .build();
 
             res = awsLambda.invoke(request);
-            String value = res.payload().asUtf8String();
+            Integer code = res.statusCode();
+            String resPayload = res.payload().asUtf8String();
 
-            System.out.println(value);
+            log.info("Aws lambda invokeFunction code={} payload={}", code, resPayload);
 
+            if (code != 200) {
+                throw new AwsException(resPayload);
+            }
+
+            return resPayload;
         } catch (LambdaException e) {
-
             log.error("Aws lambda invokeFunction error", e);
 
+            throw new AwsException(e.getMessage());
         }
     }
 
@@ -63,6 +67,8 @@ public class AwsLambdaUtils {
 
         } catch (LambdaException e) {
             log.error("Aws lambda listFunctions error", e);
+
+            throw new AwsException(e.getMessage());
         }
     }
 
@@ -72,8 +78,8 @@ public class AwsLambdaUtils {
             LambdaClient awsLambda = getLambdaClient();
 
             GetFunctionRequest functionRequest = GetFunctionRequest.builder()
-                .functionName(functionName)
-                .build();
+                    .functionName(functionName)
+                    .build();
 
             GetFunctionResponse response = awsLambda.getFunction(functionRequest);
             System.out.println("The runtime of this Lambda function is " + response.configuration().runtime());
@@ -81,6 +87,7 @@ public class AwsLambdaUtils {
         } catch (LambdaException e) {
             log.error("Aws lambda getFunction error", e);
 
+            throw new AwsException(e.getMessage());
         }
     }
 
@@ -89,9 +96,4 @@ public class AwsLambdaUtils {
         return LambdaClient.builder().region(US_WEST_1).build();
     }
 
-
-    public static void main(String[] args) {
-        listFunctions();
-        invokeFunction("list_payment_methods", null);
-    }
 }

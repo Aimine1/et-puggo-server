@@ -142,10 +142,10 @@ public class GlobalExceptionHandler {
      * @param e 异常
      * @return Result
      */
-    @ExceptionHandler(AwsS3Exception.class)
+    @ExceptionHandler(AwsException.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Result handleApplicationAwsS3Exception(AwsS3Exception e) {
+    public Result handleApplicationAwsS3Exception(AwsException e) {
         log.error("Aws S3运行时异常:", e);
         if (e.getCode() != null) {
             return Result.error(e.getCode(), e.getMessage());
@@ -181,7 +181,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Result<?> handleException(Throwable t) {
         log.error("统一服务内部异常处理:", t);
-        return Result.error(CommonError.GLOBAL_ERROR.getCode(), LangErrorEnum.GLOBAL_ERROR.lang());
+        return Result.error(CommonError.GLOBAL_ERROR.getCode(), LangErrorEnum.GLOBAL_ERROR.lang(), t.getMessage());
     }
 
 }

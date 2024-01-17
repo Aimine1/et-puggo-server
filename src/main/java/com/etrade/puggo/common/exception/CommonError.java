@@ -9,8 +9,8 @@ public enum CommonError implements ErrorMsg {
      * http请求错误
      */
     SUCCESS(200, "Success"),
-    BAD_REQUEST(400, "Bad Request  From Et."),
-    METHOD_NOT_ALLOWED(405, "Method Not Allowed From Et."),
+    BAD_REQUEST(400, "Bad Request"),
+    METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
 
 
     /**
