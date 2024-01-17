@@ -8,27 +8,27 @@ import lombok.Getter;
  * @Date 2020/11/20 15:45
  **/
 @Getter
-public class AwsS3Exception extends RuntimeException {
+public class AwsException extends RuntimeException {
 
     private Integer code;
     private String description;
 
 
-    public AwsS3Exception() {
+    public AwsException() {
     }
 
-    public AwsS3Exception(String description) {
+    public AwsException(String description) {
         super(description);
         this.description = description;
     }
 
-    public AwsS3Exception(int code, String description) {
+    public AwsException(int code, String description) {
         super(description);
         this.description = description;
         this.code = code;
     }
 
-    public AwsS3Exception(ErrorMsg errorMsg) {
+    public AwsException(ErrorMsg errorMsg) {
         this(errorMsg.getCode(), errorMsg.getMsg());
     }
 

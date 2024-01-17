@@ -1,11 +1,11 @@
 package com.etrade.puggo.service.goods.publish;
 
+import com.etrade.puggo.common.enums.LangErrorEnum;
+import com.etrade.puggo.common.enums.MoneyKindEnum;
 import com.etrade.puggo.common.exception.CommonError;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.constants.GoodsImgType;
 import com.etrade.puggo.constants.GoodsState;
-import com.etrade.puggo.common.enums.LangErrorEnum;
-import com.etrade.puggo.common.enums.MoneyKindEnum;
 import com.etrade.puggo.dao.goods.GoodsClassDao;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsDataDao;
@@ -14,6 +14,7 @@ import com.etrade.puggo.dao.goods.GoodsQualityDao;
 import com.etrade.puggo.db.tables.records.GoodsRecord;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.ai.AiIdentityService;
+import com.etrade.puggo.service.goods.publish.PublishGoodsParam.DeliveryTypeDTO;
 import com.etrade.puggo.service.log.GoodsLogsService;
 import com.etrade.puggo.service.log.LogsOperate;
 import com.etrade.puggo.service.setting.SettingService;
@@ -27,6 +28,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,10 +80,10 @@ public class PublishGoodsService extends BaseService {
         Boolean isDraft = OptionalUtils.valueOrDefault(param.getIsDraft());
         String brand = OptionalUtils.valueOrDefault(param.getBrand());
         String aiIdentifyNo = OptionalUtils.valueOrDefault(param.getAiIdentifyNo());
-        Byte deliveryType = OptionalUtils.valueOrDefault(param.getDeliveryType());
         List<S3PutObjectResult> pictureList = param.getGoodsPicturesList();
         String title = OptionalUtils.valueOrDefault(param.getTitle());
         String classPath = param.getClassPath();
+        int deliveryTypeBinary = getDeliveryTypeBinary(param.getDeliveryTypeObj());
 
         GoodsClassVO goodsClassVO = classDao.findClass(classPath);
         if (goodsClassVO == null) {
@@ -97,7 +99,7 @@ public class PublishGoodsService extends BaseService {
             throw new ServiceException(CommonError.BAD_REQUEST.getCode(), LangErrorEnum.GOODS_PRICE.lang());
         }
 
-        if (description.length() == 0) {
+        if (description.isEmpty()) {
             throw new ServiceException(CommonError.BAD_REQUEST.getCode(), LangErrorEnum.EMPTY_DESC.lang());
         }
 
@@ -130,7 +132,7 @@ public class PublishGoodsService extends BaseService {
         goodsRecord.setState(isDraft ? GoodsState.DRAFT : GoodsState.PUBLISHED);
         goodsRecord.setBrand(brand);
         goodsRecord.setAiIdentifyNo(aiIdentifyNo);
-        goodsRecord.setDeliveryType(deliveryType);
+        goodsRecord.setDeliveryType((byte) deliveryTypeBinary);
         // 国家区域
         goodsRecord.setCountry("");
         goodsRecord.setProvince("");
@@ -197,10 +199,10 @@ public class PublishGoodsService extends BaseService {
         Boolean isDraft = OptionalUtils.valueOrDefault(param.getIsDraft());
         String brand = OptionalUtils.valueOrDefault(param.getBrand());
         String aiIdentifyNo = OptionalUtils.valueOrDefault(param.getAiIdentifyNo());
-        Byte deliveryType = OptionalUtils.valueOrDefault(param.getDeliveryType());
         List<S3PutObjectResult> pictureList = param.getGoodsPicturesList();
         String title = OptionalUtils.valueOrDefault(param.getTitle());
         String classPath = param.getClassPath();
+        int deliveryTypeBinary = getDeliveryTypeBinary(param.getDeliveryTypeObj());
 
         GoodsClassVO goodsClassVO = classDao.findClass(classPath);
         if (goodsClassVO == null) {
@@ -216,7 +218,7 @@ public class PublishGoodsService extends BaseService {
             throw new ServiceException(CommonError.BAD_REQUEST.getCode(), LangErrorEnum.GOODS_PRICE.lang());
         }
 
-        if (description.length() == 0) {
+        if (description.isEmpty()) {
             throw new ServiceException(CommonError.BAD_REQUEST.getCode(), LangErrorEnum.EMPTY_DESC.lang());
         }
 
@@ -250,7 +252,7 @@ public class PublishGoodsService extends BaseService {
         goodsRecord.setIsFree(isFree ? (byte) 1 : (byte) 0);
         goodsRecord.setBrand(brand);
         goodsRecord.setAiIdentifyNo(aiIdentifyNo);
-        goodsRecord.setDeliveryType(deliveryType);
+        goodsRecord.setDeliveryType((byte) deliveryTypeBinary);
         goodsRecord.setId(goodsId);
         // 国家区域
         goodsRecord.setCountry("");
@@ -283,6 +285,21 @@ public class PublishGoodsService extends BaseService {
         streamProducer.sendNews(newsParam);
 
         return goodsId;
+    }
+
+
+    private static int getDeliveryTypeBinary(DeliveryTypeDTO deliveryType) {
+        int result = 0;
+        if (BooleanUtils.isTrue(deliveryType.getPublicMeetup())) {
+            result += 1;
+        }
+        if (BooleanUtils.isTrue(deliveryType.getShippingOptionAvailable())) {
+            result += 2;
+        }
+        if (BooleanUtils.isTrue(deliveryType.getSameDayDelivery())) {
+            result += 4;
+        }
+        return result;
     }
 
 

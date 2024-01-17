@@ -81,3 +81,9 @@ tourist-url:
     - path: "/goods.ai/brandList/query"
     - path: "/goods.ai/seriesList/query"
     - path: "/goods.ai/pointList/query"
+
+goods:
+  shareLink:
+    script:
+      zh_cn: "来自Puggo分享,复制后打开Puggo查看详情哦~"
+      en_us: "from Puggo sharing, copy and open Puggo to view details"

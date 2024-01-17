@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.goods.sales;
+package com.etrade.puggo.service.goods.sales.pojo;
 
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;

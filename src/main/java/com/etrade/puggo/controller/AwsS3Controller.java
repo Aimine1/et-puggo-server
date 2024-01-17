@@ -1,7 +1,7 @@
 package com.etrade.puggo.controller;
 
 import com.etrade.puggo.common.Result;
-import com.etrade.puggo.common.exception.AwsS3Exception;
+import com.etrade.puggo.common.exception.AwsException;
 import com.etrade.puggo.common.exception.CommonError;
 import com.etrade.puggo.common.weblog.WebLog;
 import com.etrade.puggo.third.aws.AswS3Utils;
@@ -55,7 +55,7 @@ public class AwsS3Controller {
         }
         String filename = file.getOriginalFilename();
         if (filename == null) {
-            throw new AwsS3Exception(CommonError.BAD_REQUEST.getCode(), "上传失败, 文件不存在");
+            throw new AwsException(CommonError.BAD_REQUEST.getCode(), "上传失败, 文件不存在");
         }
 
         File f = new File(Objects.requireNonNull(filename));

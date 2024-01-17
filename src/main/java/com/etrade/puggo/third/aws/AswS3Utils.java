@@ -12,7 +12,7 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.etrade.puggo.common.exception.AwsS3Exception;
+import com.etrade.puggo.common.exception.AwsException;
 import com.etrade.puggo.common.exception.CommonError;
 import com.etrade.puggo.utils.JsonUtils;
 import java.io.File;
@@ -34,6 +34,7 @@ public class AswS3Utils {
 
     @Value("${aws.S3.bucket-name:}")
     private String bucketName;
+
     @Value("${aws.S3.base-uri:}")
     private String baseUri;
 
@@ -61,12 +62,12 @@ public class AswS3Utils {
             // The call was transmitted successfully, but Amazon S3 couldn't process
             // it, so it returned an error response.
             log.error("[AswS3Utils] Upload Error", e);
-            throw new AwsS3Exception(CommonError.S3_UPLOAD_ERROR);
+            throw new AwsException(CommonError.S3_UPLOAD_ERROR);
         } catch (SdkClientException e) {
             // Amazon S3 couldn't be contacted for a response, or the client
             // couldn't parse the response from Amazon S3.
             log.error("[AswS3Utils] Upload Error", e);
-            throw new AwsS3Exception(CommonError.S3_UPLOAD_ERROR);
+            throw new AwsException(CommonError.S3_UPLOAD_ERROR);
         }
     }
 
@@ -88,12 +89,12 @@ public class AswS3Utils {
             // The call was transmitted successfully, but Amazon S3 couldn't process
             // it, so it returned an error response.
             log.error("[AswS3Utils] Remove Error", e);
-            throw new AwsS3Exception(CommonError.S3_REMOVE_ERROR);
+            throw new AwsException(CommonError.S3_REMOVE_ERROR);
         } catch (SdkClientException e) {
             // Amazon S3 couldn't be contacted for a response, or the client
             // couldn't parse the response from Amazon S3.
             log.error("[AswS3Utils] Remove Error", e);
-            throw new AwsS3Exception(CommonError.S3_REMOVE_ERROR);
+            throw new AwsException(CommonError.S3_REMOVE_ERROR);
         }
     }
 
@@ -124,12 +125,12 @@ public class AswS3Utils {
             // The call was transmitted successfully, but Amazon S3 couldn't process
             // it, so it returned an error response.
             log.error("[AswS3Utils] list Error", e);
-            throw new AwsS3Exception(CommonError.S3_LIST_ERROR);
+            throw new AwsException(CommonError.S3_LIST_ERROR);
         } catch (SdkClientException e) {
             // Amazon S3 couldn't be contacted for a response, or the client
             // couldn't parse the response from Amazon S3.
             log.error("[AswS3Utils] list Error", e);
-            throw new AwsS3Exception(CommonError.S3_LIST_ERROR);
+            throw new AwsException(CommonError.S3_LIST_ERROR);
         }
     }
 
@@ -148,12 +149,12 @@ public class AswS3Utils {
             // The call was transmitted successfully, but Amazon S3 couldn't process
             // it, so it returned an error response.
             log.error("[AswS3Utils] Check If Exists Error", e);
-            throw new AwsS3Exception(CommonError.S3_OPERATE_ERROR);
+            throw new AwsException(CommonError.S3_OPERATE_ERROR);
         } catch (SdkClientException e) {
             // Amazon S3 couldn't be contacted for a response, or the client
             // couldn't parse the response from Amazon S3.
             log.error("[AswS3Utils] Check If Exists Error", e);
-            throw new AwsS3Exception(CommonError.S3_OPERATE_ERROR);
+            throw new AwsException(CommonError.S3_OPERATE_ERROR);
         }
     }
 

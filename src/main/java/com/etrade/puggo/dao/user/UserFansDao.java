@@ -6,7 +6,7 @@ import static com.etrade.puggo.db.Tables.USER_FANS;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.service.fans.UserFansParam;
-import com.etrade.puggo.service.goods.sales.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.utils.SQLUtils;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;

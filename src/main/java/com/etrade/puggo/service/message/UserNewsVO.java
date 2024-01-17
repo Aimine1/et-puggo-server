@@ -1,6 +1,6 @@
 package com.etrade.puggo.service.message;
 
-import com.etrade.puggo.service.goods.sales.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.third.im.pojo.SendNewsParam;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;

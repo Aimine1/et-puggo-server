@@ -1,7 +1,7 @@
 package com.etrade.puggo.service.goods.comment;
 
-import com.etrade.puggo.service.goods.sales.GoodsSimpleVO;
-import com.etrade.puggo.service.goods.sales.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
+import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;

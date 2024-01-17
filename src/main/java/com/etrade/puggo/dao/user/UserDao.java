@@ -8,7 +8,7 @@ import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.service.account.SellerInfoVO;
 import com.etrade.puggo.service.account.UserInfoVO;
 import com.etrade.puggo.service.account.WebUserSearchParam;
-import com.etrade.puggo.service.goods.sales.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.utils.SQLUtils;
 import com.etrade.puggo.utils.StrUtils;
 import java.time.LocalDate;

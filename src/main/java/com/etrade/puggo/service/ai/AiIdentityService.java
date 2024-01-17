@@ -1,10 +1,10 @@
 package com.etrade.puggo.service.ai;
 
 import com.alibaba.fastjson.JSONObject;
+import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.constants.AIState;
-import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.dao.ai.AiAvailableBalanceDao;
 import com.etrade.puggo.dao.ai.AiOverallAppraisalDao;
 import com.etrade.puggo.dao.ai.AiPointListDao;
@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -126,8 +127,8 @@ public class AiIdentityService extends BaseService {
         record.setImageUrl(imageUrl);
         record.setSaid((String) result.get("said"));
         // genuine默认true
-        record.setGenuine((byte) 1);
-        //record.setGenuine((boolean) result.get("genuine") ? (byte) 1 : (byte) 0);
+        //record.setGenuine((byte) 1);
+        record.setGenuine((boolean) result.get("genuine") ? (byte) 1 : (byte) 0);
         if (result.get("grade") == null) {
             record.setGrade(new BigDecimal(0));
         } else {
@@ -213,16 +214,16 @@ public class AiIdentityService extends BaseService {
 //            throw new ServiceException("Insufficient available times for AI identification.");
 //        }
 
-//        List<String> saidList = singleList.stream().map(IdentifySingleAppraisal::getSaid).collect(Collectors.toList());
-//
-//        AiPointDTO onePoint = aiPointListDao.getOne(mustPointList.get(0));
-//
-//        // 调接口鉴定
-//        JSONObject result = aiService.identifyOverallPoint(onePoint.getCategoryId(), saidList);
-//
-//        if ((int) result.get("error_code") != AIService.SUCCESS) {
-//            throw new ServiceException((int) result.get("error_code"), (String) result.get("error_msg"));
-//        }
+        List<String> saidList = singleList.stream().map(IdentifySingleAppraisal::getSaid).collect(Collectors.toList());
+
+        AiPointDTO onePoint = aiPointListDao.getOne(mustPointList.get(0));
+
+        // 调接口鉴定
+        JSONObject result = aiService.identifyOverallPoint(onePoint.getCategoryId(), saidList);
+
+        if ((int) result.get("error_code") != AIService.SUCCESS) {
+            throw new ServiceException((int) result.get("error_code"), (String) result.get("error_msg"));
+        }
 
         // 扣除AI鉴定可用次数
 //        Integer row = aiAvailableBalanceDao.deductAvailableBalance(kindId);
@@ -232,6 +233,25 @@ public class AiIdentityService extends BaseService {
 //        }
 
         // 保存到db
+        AiOverallAppraisalRecord record = buildAiOverallAppraisalRecord(kindId, brandId, seriesId, operationId, result);
+
+        aiOverallAppraisalDao.saveOrUpdate(record);
+
+        // 构建IdentifyOverallAppraisal
+        IdentifyOverallAppraisal appraisal = new IdentifyOverallAppraisal();
+        appraisal.setOaid(record.getOaid());
+        appraisal.setGenuine(record.getGenuine());
+        appraisal.setGrade(record.getGrade());
+        appraisal.setDescription(record.getDescription());
+        appraisal.setState(record.getState());
+
+        return appraisal;
+    }
+
+
+    private AiOverallAppraisalRecord buildAiOverallAppraisalLocalRecord(Integer kindId, Integer brandId,
+        Integer seriesId, String operationId) {
+
         AiOverallAppraisalRecord record = new AiOverallAppraisalRecord();
         record.setUserId(userId());
         record.setKindId(kindId);
@@ -244,17 +264,36 @@ public class AiIdentityService extends BaseService {
         record.setDescription(LangErrorEnum.RESULT_IS_TRUE.lang(AuthContext.getLang()));
         record.setReportUrl("");
         record.setState(AIState.COMPLETE);
-        aiOverallAppraisalDao.save(record);
+        return record;
+    }
 
-        // 构建IdentifyOverallAppraisal
-        IdentifyOverallAppraisal appraisal = new IdentifyOverallAppraisal();
-        appraisal.setOaid(record.getOaid());
-        appraisal.setGenuine(record.getGenuine());
-        appraisal.setGrade(record.getGrade());
-        appraisal.setDescription(record.getDescription());
-        appraisal.setState(record.getState());
 
-        return appraisal;
+    private AiOverallAppraisalRecord buildAiOverallAppraisalRecord(Integer kindId, Integer brandId, Integer seriesId,
+        String operationId, JSONObject result) {
+
+        AiOverallAppraisalRecord record = new AiOverallAppraisalRecord();
+        record.setUserId(userId());
+        record.setKindId(kindId);
+        record.setBrandId(brandId);
+        record.setSeriesId(seriesId);
+        record.setOperationId(operationId);
+        record.setOaid((String) result.get("oaid"));
+        boolean genuine = (boolean) result.get("genuine");
+        record.setGenuine(genuine ? (byte) 1 : (byte) 0);
+        if (result.get("grade") == null) {
+            record.setGrade(BigDecimal.ZERO);
+        } else {
+            record.setGrade(new BigDecimal(String.valueOf(result.get("grade"))));
+        }
+        if (genuine) {
+            record.setState(AIState.COMPLETE);
+            record.setDescription(LangErrorEnum.RESULT_IS_TRUE.lang(AuthContext.getLang()));
+            record.setReportUrl((String) result.get("report_url"));
+        } else {
+            record.setState(AIState.WAITING);
+            record.setDescription((String) result.get("description"));
+        }
+        return record;
     }
 
 

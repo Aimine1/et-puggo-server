@@ -8,7 +8,7 @@ import com.etrade.puggo.dao.user.UserDao;
 import com.etrade.puggo.dao.user.UserIMActionDao;
 import com.etrade.puggo.db.tables.records.UserImActionRecord;
 import com.etrade.puggo.service.BaseService;
-import com.etrade.puggo.service.goods.sales.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.third.im.YunxinIMApi;
 import com.etrade.puggo.third.im.pojo.MessageDO;
 import java.util.List;
@@ -17,7 +17,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author niuzhenyu

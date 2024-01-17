@@ -1,11 +1,11 @@
 package com.etrade.puggo.service.goods.sales;
 
+import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.page.PageParam;
 import com.etrade.puggo.constants.GoodsImgType;
 import com.etrade.puggo.constants.GoodsState;
-import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsDataDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
@@ -13,6 +13,15 @@ import com.etrade.puggo.filter.AuthContext;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
 import com.etrade.puggo.service.fans.UserFansService;
+import com.etrade.puggo.service.goods.publish.PublishGoodsParam.DeliveryTypeDTO;
+import com.etrade.puggo.service.goods.sales.pojo.ExpendGoodsSearchParam;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsDetailVO;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsMainPicUrlDTO;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsSearchParam;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
+import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.RecommendGoodsParam;
+import com.etrade.puggo.service.goods.sales.pojo.UserGoodsListParam;
 import com.etrade.puggo.service.goods.user.UserGoodsService;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
 import com.etrade.puggo.service.groupon.user.UserBrowseHistoryVO;
@@ -230,6 +239,9 @@ public class GoodsSalesService extends BaseService {
             detail.setIsLike(false);
         }
 
+        // 处理deliveryType
+        detail.setDeliveryTypeObj(getDeliveryTypeObject((int) detail.getDeliveryType()));
+
         return detail;
     }
 
@@ -429,6 +441,21 @@ public class GoodsSalesService extends BaseService {
         }
 
         return pageList;
+    }
+
+
+    private static DeliveryTypeDTO getDeliveryTypeObject(int deliveryType) {
+        DeliveryTypeDTO deliveryTypeObj = new DeliveryTypeDTO();
+
+        if (deliveryType == 0) {
+            return deliveryTypeObj;
+        }
+
+        deliveryTypeObj.setPublicMeetup((deliveryType & 1) == 1);
+        deliveryTypeObj.setShippingOptionAvailable(((deliveryType >> 1) & 1) == 1);
+        deliveryTypeObj.setSameDayDelivery(((deliveryType >> 2) & 1) == 1);
+
+        return deliveryTypeObj;
     }
 
 }

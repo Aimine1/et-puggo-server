@@ -1,8 +1,10 @@
 package com.etrade.puggo.service.goods.opt;
 
 import com.etrade.puggo.common.exception.ServiceException;
+import com.etrade.puggo.constants.LangConstant;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.db.tables.records.GoodsRecord;
+import com.etrade.puggo.filter.AuthContext;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.utils.DESUtils;
 import javax.annotation.Resource;
@@ -24,14 +26,11 @@ public class GoodsShareLinkService extends BaseService {
     private GoodsDao goodsDao;
 
 
-    @Value("${goods.shareLink.script:生活有望穿秋水的等待也会有意想不到的惊喜，复制惊喜等你 }")
-    private String script;
+    @Value("${goods.shareLink.script.zh_cn: 来自Puggo分享,复制后打开Puggo查看详情哦~}")
+    private String zh_cnScript;
 
-    @Value("${goods.shareLink.leftSeparator:[}")
-    private String leftSeparator;
-
-    @Value("${goods.shareLink.rightSeparator:].}")
-    private String rightSeparator;
+    @Value("${goods.shareLink.script.en_us: from Puggo sharing, copy and open Puggo to view details~}")
+    private String en_usScript;
 
 
     public GoodsShareLinkVO shareLink(Long goodsId) {
@@ -47,8 +46,8 @@ public class GoodsShareLinkService extends BaseService {
         } catch (Exception e) {
             throw new ServiceException("生成商品分享链接失败，请您稍后重试");
         }
-        String shareLink = String.format("%s%s%s%s%s", script, leftSeparator, encrypt, rightSeparator,
-            goods.getTitle());
+
+        String shareLink = String.format("<%s>%s[ID=%s]", goods.getTitle(), getScript(), encrypt);
 
         return new GoodsShareLinkVO(goodsId, shareLink);
     }
@@ -56,11 +55,14 @@ public class GoodsShareLinkService extends BaseService {
 
     public DecryptGoodsShareLinkVO decryptLink(String shareLink) {
 
-        if (!shareLink.contains(leftSeparator) || !shareLink.contains(rightSeparator)) {
+        String lSeparator = "[ID=";
+        String rSeparator = "]";
+
+        if (!shareLink.contains(lSeparator) || !shareLink.contains(rSeparator)) {
             throw new ServiceException("商品不存在");
         }
 
-        String encrypt = subString(shareLink, leftSeparator, rightSeparator);
+        String encrypt = subString(shareLink, lSeparator, rSeparator);
 
         String decrypt;
         try {
@@ -94,6 +96,15 @@ public class GoodsShareLinkService extends BaseService {
         /* 开始截取 */
         return str.substring(strStartIndex, strEndIndex).substring(strStart.length());
 
+    }
+
+
+    private String getScript() {
+        if (AuthContext.getLang().equals(LangConstant.ZH_CH)) {
+            return zh_cnScript;
+        } else {
+            return en_usScript;
+        }
     }
 
 }

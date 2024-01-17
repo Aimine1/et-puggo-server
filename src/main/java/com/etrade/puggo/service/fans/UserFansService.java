@@ -3,7 +3,7 @@ package com.etrade.puggo.service.fans;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.dao.user.UserFansDao;
 import com.etrade.puggo.service.BaseService;
-import com.etrade.puggo.service.goods.sales.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
