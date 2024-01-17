@@ -244,6 +244,7 @@ public class AiIdentityService extends BaseService {
         appraisal.setGrade(record.getGrade());
         appraisal.setDescription(record.getDescription());
         appraisal.setState(record.getState());
+        appraisal.setReportUrl(record.getReportUrl());
 
         return appraisal;
     }

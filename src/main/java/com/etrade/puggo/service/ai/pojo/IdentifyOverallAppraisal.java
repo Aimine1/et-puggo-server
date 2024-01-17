@@ -27,4 +27,7 @@ public class IdentifyOverallAppraisal {
     @ApiModelProperty("鉴定状态")
     private String state;
 
+    @ApiModelProperty("鉴定报告")
+    private String reportUrl;
+
 }
