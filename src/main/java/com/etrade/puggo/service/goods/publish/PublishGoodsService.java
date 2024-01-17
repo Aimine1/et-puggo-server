@@ -99,7 +99,7 @@ public class PublishGoodsService extends BaseService {
             throw new ServiceException(CommonError.BAD_REQUEST.getCode(), LangErrorEnum.GOODS_PRICE.lang());
         }
 
-        if (description.length() == 0) {
+        if (description.isEmpty()) {
             throw new ServiceException(CommonError.BAD_REQUEST.getCode(), LangErrorEnum.EMPTY_DESC.lang());
         }
 
@@ -218,7 +218,7 @@ public class PublishGoodsService extends BaseService {
             throw new ServiceException(CommonError.BAD_REQUEST.getCode(), LangErrorEnum.GOODS_PRICE.lang());
         }
 
-        if (description.length() == 0) {
+        if (description.isEmpty()) {
             throw new ServiceException(CommonError.BAD_REQUEST.getCode(), LangErrorEnum.EMPTY_DESC.lang());
         }
 
