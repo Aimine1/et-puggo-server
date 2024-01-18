@@ -3,7 +3,7 @@ package com.etrade.puggo.dao.goods;
 import static com.etrade.puggo.db.Tables.GOODS_QUALITY;
 
 import com.etrade.puggo.dao.BaseDao;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 

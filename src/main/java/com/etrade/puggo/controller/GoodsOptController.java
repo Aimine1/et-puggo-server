@@ -2,26 +2,16 @@ package com.etrade.puggo.controller;
 
 import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.weblog.WebLog;
-import com.etrade.puggo.service.goods.opt.DecryptGoodsShareLinkParam;
-import com.etrade.puggo.service.goods.opt.DecryptGoodsShareLinkVO;
-import com.etrade.puggo.service.goods.opt.GoodsShareLinkService;
-import com.etrade.puggo.service.goods.opt.GoodsShareLinkVO;
-import com.etrade.puggo.service.goods.opt.UpdateGoodsStateParam;
-import com.etrade.puggo.service.goods.opt.UpdateGoodsStateService;
+import com.etrade.puggo.service.goods.opt.*;
 import com.etrade.puggo.service.goods.sales.GoodsSalesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import javax.annotation.Resource;
 
 /**
  * @author niuzhenyu
@@ -31,7 +21,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @Api(value = "商品操作接口", tags = "商品操作接口")
 @RequestMapping("/goods/goods.opt/")
 @RestController
-public class    GoodsOptController {
+public class GoodsOptController {
 
     @Resource
     private GoodsSalesService goodsSalesService;
@@ -47,7 +37,7 @@ public class    GoodsOptController {
     @PutMapping("/user/like")
     @ApiOperation(value = "用户收藏商品")
     public Result<?> likeGoods(
-        @ApiParam(value = "goodsId", required = true) @RequestParam("goodsId") Long goodsId) {
+            @ApiParam(value = "goodsId", required = true) @RequestParam("goodsId") Long goodsId) {
 
         goodsSalesService.likeGoods(goodsId);
         return Result.ok();
@@ -58,7 +48,7 @@ public class    GoodsOptController {
     @PutMapping("/user/unlike")
     @ApiOperation(value = "用户取消收藏商品")
     public Result<?> unlikeGoods(
-        @ApiParam(value = "goodsId", required = true) @RequestParam("goodsId") Long goodsId) {
+            @ApiParam(value = "goodsId", required = true) @RequestParam("goodsId") Long goodsId) {
 
         goodsSalesService.unlikeGoods(goodsId);
         return Result.ok();
@@ -86,7 +76,7 @@ public class    GoodsOptController {
     @WebLog
     @ApiOperation("解析商品分享链接")
     @PostMapping("/link/decrypt")
-    public Result<DecryptGoodsShareLinkVO> decryptLink(@Validated @RequestBody DecryptGoodsShareLinkParam param)  {
+    public Result<DecryptGoodsShareLinkVO> decryptLink(@Validated @RequestBody DecryptGoodsShareLinkParam param) {
         return Result.ok(goodsShareLinkService.decryptLink(param.getShareLink()));
     }
 

@@ -1,7 +1,7 @@
 package com.etrade.puggo.common.enums;
 
 import com.etrade.puggo.constants.LangConstant;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 
 public enum LangErrorEnum {
 

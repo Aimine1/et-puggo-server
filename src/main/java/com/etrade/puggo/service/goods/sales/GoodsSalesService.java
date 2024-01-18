@@ -9,7 +9,7 @@ import com.etrade.puggo.constants.GoodsState;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsDataDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
 import com.etrade.puggo.service.fans.UserFansService;
@@ -286,9 +286,8 @@ public class GoodsSalesService extends BaseService {
         streamProducer.sendNews(newsParam);
 
         // 商品操作日志
-        String content = String.format("钟意 %s 的商品", goodsInfo.getLaunchUserNickname());
-        goodsLogsService.logs(goodsId, LogsOperate.LIKE, content);
-
+        // String content = String.format("钟意 %s 的商品", goodsInfo.getLaunchUserNickname());
+        // goodsLogsService.logs(goodsId, LogsOperate.LIKE, content);
     }
 
 
@@ -311,12 +310,12 @@ public class GoodsSalesService extends BaseService {
 
         goodsDataDao.decLikeNumber(goodsId);
 
-        List<GoodsSimpleVO> goodsList = goodsDao.findGoodsSimpleList(Collections.singletonList(goodsId));
-        GoodsSimpleVO goodsInfo = goodsList.get(0);
+        // List<GoodsSimpleVO> goodsList = goodsDao.findGoodsSimpleList(Collections.singletonList(goodsId));
+        // GoodsSimpleVO goodsInfo = goodsList.get(0);
 
         // 商品操作日志
-        String content = String.format("取消收藏 %s 的商品", goodsInfo.getLaunchUserNickname());
-        goodsLogsService.logs(goodsId, LogsOperate.UNLIKE, content);
+        // String content = String.format("取消收藏 %s 的商品", goodsInfo.getLaunchUserNickname());
+        // goodsLogsService.logs(goodsId, LogsOperate.UNLIKE, content);
 
     }
 

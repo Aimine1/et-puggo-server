@@ -55,8 +55,7 @@ public class GoodsCommentController {
     @WebLog
     @PostMapping("/user/comment/list")
     @ApiOperation(value = "我的-用户评论列表", response = CommentVO.class)
-    public Result<PageContentContainer<CommentVO>> getUserCommentList(
-        @Validated @RequestBody UserCommentListParam param) {
+    public Result<PageContentContainer<CommentVO>> getUserCommentList(@Validated @RequestBody UserCommentListParam param) {
 
         return Result.ok(goodsCommentService.getUserCommentList(param));
     }

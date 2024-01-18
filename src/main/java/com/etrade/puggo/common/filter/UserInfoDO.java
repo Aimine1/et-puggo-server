@@ -1,4 +1,4 @@
-package com.etrade.puggo.filter;
+package com.etrade.puggo.common.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

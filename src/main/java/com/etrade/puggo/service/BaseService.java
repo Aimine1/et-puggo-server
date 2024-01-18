@@ -3,7 +3,7 @@ package com.etrade.puggo.service;
 import com.etrade.puggo.common.exception.CommonError;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.constants.UserRoleConstants;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.utils.IpAddressDO;
 import com.etrade.puggo.utils.IpUtils;
 import com.etrade.puggo.utils.OptionalUtils;

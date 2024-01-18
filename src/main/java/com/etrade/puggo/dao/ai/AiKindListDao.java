@@ -5,7 +5,7 @@ import static com.etrade.puggo.db.Tables.AI_KIND_LIST;
 import com.alibaba.fastjson.JSONObject;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.records.AiKindListRecord;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.ai.pojo.AiKindDTO;
 import java.util.List;
 import org.jooq.InsertValuesStep4;

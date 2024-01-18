@@ -25,4 +25,7 @@ public class LaunchUserDO {
     @ApiModelProperty("网易IM账号id")
     private String accid;
 
+    @ApiModelProperty("是否认证")
+    private Boolean isVerified;
+
 }

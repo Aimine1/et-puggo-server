@@ -2,7 +2,7 @@ package com.etrade.puggo.third.aws;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.shaded.com.google.common.collect.ImmutableMap;
-import com.etrade.puggo.service.payment.pojo.*;
+import com.etrade.puggo.third.aws.pojo.*;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
@@ -30,7 +30,7 @@ public class PaymentLambdaFunctions {
      * @return Stripe的用户id，参考：cus_PNt6qcCNTZFOO4
      */
     public String createCustomer(@NotNull String email, @NotNull String username) {
-        CreateCustomerParam param = new CreateCustomerParam();
+        CreateCustomerReq param = new CreateCustomerReq();
         param.setEmail(email);
         param.setDescription(username);
 
@@ -78,7 +78,7 @@ public class PaymentLambdaFunctions {
     }
 
 
-    public String CreatePaymentIntent(@Valid CreatePaymentIntentParam param) {
+    public String CreatePaymentIntent(@Valid CreatePaymentIntentReq param) {
         return AwsLambdaUtils.invokeFunction("create_payment_intent", param);
     }
 
@@ -105,18 +105,18 @@ public class PaymentLambdaFunctions {
     }
 
 
-    public String updateCustomer(@Valid UpdateCustomerParam param) {
-        return AwsLambdaUtils.invokeFunction("update_customer", param);
+    public String updateCustomer(@Valid UpdateCustomerReq req) {
+        return AwsLambdaUtils.invokeFunction("update_customer", req);
     }
 
 
-    public String updatePaymentIntent(@Valid UpdatePaymentIntentParam param) {
-        return AwsLambdaUtils.invokeFunction("update_payment_intent", param);
+    public String updatePaymentIntent(@Valid UpdatePaymentIntentReq req) {
+        return AwsLambdaUtils.invokeFunction("update_payment_intent", req);
     }
 
 
-    public String updatePaymentMethod(@Valid UpdatePaymentMethodParam param) {
-        return AwsLambdaUtils.invokeFunction("update_payment_method", param);
+    public String updatePaymentMethod(@Valid UpdatePaymentMethodReq req) {
+        return AwsLambdaUtils.invokeFunction("update_payment_method", req);
     }
 
 

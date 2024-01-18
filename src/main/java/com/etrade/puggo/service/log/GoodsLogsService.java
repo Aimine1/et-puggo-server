@@ -81,6 +81,7 @@ public class GoodsLogsService extends BaseService {
      *
      * @return 未读数量
      */
+    @Deprecated
     public Integer getUnreadCount() {
         return goodsLogsDao.findUnreadCount(userId());
     }
@@ -89,6 +90,7 @@ public class GoodsLogsService extends BaseService {
     /**
      * 修改日志状态为已读
      */
+    @Deprecated
     public void updateToRead() {
         goodsLogsDao.updateToRead(userId());
     }

@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.payment.pojo;
+package com.etrade.puggo.third.aws.pojo;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @date 2024/1/16 11:14
  */
 @Data
-public class UpdateCustomerParam {
+public class UpdateCustomerReq {
 
     @NotNull
     @NotBlank
