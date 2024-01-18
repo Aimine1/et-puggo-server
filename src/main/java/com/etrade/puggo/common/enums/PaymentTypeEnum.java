@@ -26,4 +26,14 @@ public enum PaymentTypeEnum {
         return this.type;
     }
 
+
+    public static boolean isValid(String paymentType) {
+        for (PaymentTypeEnum e : values()) {
+            if (e.getType().equals(paymentType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

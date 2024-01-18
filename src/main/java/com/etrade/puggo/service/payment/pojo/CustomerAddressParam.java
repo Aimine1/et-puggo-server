@@ -13,11 +13,16 @@ import javax.validation.constraints.NotNull;
  * @date 2024/1/18 14:48
  */
 @Data
-public class ShippingAddressParam {
+public class CustomerAddressParam {
 
     @NotNull
     @NotBlank
-    @ApiModelProperty("标题")
+    @ApiModelProperty("收货地址=delivery 账单地址=billing")
+    private String type;
+
+    @NotNull
+    @NotBlank
+    @ApiModelProperty("标题，用于区分不同账单")
     protected String title;
 
     @NotNull

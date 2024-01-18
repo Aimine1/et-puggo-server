@@ -2,22 +2,18 @@ package com.etrade.puggo.controller;
 
 import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.weblog.WebLog;
-import com.etrade.puggo.service.goods.message.BuyerOfferPriceCallbackParam;
-import com.etrade.puggo.service.goods.message.BuyerSendGoodsCallbackParam;
-import com.etrade.puggo.service.goods.message.GetGoodsMessageParam;
-import com.etrade.puggo.service.goods.message.GoodsMessageLogVO;
-import com.etrade.puggo.service.goods.message.GoodsMessageService;
+import com.etrade.puggo.service.goods.message.*;
 import com.etrade.puggo.service.goods.sales.pojo.AcceptPriceParam;
 import com.etrade.puggo.service.goods.sales.pojo.TradeNoVO;
-import com.etrade.puggo.service.goods.trade.GoodsTradeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author niuzhenyu
@@ -32,8 +28,6 @@ public class GoodsMessageController {
 
     @Resource
     private GoodsMessageService goodsMessageService;
-    @Resource
-    private GoodsTradeService goodsTradeService;
 
 
     @WebLog
@@ -69,9 +63,10 @@ public class GoodsMessageController {
     @WebLog
     @PostMapping("/seller/acceptPrice/callback")
     @ApiOperation(value = "卖家接受出价后的回调接口", response = TradeNoVO.class)
-    public Result<TradeNoVO> acceptPrice(@RequestBody @Validated AcceptPriceParam param) {
+    public Result<?> acceptPrice(@RequestBody @Validated AcceptPriceParam param) {
 
-        return Result.ok(goodsTradeService.acceptPriceCallback(param));
+        goodsMessageService.acceptPriceCallback(param);
+        return Result.ok();
     }
 
 

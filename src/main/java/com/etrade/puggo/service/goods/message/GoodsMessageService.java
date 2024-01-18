@@ -2,22 +2,30 @@ package com.etrade.puggo.service.goods.message;
 
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.constants.GoodsMessageState;
+import com.etrade.puggo.constants.GoodsState;
+import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsMessageLogDao;
 import com.etrade.puggo.db.tables.records.GoodsMessageLogsRecord;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
-import com.etrade.puggo.service.goods.sales.pojo.AcceptPriceParam;
 import com.etrade.puggo.service.goods.sales.GoodsSimpleService;
+import com.etrade.puggo.service.goods.sales.pojo.AcceptPriceParam;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsDetailVO;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
 import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
+import com.etrade.puggo.service.setting.SettingService;
+import com.etrade.puggo.utils.OptionalUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import org.springframework.stereotype.Service;
 
 /**
  * @author niuzhenyu
@@ -28,11 +36,19 @@ import org.springframework.stereotype.Service;
 public class GoodsMessageService extends BaseService {
 
     @Resource
+    private GoodsDao goodsDao;
+
+    @Resource
     private GoodsMessageLogDao messageDao;
+
     @Resource
     private GoodsSimpleService goodsSimpleService;
+
     @Resource
     private UserAccountService userAccountService;
+
+    @Resource
+    private SettingService settingService;
 
 
     public void buyerSendGoodsCallback(BuyerSendGoodsCallbackParam param) {
@@ -108,7 +124,7 @@ public class GoodsMessageService extends BaseService {
 
     public GoodsMessageLogVO getGoodsMessageLog(GetGoodsMessageParam param) {
         GoodsMessageLogsRecord record = messageDao
-            .selectOne(param.getBuyerId(), param.getSellerId(), param.getGoodsId());
+                .selectOne(param.getBuyerId(), param.getSellerId(), param.getGoodsId());
 
         if (record == null) {
             return null;
@@ -117,10 +133,10 @@ public class GoodsMessageService extends BaseService {
         GoodsSimpleVO goodsInfo = goodsSimpleService.getSingleGoods(record.getGoodsId());
 
         List<LaunchUserDO> userList = userAccountService.getUserList(
-            Arrays.asList(record.getBuyerId(), record.getSellerId()));
+                Arrays.asList(record.getBuyerId(), record.getSellerId()));
 
         Map<Long, LaunchUserDO> userMap = userList.stream()
-            .collect(Collectors.toMap(LaunchUserDO::getUserId, Function.identity()));
+                .collect(Collectors.toMap(LaunchUserDO::getUserId, Function.identity()));
 
         GoodsMessageLogVO vo = new GoodsMessageLogVO();
 
@@ -139,7 +155,7 @@ public class GoodsMessageService extends BaseService {
 
     public String getGoodsMessageState(GetGoodsMessageParam param) {
         GoodsMessageLogsRecord record = messageDao
-            .selectOne(param.getBuyerId(), param.getSellerId(), param.getGoodsId());
+                .selectOne(param.getBuyerId(), param.getSellerId(), param.getGoodsId());
 
         if (record == null) {
             return null;
@@ -148,5 +164,40 @@ public class GoodsMessageService extends BaseService {
         return record.getState();
     }
 
+
+    /**
+     * 买家接受出价
+     *
+     * @author niuzhenyu
+     * @lastEditor niuzhenyu
+     * @createTime 2023/6/25 12:09
+     * @editTime 2023/6/25 12:09
+     **/
+    @Transactional(rollbackFor = Throwable.class)
+    public void acceptPriceCallback(AcceptPriceParam param) {
+        Long goodsId = param.getGoodsId();
+        Long customerId = param.getCustomerId();
+        BigDecimal price = OptionalUtils.valueOrDefault(param.getPrice());
+        long sellerId = userId();
+
+        GoodsDetailVO goodsDetail = goodsDao.findGoodsDetail(goodsId);
+
+        if (goodsDetail == null) {
+            throw new ServiceException("商品不存在");
+        }
+
+        if (price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ServiceException("价格不合理");
+        }
+
+        // 修改商品会话状态
+        messageDao.updateState(customerId, sellerId, goodsId, GoodsMessageState.ACCEPT_PRICE);
+
+        // 修改商品状态
+        String v = settingService.k("autoOccupy");
+        if (Objects.equals(v, "1")) {
+            goodsDao.updateGoodsSale(goodsId, GoodsState.OCCUPY);
+        }
+    }
 
 }

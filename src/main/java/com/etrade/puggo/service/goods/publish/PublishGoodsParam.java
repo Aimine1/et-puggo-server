@@ -73,10 +73,10 @@ public class PublishGoodsParam {
     @Data
     public static class DeliveryTypeDTO {
 
-        @ApiModelProperty(value = "邮寄")
+        @ApiModelProperty(value = "面交")
         private Boolean publicMeetup = false;
 
-        @ApiModelProperty(value = "面交")
+        @ApiModelProperty(value = "快递")
         private Boolean shippingOptionAvailable = false;
 
         @ApiModelProperty(value = "当日达")
