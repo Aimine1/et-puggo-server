@@ -1,7 +1,7 @@
 package com.etrade.puggo.config;
 
 import com.etrade.puggo.constants.RequestHeaders;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.utils.StrUtils;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

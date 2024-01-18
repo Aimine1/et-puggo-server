@@ -1,6 +1,6 @@
 package com.etrade.puggo.service.account;
 
-import com.etrade.puggo.filter.DeviceInfoDO;
+import com.etrade.puggo.common.filter.DeviceInfoDO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.Valid;

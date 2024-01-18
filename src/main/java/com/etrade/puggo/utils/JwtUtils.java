@@ -1,6 +1,6 @@
 package com.etrade.puggo.utils;
 
-import com.etrade.puggo.filter.UserInfoDO;
+import com.etrade.puggo.common.filter.UserInfoDO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;

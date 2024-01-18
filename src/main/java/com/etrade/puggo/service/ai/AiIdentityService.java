@@ -12,7 +12,7 @@ import com.etrade.puggo.dao.ai.AiSingleAppraisalDao;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.db.tables.records.AiOverallAppraisalRecord;
 import com.etrade.puggo.db.tables.records.AiSingleAppraisalRecord;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.ai.pojo.AIIdentifyRecord;
 import com.etrade.puggo.service.ai.pojo.AiIdentificationRecordParam;

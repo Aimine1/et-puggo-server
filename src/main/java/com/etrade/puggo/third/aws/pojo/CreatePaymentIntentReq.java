@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.payment.pojo;
+package com.etrade.puggo.third.aws.pojo;
 
 import lombok.Data;
 
@@ -13,7 +13,7 @@ import java.math.BigDecimal;
  * @date 2024/1/16 11:00
  */
 @Data
-public class CreatePaymentIntentParam {
+public class CreatePaymentIntentReq {
 
     @NotNull
     private BigDecimal amount;

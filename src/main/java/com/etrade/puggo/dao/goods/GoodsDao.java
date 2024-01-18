@@ -9,7 +9,7 @@ import com.etrade.puggo.constants.GoodsState;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.Goods;
 import com.etrade.puggo.db.tables.records.GoodsRecord;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.goods.sales.pojo.ExpendGoodsSearchParam;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsDetailVO;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsSearchParam;

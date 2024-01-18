@@ -37,20 +37,4 @@ public class GoodsLogsController {
         return Result.ok(goodsLogsService.getUserGoodsLogs(param));
     }
 
-    @WebLog
-    @PostMapping("/unreadCount/get")
-    @ApiOperation(value = "获取用户商品操作日志未读数量")
-    public Result<Integer> getUnreadCount() {
-        return Result.ok(goodsLogsService.getUnreadCount());
-    }
-
-
-    @WebLog
-    @PostMapping("/updateToRead")
-    @ApiOperation(value = "修改所有日志状态为已读状态")
-    public Result<?> updateToRead() {
-        goodsLogsService.updateToRead();
-        return Result.ok();
-    }
-
 }

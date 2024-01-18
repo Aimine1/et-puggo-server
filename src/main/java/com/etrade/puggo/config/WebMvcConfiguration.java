@@ -1,6 +1,6 @@
 package com.etrade.puggo.config;
 
-import com.etrade.puggo.filter.AuthInterceptor;
+import com.etrade.puggo.common.filter.AuthInterceptor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

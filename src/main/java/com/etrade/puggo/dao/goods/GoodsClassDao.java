@@ -3,7 +3,7 @@ package com.etrade.puggo.dao.goods;
 import static com.etrade.puggo.db.Tables.GOODS_CLASS;
 
 import com.etrade.puggo.dao.BaseDao;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.goods.clazz.SelectClassVO2;
 import com.etrade.puggo.service.goods.publish.GoodsClassVO;
 import com.etrade.puggo.service.groupon.clazz.AddClassParam;

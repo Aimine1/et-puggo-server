@@ -1,4 +1,4 @@
-package com.etrade.puggo.filter;
+package com.etrade.puggo.common.filter;
 
 import com.etrade.puggo.constants.LangConstant;
 import com.etrade.puggo.constants.RequestHeaders;

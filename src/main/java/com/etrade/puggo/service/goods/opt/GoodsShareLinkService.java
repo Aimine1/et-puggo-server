@@ -4,7 +4,7 @@ import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.constants.LangConstant;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.db.tables.records.GoodsRecord;
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.utils.DESUtils;
 import javax.annotation.Resource;

@@ -1,6 +1,6 @@
 package com.etrade.puggo.common.weblog;
 
-import com.etrade.puggo.filter.AuthContext;
+import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.AuthDTO;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.utils.JsonUtils;

@@ -3,14 +3,11 @@ package com.etrade.puggo.service.goods.comment;
 import com.etrade.puggo.third.aws.S3PutObjectResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import lombok.Data;
 
 /**
  * @author niuzhenyu
@@ -37,7 +34,9 @@ public class CommentGoodsParam {
     private String comment;
 
     @NotNull(message = "type is Null")
-    @ApiModelProperty(value = "评论类型：1评论买家 2评论卖家 3评论私讯", required = true)
+    @ApiModelProperty(value = "评论类型：1评论买家 2评论卖家", required = true)
+    @Min(value = 1, message = "未知的评论类型：可选项为：1评论买家 2评论卖家")
+    @Max(value = 2, message = "未知的评论类型：可选项为：1评论买家 2评论卖家")
     private Byte type;
 
     @NotNull(message = "toUserId is Null")
@@ -45,7 +44,7 @@ public class CommentGoodsParam {
     private Long toUserId;
 
     @Size(max = 5, message = "最多允许上传5张")
-    @ApiModelProperty(value = "上传的图片, 非必传字段", required = false)
+    @ApiModelProperty(value = "上传的图片, 非必传字段")
     private List<S3PutObjectResult> pictureList;
 
 }

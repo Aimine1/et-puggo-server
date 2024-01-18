@@ -1,4 +1,4 @@
-package com.etrade.puggo.filter;
+package com.etrade.puggo.common.filter;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

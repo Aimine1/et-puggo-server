@@ -149,7 +149,7 @@ public class PublishGoodsService extends BaseService {
         goodsDataDao.newData(goodsId);
 
         // 商品日志
-        goodsLogsService.logs(goodsId, LogsOperate.PUBLISH, "发布了商品: " + title);
+        // goodsLogsService.logs(goodsId, LogsOperate.PUBLISH, "发布了商品: " + title);
 
         String goodsMainPic = pictureList.get(0).getUrl();
         SendNewsParam newsParam = SendNewsParam.builder()
@@ -271,7 +271,7 @@ public class PublishGoodsService extends BaseService {
         goodsDataDao.newData(goodsId);
 
         // 商品日志
-        goodsLogsService.logs(goodsId, LogsOperate.PUBLISH, "编辑了商品: " + title);
+        // goodsLogsService.logs(goodsId, LogsOperate.PUBLISH, "编辑了商品: " + title);
 
         String goodsMainPic = pictureList.get(0).getUrl();
         SendNewsParam newsParam = SendNewsParam.builder()
