@@ -18,7 +18,7 @@ public class CustomerAddressDO {
 
     @NotNull
     @NotBlank
-    @ApiModelProperty("收货地址=delivery 账单地址=billing")
+    @ApiModelProperty("收货地址传delivery 账单地址传billing")
     private String type;
 
     @NotNull
