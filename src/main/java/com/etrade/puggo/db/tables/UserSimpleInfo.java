@@ -8,9 +8,12 @@ import com.etrade.puggo.db.EtradeGoods;
 import com.etrade.puggo.db.Indexes;
 import com.etrade.puggo.db.Keys;
 import com.etrade.puggo.db.tables.records.UserSimpleInfoRecord;
+
 import java.util.Arrays;
 import java.util.List;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;

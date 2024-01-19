@@ -74,7 +74,9 @@ import com.etrade.puggo.db.tables.records.UserLikesRecord;
 import com.etrade.puggo.db.tables.records.UserLogsRecord;
 import com.etrade.puggo.db.tables.records.UserRecord;
 import com.etrade.puggo.db.tables.records.UserSimpleInfoRecord;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;

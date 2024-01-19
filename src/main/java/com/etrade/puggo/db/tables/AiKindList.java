@@ -6,8 +6,11 @@ package com.etrade.puggo.db.tables;
 
 import com.etrade.puggo.db.EtradeGoods;
 import com.etrade.puggo.db.tables.records.AiKindListRecord;
+
 import java.time.LocalDateTime;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;

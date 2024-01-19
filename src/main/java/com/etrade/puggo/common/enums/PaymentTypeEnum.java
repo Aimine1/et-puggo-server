@@ -1,35 +1,29 @@
 package com.etrade.puggo.common.enums;
 
+import lombok.Getter;
+
 /**
  * @author zhenyu
  * @version 1.0
  * @description: 支付方式枚举类型
  * @date 2024/1/16 11:04
  */
+@Getter
 public enum PaymentTypeEnum {
 
-    CARD("card"),
-    APPLE("apple_pay"),
-    GOOGLE("google_pay"),
-    WECHAT("wechat"),
-    ALIPAY("alipay"),
-    ;
+    card,
 
-    private final String type;
+    apple_pay,
 
-    PaymentTypeEnum(String paymentType) {
-        this.type = paymentType;
-    }
+    google_pay,
 
+    wechat,
 
-    public String getType() {
-        return this.type;
-    }
-
+    alipay;
 
     public static boolean isValid(String paymentType) {
         for (PaymentTypeEnum e : values()) {
-            if (e.getType().equals(paymentType)) {
+            if (e.name().equals(paymentType)) {
                 return true;
             }
         }

@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.account;
+package com.etrade.puggo.service.account.pojo;
 
 import io.swagger.annotations.ApiModel;
 import javax.validation.constraints.Email;

@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.account;
+package com.etrade.puggo.service.account.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

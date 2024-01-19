@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.account;
+package com.etrade.puggo.service.account.pojo;
 
 import com.etrade.puggo.common.page.PageParam;
 import lombok.Data;

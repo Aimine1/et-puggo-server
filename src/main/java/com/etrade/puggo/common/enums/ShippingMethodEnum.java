@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * @author zhenyu
  * @version 1.0
- * @description: TODO
+ * @description: 交易方式枚举
  * @date 2024/1/18 17:56
  */
 @Getter

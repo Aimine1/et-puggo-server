@@ -2,11 +2,11 @@ package com.etrade.puggo.controller;
 
 import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.weblog.WebLog;
-import com.etrade.puggo.service.account.LoginAccountParam;
-import com.etrade.puggo.service.account.LoginResponse;
-import com.etrade.puggo.service.account.RegisterAccountParam;
-import com.etrade.puggo.service.account.ResetPasswordParam;
-import com.etrade.puggo.service.account.RetrievePasswordParam;
+import com.etrade.puggo.service.account.pojo.LoginAccountParam;
+import com.etrade.puggo.service.account.pojo.LoginResponse;
+import com.etrade.puggo.service.account.pojo.RegisterAccountParam;
+import com.etrade.puggo.service.account.pojo.ResetPasswordParam;
+import com.etrade.puggo.service.account.pojo.RetrievePasswordParam;
 import com.etrade.puggo.service.account.UserAccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -1,7 +1,7 @@
 package com.etrade.puggo.common.enums;
 
-import com.etrade.puggo.constants.LangConstant;
 import com.etrade.puggo.common.filter.AuthContext;
+import com.etrade.puggo.constants.LangConstant;
 
 public enum LangErrorEnum {
 
@@ -11,13 +11,9 @@ public enum LangErrorEnum {
     /**
      * 商品业务类错误
      */
-    UNKNOWN_POINT("未知的鉴定点", "Unknown authentication point"),
-    RE_UPLOAD("未检测到鉴别点，请您选择合适的角度重新上传图片", "Please choose an appropriate angle to upload again"),
-    MUST_POINT("请您上传必须的鉴定点", "Please upload the crucial authentication points"),
     GOODS_CLASS("请选择商品分类", "Please select a category"),
     GOODS_QUALITY("请选择商品成色", "Please select a item condition"),
     EMPTY_DESC("商品描述信息不允许为空", "Description cannot be empty"),
-    UNKNOWN_AUTHENTICATION_CODE("AI鉴定编号不存在或者已绑定其他商品", "Unknown Authentication Code"),
     GOODS_PRICE("价格不允许为0", "The price cannot be Zero"),
 
     /**
@@ -31,6 +27,26 @@ public enum LangErrorEnum {
      * AI鉴定
      */
     RESULT_IS_TRUE("商品鉴定结果为真", "The authentication result is true"),
+    UNKNOWN_POINT("未知的鉴定点", "Unknown authentication point"),
+    RE_UPLOAD("未检测到鉴别点，请您选择合适的角度重新上传图片", "Please choose an appropriate angle to upload again"),
+    MUST_POINT("请您上传必须的鉴定点", "Please upload the crucial authentication points"),
+    UNKNOWN_AUTHENTICATION_CODE("AI鉴定编号不存在或者已绑定其他商品", "Unknown Authentication Code"),
+
+    /**
+     * 支付
+     */
+    INVALID_AMOUNT("无效金额", "Invalid amount"),
+    INVALID_GOODS("无效货品", "Invalid product"),
+    INVALID_CARD_NUMBER("无效的卡号", "Invalid card number"),
+    INVALID_EXPIRE_DATE("无效的失效日期", "Invalid expire date"),
+    INVALID_PHONE_NUMBER("无效的电话号码", "Invalid phone number"),
+    INVALID_ADDRESS("无效的地址", "Invalid address"),
+    UNKNOWN_CARD_TYPE("未知的银行卡类型", "Unknown card type"),
+    UNKNOWN_ADDRESS_TYPE("未知的地址类型", "Unknown address type"),
+    UNKNOWN_PAYMENT_TYPE("未知的支付类型", "Unknown payment type"),
+    UNKNOWN_SHIPPING_METHOD("未知的交易方式", "Unknown shipping method"),
+
+
     ;
 
     final String zh_cn;
