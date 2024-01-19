@@ -5,9 +5,12 @@ package com.etrade.puggo.db.tables.records;
 
 
 import com.etrade.puggo.db.tables.AiSingleAppraisal;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 

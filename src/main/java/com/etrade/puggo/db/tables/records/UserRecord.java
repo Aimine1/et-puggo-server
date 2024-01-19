@@ -5,10 +5,13 @@ package com.etrade.puggo.db.tables.records;
 
 
 import com.etrade.puggo.db.tables.User;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record20;

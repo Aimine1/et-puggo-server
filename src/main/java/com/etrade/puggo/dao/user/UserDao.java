@@ -2,9 +2,9 @@ package com.etrade.puggo.dao.user;
 
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.dao.BaseDao;
-import com.etrade.puggo.service.account.SellerInfoVO;
-import com.etrade.puggo.service.account.UserInfoVO;
-import com.etrade.puggo.service.account.WebUserSearchParam;
+import com.etrade.puggo.service.account.pojo.SellerInfoVO;
+import com.etrade.puggo.service.account.pojo.UserInfoVO;
+import com.etrade.puggo.service.account.pojo.WebUserSearchParam;
 import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.utils.SQLUtils;
 import com.etrade.puggo.utils.StrUtils;

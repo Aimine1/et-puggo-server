@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UpdateCreditCardParam extends CreditCardParam {
+public class UpdateCreditCardDO extends CreditCardDO {
 
     @NotNull
     @ApiModelProperty("卡号id")

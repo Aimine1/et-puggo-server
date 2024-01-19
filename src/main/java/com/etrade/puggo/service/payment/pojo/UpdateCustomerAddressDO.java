@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UpdateShippingAddressParam extends ShippingAddressParam {
+public class UpdateCustomerAddressDO extends CustomerAddressDO {
 
     @NotNull
     @ApiModelProperty("收货地址id")

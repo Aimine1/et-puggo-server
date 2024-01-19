@@ -5,7 +5,7 @@ import static com.etrade.puggo.db.Tables.USER_ACCOUNT;
 
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.records.UserAccountRecord;
-import com.etrade.puggo.service.account.UserAccountParam;
+import com.etrade.puggo.service.account.pojo.UserAccountParam;
 import com.etrade.puggo.utils.OptionalUtils;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Repository;

@@ -5,7 +5,9 @@ package com.etrade.puggo.db.tables.records;
 
 
 import com.etrade.puggo.db.tables.UserSimpleInfo;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record4;

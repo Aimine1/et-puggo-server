@@ -30,6 +30,9 @@ import com.etrade.puggo.db.tables.GrouponCouponRule;
 import com.etrade.puggo.db.tables.GrouponCouponTrade;
 import com.etrade.puggo.db.tables.Message;
 import com.etrade.puggo.db.tables.MsgNews;
+import com.etrade.puggo.db.tables.PaymentCard;
+import com.etrade.puggo.db.tables.PaymentCustomerAddress;
+import com.etrade.puggo.db.tables.PaymentRecord;
 import com.etrade.puggo.db.tables.Setting;
 import com.etrade.puggo.db.tables.User;
 import com.etrade.puggo.db.tables.UserAccount;
@@ -40,6 +43,7 @@ import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
 import com.etrade.puggo.db.tables.UserLogs;
 import com.etrade.puggo.db.tables.UserSimpleInfo;
+
 import javax.annotation.processing.Generated;
 
 
@@ -185,6 +189,21 @@ public class Tables {
      * 用户通知消息
      */
     public static final MsgNews MSG_NEWS = MsgNews.MSG_NEWS;
+
+    /**
+     * 买家信用卡/借记卡信息
+     */
+    public static final PaymentCard PAYMENT_CARD = PaymentCard.PAYMENT_CARD;
+
+    /**
+     * 账单地址/买家收货地址
+     */
+    public static final PaymentCustomerAddress PAYMENT_CUSTOMER_ADDRESS = PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS;
+
+    /**
+     * 支付记录
+     */
+    public static final PaymentRecord PAYMENT_RECORD = PaymentRecord.PAYMENT_RECORD;
 
     /**
      * 设置

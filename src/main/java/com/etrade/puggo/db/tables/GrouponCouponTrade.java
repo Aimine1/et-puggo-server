@@ -8,11 +8,14 @@ import com.etrade.puggo.db.EtradeGoods;
 import com.etrade.puggo.db.Indexes;
 import com.etrade.puggo.db.Keys;
 import com.etrade.puggo.db.tables.records.GrouponCouponTradeRecord;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;

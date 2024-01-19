@@ -30,6 +30,9 @@ import com.etrade.puggo.db.tables.GrouponCouponRule;
 import com.etrade.puggo.db.tables.GrouponCouponTrade;
 import com.etrade.puggo.db.tables.Message;
 import com.etrade.puggo.db.tables.MsgNews;
+import com.etrade.puggo.db.tables.PaymentCard;
+import com.etrade.puggo.db.tables.PaymentCustomerAddress;
+import com.etrade.puggo.db.tables.PaymentRecord;
 import com.etrade.puggo.db.tables.Setting;
 import com.etrade.puggo.db.tables.User;
 import com.etrade.puggo.db.tables.UserAccount;
@@ -40,10 +43,13 @@ import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
 import com.etrade.puggo.db.tables.UserLogs;
 import com.etrade.puggo.db.tables.UserSimpleInfo;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
@@ -62,7 +68,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EtradeGoods extends SchemaImpl {
 
-    private static final long serialVersionUID = -984920069;
+    private static final long serialVersionUID = -1908840353;
 
     /**
      * The reference instance of <code>etrade_goods</code>
@@ -200,6 +206,21 @@ public class EtradeGoods extends SchemaImpl {
     public final MsgNews MSG_NEWS = com.etrade.puggo.db.tables.MsgNews.MSG_NEWS;
 
     /**
+     * 买家信用卡/借记卡信息
+     */
+    public final PaymentCard PAYMENT_CARD = com.etrade.puggo.db.tables.PaymentCard.PAYMENT_CARD;
+
+    /**
+     * 账单地址/买家收货地址
+     */
+    public final PaymentCustomerAddress PAYMENT_CUSTOMER_ADDRESS = com.etrade.puggo.db.tables.PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS;
+
+    /**
+     * 支付记录
+     */
+    public final PaymentRecord PAYMENT_RECORD = com.etrade.puggo.db.tables.PaymentRecord.PAYMENT_RECORD;
+
+    /**
      * 设置
      */
     public final Setting SETTING = com.etrade.puggo.db.tables.Setting.SETTING;
@@ -297,6 +318,9 @@ public class EtradeGoods extends SchemaImpl {
             GrouponCouponTrade.GROUPON_COUPON_TRADE,
             Message.MESSAGE,
             MsgNews.MSG_NEWS,
+            PaymentCard.PAYMENT_CARD,
+            PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS,
+            PaymentRecord.PAYMENT_RECORD,
             Setting.SETTING,
             User.USER,
             UserAccount.USER_ACCOUNT,

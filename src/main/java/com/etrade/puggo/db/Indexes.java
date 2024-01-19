@@ -29,6 +29,9 @@ import com.etrade.puggo.db.tables.GrouponCouponRule;
 import com.etrade.puggo.db.tables.GrouponCouponTrade;
 import com.etrade.puggo.db.tables.Message;
 import com.etrade.puggo.db.tables.MsgNews;
+import com.etrade.puggo.db.tables.PaymentCard;
+import com.etrade.puggo.db.tables.PaymentCustomerAddress;
+import com.etrade.puggo.db.tables.PaymentRecord;
 import com.etrade.puggo.db.tables.Setting;
 import com.etrade.puggo.db.tables.User;
 import com.etrade.puggo.db.tables.UserAccount;
@@ -39,7 +42,9 @@ import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
 import com.etrade.puggo.db.tables.UserLogs;
 import com.etrade.puggo.db.tables.UserSimpleInfo;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
@@ -115,6 +120,10 @@ public class Indexes {
     public static final Index MESSAGE_PRIMARY = Indexes0.MESSAGE_PRIMARY;
     public static final Index MSG_NEWS_IDX_MSG_NEWS_TO_USER_ID = Indexes0.MSG_NEWS_IDX_MSG_NEWS_TO_USER_ID;
     public static final Index MSG_NEWS_PRIMARY = Indexes0.MSG_NEWS_PRIMARY;
+    public static final Index PAYMENT_CARD_IDX_USER_ID = Indexes0.PAYMENT_CARD_IDX_USER_ID;
+    public static final Index PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID = Indexes0.PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID;
+    public static final Index PAYMENT_RECORD_IDX_TRANSACTION_NO = Indexes0.PAYMENT_RECORD_IDX_TRANSACTION_NO;
+    public static final Index PAYMENT_RECORD_IDX_USER_ID = Indexes0.PAYMENT_RECORD_IDX_USER_ID;
     public static final Index SETTING_PRIMARY = Indexes0.SETTING_PRIMARY;
     public static final Index SETTING_UK_SETTING_KEY = Indexes0.SETTING_UK_SETTING_KEY;
     public static final Index USER_PRIMARY = Indexes0.USER_PRIMARY;
@@ -191,6 +200,10 @@ public class Indexes {
         public static Index MESSAGE_PRIMARY = Internal.createIndex("PRIMARY", Message.MESSAGE, new OrderField[] { Message.MESSAGE.ID }, true);
         public static Index MSG_NEWS_IDX_MSG_NEWS_TO_USER_ID = Internal.createIndex("idx_msg_news_to_user_id", MsgNews.MSG_NEWS, new OrderField[] { MsgNews.MSG_NEWS.TO_USER_ID }, false);
         public static Index MSG_NEWS_PRIMARY = Internal.createIndex("PRIMARY", MsgNews.MSG_NEWS, new OrderField[] { MsgNews.MSG_NEWS.ID }, true);
+        public static Index PAYMENT_CARD_IDX_USER_ID = Internal.createIndex("idx_user_id", PaymentCard.PAYMENT_CARD, new OrderField[] { PaymentCard.PAYMENT_CARD.USER_ID }, false);
+        public static Index PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID = Internal.createIndex("idx_user_id", PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS, new OrderField[] { PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS.USER_ID }, false);
+        public static Index PAYMENT_RECORD_IDX_TRANSACTION_NO = Internal.createIndex("idx_transaction_no", PaymentRecord.PAYMENT_RECORD, new OrderField[] { PaymentRecord.PAYMENT_RECORD.TRANSACTION_NO }, false);
+        public static Index PAYMENT_RECORD_IDX_USER_ID = Internal.createIndex("idx_user_id", PaymentRecord.PAYMENT_RECORD, new OrderField[] { PaymentRecord.PAYMENT_RECORD.USER_ID }, false);
         public static Index SETTING_PRIMARY = Internal.createIndex("PRIMARY", Setting.SETTING, new OrderField[] { Setting.SETTING.ID }, true);
         public static Index SETTING_UK_SETTING_KEY = Internal.createIndex("uk_setting_key", Setting.SETTING, new OrderField[] { Setting.SETTING.KEY }, true);
         public static Index USER_PRIMARY = Internal.createIndex("PRIMARY", User.USER, new OrderField[] { User.USER.ID }, true);

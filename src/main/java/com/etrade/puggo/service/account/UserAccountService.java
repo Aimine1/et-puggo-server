@@ -17,6 +17,7 @@ import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.common.filter.DeviceInfoDO;
 import com.etrade.puggo.common.filter.UserInfoDO;
 import com.etrade.puggo.service.BaseService;
+import com.etrade.puggo.service.account.pojo.*;
 import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.third.im.YunxinIMApi;
 import com.etrade.puggo.utils.EmailUtils;

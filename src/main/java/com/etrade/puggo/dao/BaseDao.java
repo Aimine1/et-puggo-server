@@ -121,28 +121,9 @@ public class BaseDao extends BaseService {
      * @editTime 2022/3/28 2:02 PM
      */
     protected int fetchCount(String sql, Object[] bindValues) {
-        return db.selectCount().from("(" + sql + ") as `q`", bindValues)
-            .fetchAnyInto(Integer.class);
+        return db.selectCount().from("(" + sql + ") as `q`", bindValues).fetchAnyInto(Integer.class);
     }
 
-    public interface GetPage<T, E> {
-
-        PageContentContainer<T> page(SelectLimitStep<?> query, E param, Class<T> clz);
-    }
-
-    /**
-     * List 升序排列 查询条件 where in 条件中排序用
-     *
-     * @author weike
-     * @lastEditor weike
-     * @createTime 2021/1/28 14:46
-     * @editTime
-     **/
-    /*protected static <T extends Comparable<? super T>> List<T> ascendingOrder(List<T> list) {
-        java.util.Objects.requireNonNull(list, "Condition object list is null. ");
-        Collections.sort(list);
-        return list;
-    }*/
 
     /**
      * List 升序排列 查询条件 where in 条件中排序用
