@@ -6,6 +6,7 @@ package com.etrade.puggo.db.tables;
 
 import com.etrade.puggo.db.EtradeGoods;
 import com.etrade.puggo.db.Indexes;
+import com.etrade.puggo.db.Keys;
 import com.etrade.puggo.db.tables.records.PaymentCardRecord;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import javax.annotation.processing.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -23,6 +25,7 @@ import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
@@ -40,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentCard extends TableImpl<PaymentCardRecord> {
 
-    private static final long serialVersionUID = -473810799;
+    private static final long serialVersionUID = -510516287;
 
     /**
      * The reference instance of <code>etrade_goods.payment_card</code>
@@ -56,9 +59,9 @@ public class PaymentCard extends TableImpl<PaymentCardRecord> {
     }
 
     /**
-     * The column <code>etrade_goods.payment_card.id</code>. 主键id
+     * The column <code>etrade_goods.payment_card.id</code>.
      */
-    public final TableField<PaymentCardRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "主键id");
+    public final TableField<PaymentCardRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>etrade_goods.payment_card.user_id</code>. 系统用户id
@@ -155,7 +158,22 @@ public class PaymentCard extends TableImpl<PaymentCardRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.PAYMENT_CARD_IDX_USER_ID);
+        return Arrays.<Index>asList(Indexes.PAYMENT_CARD_IDX_USER_ID, Indexes.PAYMENT_CARD_PRIMARY);
+    }
+
+    @Override
+    public Identity<PaymentCardRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_PAYMENT_CARD;
+    }
+
+    @Override
+    public UniqueKey<PaymentCardRecord> getPrimaryKey() {
+        return Keys.KEY_PAYMENT_CARD_PRIMARY;
+    }
+
+    @Override
+    public List<UniqueKey<PaymentCardRecord>> getKeys() {
+        return Arrays.<UniqueKey<PaymentCardRecord>>asList(Keys.KEY_PAYMENT_CARD_PRIMARY);
     }
 
     @Override

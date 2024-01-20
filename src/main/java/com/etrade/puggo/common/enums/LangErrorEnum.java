@@ -6,7 +6,7 @@ import com.etrade.puggo.constants.LangConstant;
 public enum LangErrorEnum {
 
     GLOBAL_ERROR("对不起，系统繁忙，请您稍后再试", "Sorry, the system is busying..."),
-    OPERATE_SUCCESSFULLY("操作成功", " Operate Successfully"),
+    OPERATE_SUCCESSFULLY("操作成功", "Operate Successfully"),
 
     /**
      * 商品业务类错误

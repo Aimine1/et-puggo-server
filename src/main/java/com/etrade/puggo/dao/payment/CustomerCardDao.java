@@ -51,7 +51,8 @@ public class CustomerCardDao extends BaseDao {
                         PAYMENT_CARD.CARD_NUMBER,
                         PAYMENT_CARD.TITLE,
                         PAYMENT_CARD.TYPE,
-                        DSL.iif(PAYMENT_CARD.IS_DEFAULT.eq(IS_DEFAULT), true, false)
+                        PAYMENT_CARD.BRAND,
+                        DSL.iif(PAYMENT_CARD.IS_DEFAULT.eq(IS_DEFAULT), true, false).as("isDefault")
                 )
                 .from(PAYMENT_CARD)
                 .where(PAYMENT_CARD.USER_ID.eq(userId))

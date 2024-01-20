@@ -121,7 +121,9 @@ public class Indexes {
     public static final Index MSG_NEWS_IDX_MSG_NEWS_TO_USER_ID = Indexes0.MSG_NEWS_IDX_MSG_NEWS_TO_USER_ID;
     public static final Index MSG_NEWS_PRIMARY = Indexes0.MSG_NEWS_PRIMARY;
     public static final Index PAYMENT_CARD_IDX_USER_ID = Indexes0.PAYMENT_CARD_IDX_USER_ID;
+    public static final Index PAYMENT_CARD_PRIMARY = Indexes0.PAYMENT_CARD_PRIMARY;
     public static final Index PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID = Indexes0.PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID;
+    public static final Index PAYMENT_CUSTOMER_ADDRESS_PRIMARY = Indexes0.PAYMENT_CUSTOMER_ADDRESS_PRIMARY;
     public static final Index PAYMENT_RECORD_IDX_TRANSACTION_NO = Indexes0.PAYMENT_RECORD_IDX_TRANSACTION_NO;
     public static final Index PAYMENT_RECORD_IDX_USER_ID = Indexes0.PAYMENT_RECORD_IDX_USER_ID;
     public static final Index SETTING_PRIMARY = Indexes0.SETTING_PRIMARY;
@@ -201,7 +203,9 @@ public class Indexes {
         public static Index MSG_NEWS_IDX_MSG_NEWS_TO_USER_ID = Internal.createIndex("idx_msg_news_to_user_id", MsgNews.MSG_NEWS, new OrderField[] { MsgNews.MSG_NEWS.TO_USER_ID }, false);
         public static Index MSG_NEWS_PRIMARY = Internal.createIndex("PRIMARY", MsgNews.MSG_NEWS, new OrderField[] { MsgNews.MSG_NEWS.ID }, true);
         public static Index PAYMENT_CARD_IDX_USER_ID = Internal.createIndex("idx_user_id", PaymentCard.PAYMENT_CARD, new OrderField[] { PaymentCard.PAYMENT_CARD.USER_ID }, false);
+        public static Index PAYMENT_CARD_PRIMARY = Internal.createIndex("PRIMARY", PaymentCard.PAYMENT_CARD, new OrderField[] { PaymentCard.PAYMENT_CARD.ID }, true);
         public static Index PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID = Internal.createIndex("idx_user_id", PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS, new OrderField[] { PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS.USER_ID }, false);
+        public static Index PAYMENT_CUSTOMER_ADDRESS_PRIMARY = Internal.createIndex("PRIMARY", PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS, new OrderField[] { PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS.ID }, true);
         public static Index PAYMENT_RECORD_IDX_TRANSACTION_NO = Internal.createIndex("idx_transaction_no", PaymentRecord.PAYMENT_RECORD, new OrderField[] { PaymentRecord.PAYMENT_RECORD.TRANSACTION_NO }, false);
         public static Index PAYMENT_RECORD_IDX_USER_ID = Internal.createIndex("idx_user_id", PaymentRecord.PAYMENT_RECORD, new OrderField[] { PaymentRecord.PAYMENT_RECORD.USER_ID }, false);
         public static Index SETTING_PRIMARY = Internal.createIndex("PRIMARY", Setting.SETTING, new OrderField[] { Setting.SETTING.ID }, true);

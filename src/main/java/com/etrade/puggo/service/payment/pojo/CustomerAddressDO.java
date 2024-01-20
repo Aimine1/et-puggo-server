@@ -16,67 +16,65 @@ import javax.validation.constraints.NotNull;
 @Data
 public class CustomerAddressDO {
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "address type is empty")
+    @NotBlank(message = "address type is empty")
     @ApiModelProperty("收货地址传delivery 账单地址传billing")
     private String type;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "title is empty")
+    @NotBlank(message = "title is empty")
     @Length(max = 100)
     @ApiModelProperty("标题，用于区分不同账单")
     protected String title;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "firstName is empty")
+    @NotBlank(message = "firstName is empty")
     @Length(max = 50)
     @ApiModelProperty("名字")
     protected String firstName;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "lastName is empty")
+    @NotBlank(message = "lastName is empty")
     @Length(max = 50)
     @ApiModelProperty("姓氏")
     protected String lastName;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "phoneNumber is empty")
+    @NotBlank(message = "phoneNumber is empty")
     @Length(max = 50)
     @ApiModelProperty("电话号码")
     protected String phoneNumber;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "addressLine is empty")
+    @NotBlank(message = "addressLine is empty")
     @Length(max = 255)
     @ApiModelProperty("详细地址1")
     protected String addressLine1;
 
-    @NotNull
-    @NotBlank
     @Length(max = 255)
     @ApiModelProperty("详细地址2")
     protected String addressLine2;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "postCode is empty")
+    @NotBlank(message = "postCode is empty")
     @Length(max = 20)
     @ApiModelProperty("邮编")
     protected String postCode;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "city is empty")
+    @NotBlank(message = "city is empty")
     @Length(max = 50)
     @ApiModelProperty("所在城市")
     protected String city;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "state is empty")
+    @NotBlank(message = "state is empty")
     @Length(max = 50)
     @ApiModelProperty("所在州/省")
     protected String state;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "country is empty")
+    @NotBlank(message = "country is empty")
     @Length(max = 50)
     @ApiModelProperty("所在国家")
     protected String country;
