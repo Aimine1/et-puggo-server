@@ -7,7 +7,7 @@ import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.records.GoodsPictureRecord;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsMainPicUrlDTO;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
-import com.etrade.puggo.service.setting.AdvertisementVO;
+import com.etrade.puggo.service.setting.pojo.AdvertisementVO;
 import com.etrade.puggo.third.aws.S3PutObjectResult;
 import java.util.List;
 import org.jooq.InsertValuesStep6;

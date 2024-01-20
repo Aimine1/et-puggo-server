@@ -1,8 +1,9 @@
-package com.etrade.puggo.dao;
+package com.etrade.puggo.dao.setting;
 
 import static com.etrade.puggo.db.Tables.SETTING;
 
-import com.etrade.puggo.service.setting.SettingsVO;
+import com.etrade.puggo.dao.BaseDao;
+import com.etrade.puggo.service.setting.pojo.SettingsVO;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 

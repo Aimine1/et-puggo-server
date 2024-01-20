@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.setting;
+package com.etrade.puggo.service.setting.pojo;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

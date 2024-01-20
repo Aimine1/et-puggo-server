@@ -1,5 +1,6 @@
 package com.etrade.puggo.service.goods.message;
 
+import com.etrade.puggo.common.enums.UserProfileEnum;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.constants.GoodsMessageState;
 import com.etrade.puggo.constants.GoodsState;
@@ -15,6 +16,7 @@ import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.service.goods.sales.pojo.TradeNoVO;
 import com.etrade.puggo.service.goods.trade.GoodsTradeService;
 import com.etrade.puggo.service.setting.SettingService;
+import com.etrade.puggo.service.setting.UserProfileService;
 import com.etrade.puggo.utils.OptionalUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +50,7 @@ public class GoodsMessageService extends BaseService {
     private UserAccountService userAccountService;
 
     @Resource
-    private SettingService settingService;
+    private UserProfileService userProfileService;
 
     @Resource
     private GoodsTradeService goodsTradeService;
@@ -188,7 +190,7 @@ public class GoodsMessageService extends BaseService {
         messageDao.updateState(customerId, sellerId, goodsId, GoodsMessageState.ACCEPT_PRICE);
 
         // 修改商品状态
-        String v = settingService.k("autoOccupy");
+        String v = userProfileService.k(UserProfileEnum.autoOccupy.v());
         if (Objects.equals(v, "1")) {
             goodsDao.updateGoodsSale(goodsId, GoodsState.OCCUPY);
         }
