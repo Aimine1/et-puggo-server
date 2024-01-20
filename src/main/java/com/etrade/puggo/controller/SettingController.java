@@ -4,23 +4,15 @@ import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.weblog.WebLog;
 import com.etrade.puggo.service.groupon.MoneyKindVO;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
-import com.etrade.puggo.service.setting.AdvertisementVO;
-import com.etrade.puggo.service.setting.KeyValParam;
-import com.etrade.puggo.service.setting.SettingService;
-import com.etrade.puggo.service.setting.SettingsParam;
-import com.etrade.puggo.service.setting.SettingsVO;
-import com.etrade.puggo.service.setting.SystemImAction;
+import com.etrade.puggo.service.setting.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
-import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author niuzhenyu
@@ -37,20 +29,18 @@ public class SettingController {
 
 
     @WebLog
-    @ApiOperation("设置列表")
+    @ApiOperation("系统配置列表")
     @GetMapping("/list")
     public Result<List<SettingsVO>> listSettings() {
 
-        return Result.ok(settingService.listSettings());
+        return Result.ok(settingService.list());
     }
 
 
     @WebLog
-    @ApiOperation("修改单个设置")
+    @ApiOperation("修改单个设置（已废弃）修改用户个人偏好设置请使用\"/user/profile/set\"接口")
     @PostMapping("/single/set")
     public Result<?> setV(@RequestBody @Validated KeyValParam param) {
-
-        settingService.v(param.getKey(), param.getVal());
         return Result.ok();
     }
 
@@ -66,7 +56,7 @@ public class SettingController {
 
     @WebLog
     @ApiIgnore
-    @ApiOperation("修改设置")
+    @ApiOperation("修改设置，需要运营平台权限")
     @PostMapping("/set")
     public Result<?> set(@RequestBody @Validated SettingsParam param) {
 
@@ -83,6 +73,7 @@ public class SettingController {
         return Result.ok(settingService.getSystemIm());
     }
 
+
     @WebLog
     @ApiOperation("NoToken-获取系统默认货币")
     @GetMapping("/getMoneyKind")
@@ -91,8 +82,10 @@ public class SettingController {
         return Result.ok(settingService.getMoneyKind());
     }
 
+
     // +++++++++++++++++++++++ 广告位 +++++++++++++++++++++++++++++++++++++//
 
+    
     @WebLog
     @ApiOperation("NoToken-广告位")
     @GetMapping("/ad/list")

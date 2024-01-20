@@ -78,7 +78,7 @@ public class PaymentLambdaFunctions {
     }
 
 
-    public String CreatePaymentIntent(@Valid CreatePaymentIntentReq param) {
+    public String createPaymentIntent(@Valid CreatePaymentIntentReq param) {
         return AwsLambdaUtils.invokeFunction("create_payment_intent", param);
     }
 

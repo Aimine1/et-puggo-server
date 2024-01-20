@@ -13,13 +13,15 @@ import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.service.goods.sales.pojo.TradeNoVO;
 import com.etrade.puggo.utils.DateTimeUtils;
 import com.etrade.puggo.utils.IncrTradeNoUtils;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
  * @date 2023/6/30 10:57
  **/
 @Service
+@Slf4j
 public class GoodsTradeService extends BaseService {
 
     @Resource
@@ -52,20 +55,30 @@ public class GoodsTradeService extends BaseService {
      * @param price      交易价格
      * @return
      */
-    public TradeNoVO saveTrade(Long customerId, Long goodsId, BigDecimal price) {
-        List<LaunchUserDO> userList = userAccountService.getUserList(Collections.singletonList(customerId));
+    public TradeNoVO saveTrade(Long customerId, Long sellerId, Long goodsId, BigDecimal price) {
 
-        if (userList.isEmpty()) {
-            throw new ServiceException("买家不存在");
+        List<LaunchUserDO> userList = userAccountService.getUserList(Lists.newArrayList(customerId, sellerId));
+
+        Optional<LaunchUserDO> anySeller = userList.stream().filter(u -> u.getUserId().equals(customerId)).findAny();
+        LaunchUserDO seller = anySeller.orElse(null);
+
+        if (seller == null) {
+            throw new ServiceException("Invalid seller");
         }
 
-        LaunchUserDO customer = userList.get(0);
+        Optional<LaunchUserDO> anyCustomer = userList.stream().filter(u -> u.getUserId().equals(customerId)).findAny();
+        LaunchUserDO customer = anyCustomer.orElse(null);
+
+        if (customer == null) {
+            throw new ServiceException("Invalid customer");
+        }
 
         GoodsTradeDTO trade = GoodsTradeDTO.builder()
                 .state(GoodsTradeState.TO_USE)
                 .goodsId(goodsId)
                 .customerId(customer.getUserId())
                 .customer(customer.getNickname())
+                .sellerId(sellerId)
                 .tradingTime(DateTimeUtils.now())
                 .tradingPrice(price)
                 .build();

@@ -8,10 +8,15 @@ package com.etrade.puggo.constants;
 public class GoodsMessageState {
 
     public static final String SEND_GOODS = "SEND_GOODS";
+
     public static final String OFFER_PRICE = "OFFER_PRICE";
+
     public static final String CANCEL_PRICE = "CANCEL_PRICE";
+
     public static final String ACCEPT_PRICE = "ACCEPT_PRICE";
 
     public static final String REJECT_PRICE = "REJECT_PRICE";
+
+    public static final String PAYMENT_PENDING = "PAYMENT_PENDING";
 
 }

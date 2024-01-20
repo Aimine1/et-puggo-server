@@ -2,9 +2,12 @@ package com.etrade.puggo.controller;
 
 import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.weblog.WebLog;
-import com.etrade.puggo.service.goods.message.*;
-import com.etrade.puggo.service.goods.sales.pojo.AcceptPriceParam;
+import com.etrade.puggo.service.goods.message.BuyerOfferPriceCallbackParam;
+import com.etrade.puggo.service.goods.message.GetGoodsMessageParam;
+import com.etrade.puggo.service.goods.message.GoodsMessageLogVO;
+import com.etrade.puggo.service.goods.message.GoodsMessageService;
 import com.etrade.puggo.service.goods.sales.pojo.TradeNoVO;
+import com.etrade.puggo.service.goods.message.TransactionMsgCallbackParam;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
@@ -33,7 +36,7 @@ public class GoodsMessageController {
     @WebLog
     @PostMapping("/buyer/sendGoods/callback")
     @ApiOperation("买家发送商品记录的回调接口")
-    public Result<?> sendGoodsCallback(@RequestBody @Validated BuyerSendGoodsCallbackParam param) {
+    public Result<?> sendGoodsCallback(@RequestBody @Validated TransactionMsgCallbackParam param) {
 
         goodsMessageService.buyerSendGoodsCallback(param);
         return Result.ok();
@@ -53,7 +56,7 @@ public class GoodsMessageController {
     @WebLog
     @PostMapping("/buyer/cancelPrice/callback")
     @ApiOperation(value = "买家取消出价的回调接口")
-    public Result<?> cancelPrice(@RequestBody @Validated BuyerSendGoodsCallbackParam param) {
+    public Result<?> cancelPrice(@RequestBody @Validated TransactionMsgCallbackParam param) {
 
         goodsMessageService.buyerCancelPriceCallback(param);
         return Result.ok();
@@ -62,8 +65,8 @@ public class GoodsMessageController {
 
     @WebLog
     @PostMapping("/seller/acceptPrice/callback")
-    @ApiOperation(value = "卖家接受出价后的回调接口", response = TradeNoVO.class)
-    public Result<?> acceptPrice(@RequestBody @Validated AcceptPriceParam param) {
+    @ApiOperation(value = "卖家接受出价后的回调接口")
+    public Result<?> acceptPrice(@RequestBody @Validated TransactionMsgCallbackParam param) {
 
         goodsMessageService.acceptPriceCallback(param);
         return Result.ok();
@@ -73,10 +76,19 @@ public class GoodsMessageController {
     @WebLog
     @PostMapping("/seller/reject/callback")
     @ApiOperation(value = "卖家拒绝出价的回调接口")
-    public Result<?> rejectPrice(@RequestBody @Validated AcceptPriceParam param) {
+    public Result<?> rejectPrice(@RequestBody @Validated TransactionMsgCallbackParam param) {
 
         goodsMessageService.sellerRejectPriceCallback(param);
         return Result.ok();
+    }
+
+
+    @WebLog
+    @PostMapping("/buyer/readyToPay/callback")
+    @ApiOperation(value = "买家准备支付的回调接口", response = TradeNoVO.class)
+    public Result<TradeNoVO> readyToPay(@RequestBody @Validated TransactionMsgCallbackParam param) {
+
+        return Result.ok(goodsMessageService.customerReadyToPayCallback(param));
     }
 
 

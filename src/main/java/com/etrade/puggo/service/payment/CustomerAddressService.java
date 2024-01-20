@@ -61,6 +61,9 @@ public class CustomerAddressService extends BaseService {
 
 
     public boolean check(AddressTypeEnum type, Integer addressId) {
+        if (addressId == null) {
+            return false;
+        }
         UpdateCustomerAddressDO one = customerAddressDao.getOne(addressId);
         return one != null && one.getType().equals(type.name());
     }
@@ -68,7 +71,7 @@ public class CustomerAddressService extends BaseService {
 
     private static void checkAddressType(String type) {
         if (!AddressTypeEnum.isValid(type)) {
-            throw new ServiceException(LangErrorEnum.UNKNOWN_ADDRESS_TYPE.lang());
+            throw new ServiceException(LangErrorEnum.INVALID_ADDRESS_TYPE.lang());
         }
     }
 
