@@ -42,6 +42,7 @@ import com.etrade.puggo.db.tables.UserFans;
 import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
 import com.etrade.puggo.db.tables.UserLogs;
+import com.etrade.puggo.db.tables.UserProfile;
 import com.etrade.puggo.db.tables.UserSimpleInfo;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EtradeGoods extends SchemaImpl {
 
-    private static final long serialVersionUID = -1908840353;
+    private static final long serialVersionUID = -1820733330;
 
     /**
      * The reference instance of <code>etrade_goods</code>
@@ -266,6 +267,11 @@ public class EtradeGoods extends SchemaImpl {
     public final UserLogs USER_LOGS = com.etrade.puggo.db.tables.UserLogs.USER_LOGS;
 
     /**
+     * 用户个人偏好设置
+     */
+    public final UserProfile USER_PROFILE = com.etrade.puggo.db.tables.UserProfile.USER_PROFILE;
+
+    /**
      * 个人简短信息
      */
     public final UserSimpleInfo USER_SIMPLE_INFO = com.etrade.puggo.db.tables.UserSimpleInfo.USER_SIMPLE_INFO;
@@ -330,6 +336,7 @@ public class EtradeGoods extends SchemaImpl {
             UserImAction.USER_IM_ACTION,
             UserLikes.USER_LIKES,
             UserLogs.USER_LOGS,
+            UserProfile.USER_PROFILE,
             UserSimpleInfo.USER_SIMPLE_INFO);
     }
 }

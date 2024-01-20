@@ -40,6 +40,7 @@ import com.etrade.puggo.db.tables.UserFans;
 import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
 import com.etrade.puggo.db.tables.UserLogs;
+import com.etrade.puggo.db.tables.UserProfile;
 import com.etrade.puggo.db.tables.UserSimpleInfo;
 import com.etrade.puggo.db.tables.records.AiAvailableBalanceRecord;
 import com.etrade.puggo.db.tables.records.AiBrandListRecord;
@@ -76,6 +77,7 @@ import com.etrade.puggo.db.tables.records.UserFansRecord;
 import com.etrade.puggo.db.tables.records.UserImActionRecord;
 import com.etrade.puggo.db.tables.records.UserLikesRecord;
 import com.etrade.puggo.db.tables.records.UserLogsRecord;
+import com.etrade.puggo.db.tables.records.UserProfileRecord;
 import com.etrade.puggo.db.tables.records.UserRecord;
 import com.etrade.puggo.db.tables.records.UserSimpleInfoRecord;
 
@@ -137,6 +139,7 @@ public class Keys {
     public static final Identity<UserImActionRecord, Long> IDENTITY_USER_IM_ACTION = Identities0.IDENTITY_USER_IM_ACTION;
     public static final Identity<UserLikesRecord, Long> IDENTITY_USER_LIKES = Identities0.IDENTITY_USER_LIKES;
     public static final Identity<UserLogsRecord, Long> IDENTITY_USER_LOGS = Identities0.IDENTITY_USER_LOGS;
+    public static final Identity<UserProfileRecord, Long> IDENTITY_USER_PROFILE = Identities0.IDENTITY_USER_PROFILE;
     public static final Identity<UserSimpleInfoRecord, Long> IDENTITY_USER_SIMPLE_INFO = Identities0.IDENTITY_USER_SIMPLE_INFO;
 
     // -------------------------------------------------------------------------
@@ -182,6 +185,8 @@ public class Keys {
     public static final UniqueKey<UserImActionRecord> KEY_USER_IM_ACTION_PRIMARY = UniqueKeys0.KEY_USER_IM_ACTION_PRIMARY;
     public static final UniqueKey<UserLikesRecord> KEY_USER_LIKES_PRIMARY = UniqueKeys0.KEY_USER_LIKES_PRIMARY;
     public static final UniqueKey<UserLogsRecord> KEY_USER_LOGS_PRIMARY = UniqueKeys0.KEY_USER_LOGS_PRIMARY;
+    public static final UniqueKey<UserProfileRecord> KEY_USER_PROFILE_PRIMARY = UniqueKeys0.KEY_USER_PROFILE_PRIMARY;
+    public static final UniqueKey<UserProfileRecord> KEY_USER_PROFILE_UK_USERID_KEY = UniqueKeys0.KEY_USER_PROFILE_UK_USERID_KEY;
     public static final UniqueKey<UserSimpleInfoRecord> KEY_USER_SIMPLE_INFO_PRIMARY = UniqueKeys0.KEY_USER_SIMPLE_INFO_PRIMARY;
 
     // -------------------------------------------------------------------------
@@ -227,6 +232,7 @@ public class Keys {
         public static Identity<UserImActionRecord, Long> IDENTITY_USER_IM_ACTION = Internal.createIdentity(UserImAction.USER_IM_ACTION, UserImAction.USER_IM_ACTION.ID);
         public static Identity<UserLikesRecord, Long> IDENTITY_USER_LIKES = Internal.createIdentity(UserLikes.USER_LIKES, UserLikes.USER_LIKES.ID);
         public static Identity<UserLogsRecord, Long> IDENTITY_USER_LOGS = Internal.createIdentity(UserLogs.USER_LOGS, UserLogs.USER_LOGS.ID);
+        public static Identity<UserProfileRecord, Long> IDENTITY_USER_PROFILE = Internal.createIdentity(UserProfile.USER_PROFILE, UserProfile.USER_PROFILE.ID);
         public static Identity<UserSimpleInfoRecord, Long> IDENTITY_USER_SIMPLE_INFO = Internal.createIdentity(UserSimpleInfo.USER_SIMPLE_INFO, UserSimpleInfo.USER_SIMPLE_INFO.ID);
     }
 
@@ -270,6 +276,8 @@ public class Keys {
         public static final UniqueKey<UserImActionRecord> KEY_USER_IM_ACTION_PRIMARY = Internal.createUniqueKey(UserImAction.USER_IM_ACTION, "KEY_user_im_action_PRIMARY", UserImAction.USER_IM_ACTION.ID);
         public static final UniqueKey<UserLikesRecord> KEY_USER_LIKES_PRIMARY = Internal.createUniqueKey(UserLikes.USER_LIKES, "KEY_user_likes_PRIMARY", UserLikes.USER_LIKES.ID);
         public static final UniqueKey<UserLogsRecord> KEY_USER_LOGS_PRIMARY = Internal.createUniqueKey(UserLogs.USER_LOGS, "KEY_user_logs_PRIMARY", UserLogs.USER_LOGS.ID);
+        public static final UniqueKey<UserProfileRecord> KEY_USER_PROFILE_PRIMARY = Internal.createUniqueKey(UserProfile.USER_PROFILE, "KEY_user_profile_PRIMARY", UserProfile.USER_PROFILE.ID);
+        public static final UniqueKey<UserProfileRecord> KEY_USER_PROFILE_UK_USERID_KEY = Internal.createUniqueKey(UserProfile.USER_PROFILE, "KEY_user_profile_uk_userid_key", UserProfile.USER_PROFILE.USER_ID, UserProfile.USER_PROFILE.KEY);
         public static final UniqueKey<UserSimpleInfoRecord> KEY_USER_SIMPLE_INFO_PRIMARY = Internal.createUniqueKey(UserSimpleInfo.USER_SIMPLE_INFO, "KEY_user_simple_info_PRIMARY", UserSimpleInfo.USER_SIMPLE_INFO.ID);
     }
 }

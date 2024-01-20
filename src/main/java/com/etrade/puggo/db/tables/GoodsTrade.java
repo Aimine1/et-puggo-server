@@ -22,7 +22,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsTrade extends TableImpl<GoodsTradeRecord> {
 
-    private static final long serialVersionUID = 893216569;
+    private static final long serialVersionUID = -1903007299;
 
     /**
      * The reference instance of <code>etrade_goods.goods_trade</code>
@@ -83,6 +83,11 @@ public class GoodsTrade extends TableImpl<GoodsTradeRecord> {
      * The column <code>etrade_goods.goods_trade.customer</code>. 买家昵称
      */
     public final TableField<GoodsTradeRecord, String> CUSTOMER = createField(DSL.name("customer"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "买家昵称");
+
+    /**
+     * The column <code>etrade_goods.goods_trade.seller_id</code>. 卖家id
+     */
+    public final TableField<GoodsTradeRecord, Long> SELLER_ID = createField(DSL.name("seller_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "卖家id");
 
     /**
      * The column <code>etrade_goods.goods_trade.trading_price</code>. 成交金额，不包括额外的运费
@@ -204,11 +209,11 @@ public class GoodsTrade extends TableImpl<GoodsTradeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, String, Long, Long, String, BigDecimal, LocalDateTime, String, String, BigDecimal, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Long, String, Long, Long, String, Long, BigDecimal, LocalDateTime, String, String, BigDecimal, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

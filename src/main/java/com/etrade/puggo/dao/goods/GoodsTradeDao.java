@@ -36,6 +36,7 @@ public class GoodsTradeDao extends BaseDao {
                 GOODS_TRADE.GOODS_ID,
                 GOODS_TRADE.CUSTOMER_ID,
                 GOODS_TRADE.CUSTOMER,
+                GOODS_TRADE.SELLER_ID,
                 GOODS_TRADE.TRADING_PRICE,
                 GOODS_TRADE.TRADING_TIME,
                 GOODS_TRADE.STATE
@@ -45,6 +46,7 @@ public class GoodsTradeDao extends BaseDao {
                 trade.getGoodsId(),
                 trade.getCustomerId(),
                 trade.getCustomer(),
+                trade.getSellerId(),
                 trade.getTradingPrice(),
                 trade.getTradingTime(),
                 trade.getState()
