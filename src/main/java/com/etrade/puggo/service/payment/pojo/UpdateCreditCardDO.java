@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = true)
 public class UpdateCreditCardDO extends CreditCardDO {
 
-    @NotNull
+    @NotNull(message = "cardId is not found")
     @ApiModelProperty("卡号id")
     private Integer cardId;
 

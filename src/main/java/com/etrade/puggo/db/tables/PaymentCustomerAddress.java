@@ -6,6 +6,7 @@ package com.etrade.puggo.db.tables;
 
 import com.etrade.puggo.db.EtradeGoods;
 import com.etrade.puggo.db.Indexes;
+import com.etrade.puggo.db.Keys;
 import com.etrade.puggo.db.tables.records.PaymentCustomerAddressRecord;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import javax.annotation.processing.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -23,6 +25,7 @@ import org.jooq.Row16;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
@@ -40,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentCustomerAddress extends TableImpl<PaymentCustomerAddressRecord> {
 
-    private static final long serialVersionUID = 789406167;
+    private static final long serialVersionUID = -1764638025;
 
     /**
      * The reference instance of <code>etrade_goods.payment_customer_address</code>
@@ -56,9 +59,9 @@ public class PaymentCustomerAddress extends TableImpl<PaymentCustomerAddressReco
     }
 
     /**
-     * The column <code>etrade_goods.payment_customer_address.id</code>. 主键id
+     * The column <code>etrade_goods.payment_customer_address.id</code>.
      */
-    public final TableField<PaymentCustomerAddressRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "主键id");
+    public final TableField<PaymentCustomerAddressRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>etrade_goods.payment_customer_address.user_id</code>. 系统用户id
@@ -175,7 +178,22 @@ public class PaymentCustomerAddress extends TableImpl<PaymentCustomerAddressReco
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID);
+        return Arrays.<Index>asList(Indexes.PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID, Indexes.PAYMENT_CUSTOMER_ADDRESS_PRIMARY);
+    }
+
+    @Override
+    public Identity<PaymentCustomerAddressRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_PAYMENT_CUSTOMER_ADDRESS;
+    }
+
+    @Override
+    public UniqueKey<PaymentCustomerAddressRecord> getPrimaryKey() {
+        return Keys.KEY_PAYMENT_CUSTOMER_ADDRESS_PRIMARY;
+    }
+
+    @Override
+    public List<UniqueKey<PaymentCustomerAddressRecord>> getKeys() {
+        return Arrays.<UniqueKey<PaymentCustomerAddressRecord>>asList(Keys.KEY_PAYMENT_CUSTOMER_ADDRESS_PRIMARY);
     }
 
     @Override

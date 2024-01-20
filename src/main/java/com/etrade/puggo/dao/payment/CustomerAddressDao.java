@@ -58,10 +58,11 @@ public class CustomerAddressDao extends BaseDao {
                         PAYMENT_CUSTOMER_ADDRESS.STATE,
                         PAYMENT_CUSTOMER_ADDRESS.ADDRESS_LINE1,
                         PAYMENT_CUSTOMER_ADDRESS.ADDRESS_LINE2,
-                        DSL.iif(PAYMENT_CUSTOMER_ADDRESS.IS_DEFAULT.eq(IS_DEFAULT), true, false)
+                        DSL.iif(PAYMENT_CUSTOMER_ADDRESS.IS_DEFAULT.eq(IS_DEFAULT), true, false).as("isDefault")
                 )
                 .from(PAYMENT_CUSTOMER_ADDRESS)
                 .where(PAYMENT_CUSTOMER_ADDRESS.USER_ID.eq(userId).and(PAYMENT_CUSTOMER_ADDRESS.TYPE.eq(type)))
+                .orderBy(PAYMENT_CUSTOMER_ADDRESS.ID.desc())
                 .fetchInto(UpdateCustomerAddressDO.class);
     }
 
@@ -80,7 +81,7 @@ public class CustomerAddressDao extends BaseDao {
                         PAYMENT_CUSTOMER_ADDRESS.STATE,
                         PAYMENT_CUSTOMER_ADDRESS.ADDRESS_LINE1,
                         PAYMENT_CUSTOMER_ADDRESS.ADDRESS_LINE2,
-                        DSL.iif(PAYMENT_CUSTOMER_ADDRESS.IS_DEFAULT.eq(IS_DEFAULT), true, false)
+                        DSL.iif(PAYMENT_CUSTOMER_ADDRESS.IS_DEFAULT.eq(IS_DEFAULT), true, false).as("isDefault")
                 )
                 .from(PAYMENT_CUSTOMER_ADDRESS)
                 .where(PAYMENT_CUSTOMER_ADDRESS.ID.eq(id))

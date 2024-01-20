@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class CustomerAddressService extends BaseService {
 
     private static final Pattern INTERNATIONAL_PHONE_PATTERN = Pattern.compile(
-            "^(\\+?\\d{1,3}[- ]?)?\\(?\\d{1,4}\\)?([- ]?\\d{1,4})*$"
+            "^(\\+?\\d{1,3}[- ]?)?(\\(?\\d{1,4}\\)?[- ]?)?(\\d{1,4}[- ]?)*$"
     );
 
     @Resource
@@ -67,14 +67,14 @@ public class CustomerAddressService extends BaseService {
 
 
     private static void checkAddressType(String type) {
-        if (AddressTypeEnum.isValid(type)) {
+        if (!AddressTypeEnum.isValid(type)) {
             throw new ServiceException(LangErrorEnum.UNKNOWN_ADDRESS_TYPE.lang());
         }
     }
 
 
     private static void checkPhoneNumber(String phoneNumber) {
-        if (validatePhone(phoneNumber)) {
+        if (!validatePhone(phoneNumber)) {
             throw new ServiceException(LangErrorEnum.INVALID_PHONE_NUMBER.lang());
         }
     }

@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class UpdateCustomerAddressDO extends CustomerAddressDO {
 
-    @NotNull
+    @NotNull(message = "addressId is not found")
     @ApiModelProperty("收货地址id")
     private Integer addressId;
 
