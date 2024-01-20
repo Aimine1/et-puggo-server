@@ -4,6 +4,7 @@ import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.weblog.WebLog;
 import com.etrade.puggo.service.payment.CustomerAddressService;
 import com.etrade.puggo.service.payment.CustomerCardService;
+import com.etrade.puggo.service.payment.PaymentService;
 import com.etrade.puggo.service.payment.pojo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,9 @@ public class PaymentController {
 
     @Resource
     private CustomerAddressService customerAddressService;
+
+    @Resource
+    private PaymentService paymentService;
 
 
     @WebLog
@@ -98,6 +102,15 @@ public class PaymentController {
     @ApiOperation("根据ID删除一条买家收货地址/账单地址")
     public Result<?> removeCustomerAddress(@RequestParam("addressId") Integer addressId) {
         customerAddressService.remove(addressId);
+        return Result.ok();
+    }
+
+
+    @WebLog
+    @PostMapping("/customer/pay")
+    @ApiOperation("用户支付")
+    public Result<?> pay(@Validated @RequestBody PaymentParam param) {
+        paymentService.pay(param);
         return Result.ok();
     }
 

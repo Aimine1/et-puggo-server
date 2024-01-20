@@ -9,10 +9,11 @@ import com.etrade.puggo.db.tables.records.GoodsMessageLogsRecord;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
 import com.etrade.puggo.service.goods.sales.GoodsSimpleService;
-import com.etrade.puggo.service.goods.sales.pojo.AcceptPriceParam;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsDetailVO;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
 import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
+import com.etrade.puggo.service.goods.sales.pojo.TradeNoVO;
+import com.etrade.puggo.service.goods.trade.GoodsTradeService;
 import com.etrade.puggo.service.setting.SettingService;
 import com.etrade.puggo.utils.OptionalUtils;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -50,8 +50,11 @@ public class GoodsMessageService extends BaseService {
     @Resource
     private SettingService settingService;
 
+    @Resource
+    private GoodsTradeService goodsTradeService;
 
-    public void buyerSendGoodsCallback(BuyerSendGoodsCallbackParam param) {
+
+    public void buyerSendGoodsCallback(TransactionMsgCallbackParam param) {
 
         Long sellerId = param.getSellerId();
         Long goodsId = param.getGoodsId();
@@ -94,7 +97,7 @@ public class GoodsMessageService extends BaseService {
     }
 
 
-    public void buyerCancelPriceCallback(BuyerSendGoodsCallbackParam param) {
+    public void buyerCancelPriceCallback(TransactionMsgCallbackParam param) {
 
         Long sellerId = param.getSellerId();
         Long goodsId = param.getGoodsId();
@@ -108,11 +111,17 @@ public class GoodsMessageService extends BaseService {
     }
 
 
-    public void sellerRejectPriceCallback(AcceptPriceParam param) {
+    public void sellerRejectPriceCallback(TransactionMsgCallbackParam param) {
 
         Long buyerId = param.getCustomerId();
         Long goodsId = param.getGoodsId();
         Long sellerId = userId();
+
+        GoodsDetailVO goodsDetail = goodsDao.findGoodsDetail(goodsId);
+
+        if (goodsDetail == null) {
+            throw new ServiceException("Invalid product");
+        }
 
         GoodsMessageLogsRecord record = messageDao.selectOne(buyerId, sellerId, goodsId);
 
@@ -122,46 +131,31 @@ public class GoodsMessageService extends BaseService {
     }
 
 
-    public GoodsMessageLogVO getGoodsMessageLog(GetGoodsMessageParam param) {
-        GoodsMessageLogsRecord record = messageDao
-                .selectOne(param.getBuyerId(), param.getSellerId(), param.getGoodsId());
+    @Transactional(rollbackFor = Throwable.class)
+    public TradeNoVO customerReadyToPayCallback(TransactionMsgCallbackParam param) {
 
-        if (record == null) {
-            return null;
+        Long goodsId = param.getGoodsId();
+        Long buyerId = param.getCustomerId();
+        Long sellerId = param.getSellerId();
+        BigDecimal price = param.getPrice();
+
+        if (buyerId == null || sellerId == null) {
+            throw new ServiceException("Invalid parameter");
         }
 
-        GoodsSimpleVO goodsInfo = goodsSimpleService.getSingleGoods(record.getGoodsId());
+        GoodsDetailVO goodsDetail = goodsDao.findGoodsDetail(goodsId);
 
-        List<LaunchUserDO> userList = userAccountService.getUserList(
-                Arrays.asList(record.getBuyerId(), record.getSellerId()));
-
-        Map<Long, LaunchUserDO> userMap = userList.stream()
-                .collect(Collectors.toMap(LaunchUserDO::getUserId, Function.identity()));
-
-        GoodsMessageLogVO vo = new GoodsMessageLogVO();
-
-        vo.setGoodsInfo(goodsInfo);
-        vo.setBuyerInfo(userMap.get(record.getBuyerId()));
-        vo.setSellerInfo(userMap.get(record.getSellerId()));
-        vo.setState(record.getState());
-        vo.setIsGoodsComment(record.getIsGoodsConmment());
-        vo.setIsBuyerComment(record.getIsBuyerConmment());
-        vo.setIsSellerComment(record.getIsSellerConmment());
-        vo.setBuyerPrice(record.getBuyerPrice());
-
-        return vo;
-    }
-
-
-    public String getGoodsMessageState(GetGoodsMessageParam param) {
-        GoodsMessageLogsRecord record = messageDao
-                .selectOne(param.getBuyerId(), param.getSellerId(), param.getGoodsId());
-
-        if (record == null) {
-            return null;
+        if (goodsDetail == null) {
+            throw new ServiceException("Invalid product");
         }
 
-        return record.getState();
+        GoodsMessageLogsRecord record = messageDao.selectOne(buyerId, sellerId, goodsId);
+
+        if (record != null) {
+            messageDao.updateState(buyerId, sellerId, goodsId, GoodsMessageState.PAYMENT_PENDING);
+        }
+
+        return goodsTradeService.saveTrade(buyerId, sellerId, goodsId, price);
     }
 
 
@@ -174,11 +168,11 @@ public class GoodsMessageService extends BaseService {
      * @editTime 2023/6/25 12:09
      **/
     @Transactional(rollbackFor = Throwable.class)
-    public void acceptPriceCallback(AcceptPriceParam param) {
+    public void acceptPriceCallback(TransactionMsgCallbackParam param) {
         Long goodsId = param.getGoodsId();
         Long customerId = param.getCustomerId();
         BigDecimal price = OptionalUtils.valueOrDefault(param.getPrice());
-        long sellerId = userId();
+        Long sellerId = userId();
 
         GoodsDetailVO goodsDetail = goodsDao.findGoodsDetail(goodsId);
 
@@ -198,6 +192,56 @@ public class GoodsMessageService extends BaseService {
         if (Objects.equals(v, "1")) {
             goodsDao.updateGoodsSale(goodsId, GoodsState.OCCUPY);
         }
+    }
+
+
+    public GoodsMessageLogVO getGoodsMessageLog(GetGoodsMessageParam param) {
+
+        GoodsMessageLogsRecord record = messageDao.selectOne(param.getBuyerId(), param.getSellerId(), param.getGoodsId());
+
+        if (record == null) {
+            return null;
+        }
+
+        GoodsSimpleVO goodsInfo = goodsSimpleService.getSingleGoods(record.getGoodsId());
+
+        List<LaunchUserDO> userList = userAccountService.getUserList(List.of(record.getBuyerId(), record.getSellerId()));
+
+        Map<Long, LaunchUserDO> userMap = userList.stream().collect(Collectors.toMap(LaunchUserDO::getUserId, Function.identity()));
+
+        GoodsMessageLogVO vo = new GoodsMessageLogVO();
+
+        vo.setGoodsInfo(goodsInfo);
+        vo.setBuyerInfo(userMap.get(record.getBuyerId()));
+        vo.setSellerInfo(userMap.get(record.getSellerId()));
+        vo.setState(record.getState());
+        vo.setIsGoodsComment(record.getIsGoodsConmment());
+        vo.setIsBuyerComment(record.getIsBuyerConmment());
+        vo.setIsSellerComment(record.getIsSellerConmment());
+        vo.setBuyerPrice(record.getBuyerPrice());
+
+        return vo;
+    }
+
+
+    public String getGoodsMessageState(GetGoodsMessageParam param) {
+        GoodsMessageLogsRecord record = messageDao.selectOne(param.getBuyerId(), param.getSellerId(), param.getGoodsId());
+        return record == null ? null : record.getState();
+    }
+
+
+    public GoodsMessageLogsRecord getPaymentPendingMsgRecord(Long buyerId, Long sellerId, Long goodsId) {
+        GoodsMessageLogsRecord record = messageDao.selectOne(buyerId, sellerId, goodsId);
+
+        if (record == null) {
+            return null;
+        }
+
+        if (!record.getState().equals(GoodsMessageState.PAYMENT_PENDING)) {
+            return null;
+        }
+
+        return record;
     }
 
 }

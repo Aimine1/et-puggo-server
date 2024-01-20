@@ -41,6 +41,7 @@ import com.etrade.puggo.db.tables.UserFans;
 import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
 import com.etrade.puggo.db.tables.UserLogs;
+import com.etrade.puggo.db.tables.UserProfile;
 import com.etrade.puggo.db.tables.UserSimpleInfo;
 
 import javax.annotation.processing.Generated;
@@ -142,6 +143,8 @@ public class Indexes {
     public static final Index USER_LIKES_IDX_USER_ID_GROUPON_ID = Indexes0.USER_LIKES_IDX_USER_ID_GROUPON_ID;
     public static final Index USER_LIKES_PRIMARY = Indexes0.USER_LIKES_PRIMARY;
     public static final Index USER_LOGS_PRIMARY = Indexes0.USER_LOGS_PRIMARY;
+    public static final Index USER_PROFILE_PRIMARY = Indexes0.USER_PROFILE_PRIMARY;
+    public static final Index USER_PROFILE_UK_USERID_KEY = Indexes0.USER_PROFILE_UK_USERID_KEY;
     public static final Index USER_SIMPLE_INFO_PRIMARY = Indexes0.USER_SIMPLE_INFO_PRIMARY;
 
     // -------------------------------------------------------------------------
@@ -224,6 +227,8 @@ public class Indexes {
         public static Index USER_LIKES_IDX_USER_ID_GROUPON_ID = Internal.createIndex("idx_user_id_groupon_id", UserLikes.USER_LIKES, new OrderField[] { UserLikes.USER_LIKES.USER_ID, UserLikes.USER_LIKES.GROUPON_ID }, false);
         public static Index USER_LIKES_PRIMARY = Internal.createIndex("PRIMARY", UserLikes.USER_LIKES, new OrderField[] { UserLikes.USER_LIKES.ID }, true);
         public static Index USER_LOGS_PRIMARY = Internal.createIndex("PRIMARY", UserLogs.USER_LOGS, new OrderField[] { UserLogs.USER_LOGS.ID }, true);
+        public static Index USER_PROFILE_PRIMARY = Internal.createIndex("PRIMARY", UserProfile.USER_PROFILE, new OrderField[] { UserProfile.USER_PROFILE.ID }, true);
+        public static Index USER_PROFILE_UK_USERID_KEY = Internal.createIndex("uk_userid_key", UserProfile.USER_PROFILE, new OrderField[] { UserProfile.USER_PROFILE.USER_ID, UserProfile.USER_PROFILE.KEY }, true);
         public static Index USER_SIMPLE_INFO_PRIMARY = Internal.createIndex("PRIMARY", UserSimpleInfo.USER_SIMPLE_INFO, new OrderField[] { UserSimpleInfo.USER_SIMPLE_INFO.ID }, true);
     }
 }

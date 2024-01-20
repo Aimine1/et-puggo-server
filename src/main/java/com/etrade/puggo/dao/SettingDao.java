@@ -27,7 +27,7 @@ public class SettingDao extends BaseDao {
     }
 
 
-    public List<SettingsVO> findSettings() {
+    public List<SettingsVO> listSettings() {
         return db
             .select(
                 SETTING.KEY,

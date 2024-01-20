@@ -1,9 +1,10 @@
 package com.etrade.puggo.service.setting;
 
 import com.alibaba.fastjson.JSONObject;
+import com.etrade.puggo.common.enums.MoneyKindEnum;
+import com.etrade.puggo.common.enums.SettingsEnum;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.constants.GoodsImgType;
-import com.etrade.puggo.common.enums.MoneyKindEnum;
 import com.etrade.puggo.dao.SettingDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.service.BaseService;
@@ -11,11 +12,12 @@ import com.etrade.puggo.service.groupon.MoneyKindVO;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
 import com.etrade.puggo.utils.OptionalUtils;
 import com.etrade.puggo.utils.StrUtils;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author niuzhenyu
@@ -43,8 +45,8 @@ public class SettingService extends BaseService {
     }
 
 
-    public List<SettingsVO> listSettings() {
-        return settingDao.findSettings();
+    public List<SettingsVO> list() {
+        return settingDao.listSettings();
     }
 
 
@@ -78,12 +80,12 @@ public class SettingService extends BaseService {
      **/
     public void set(SettingsParam param) {
         isAdminRole();
-        v("moneyKind", OptionalUtils.valueOrDefault(param.getMoneyKind()));
+        v(SettingsEnum.moneyKind.v(), OptionalUtils.valueOrDefault(param.getMoneyKind()));
 
         if (!parseSystemImAction(param.getSystemImAction())) {
             throw new ServiceException("请输入有效的IM账号");
         }
-        v("systemImAction", param.getSystemImAction());
+        v(SettingsEnum.systemImAction.v(), param.getSystemImAction());
     }
 
 
@@ -146,12 +148,13 @@ public class SettingService extends BaseService {
 
 
     public SystemImAction getSystemIm() {
-        String systemImAction = k("systemImAction");
+        String systemImAction = k(SettingsEnum.systemImAction.v());
         return JSONObject.parseObject(systemImAction, SystemImAction.class);
     }
 
+
     public String getMoneyKind() {
-        String moneyKind = k("moneyKind");
+        String moneyKind = k(SettingsEnum.moneyKind.v());
         return MoneyKindEnum.switchSymbol(moneyKind);
     }
 }

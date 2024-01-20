@@ -42,6 +42,7 @@ import com.etrade.puggo.db.tables.UserFans;
 import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
 import com.etrade.puggo.db.tables.UserLogs;
+import com.etrade.puggo.db.tables.UserProfile;
 import com.etrade.puggo.db.tables.UserSimpleInfo;
 
 import javax.annotation.processing.Generated;
@@ -249,6 +250,11 @@ public class Tables {
      * 用户操作日志
      */
     public static final UserLogs USER_LOGS = UserLogs.USER_LOGS;
+
+    /**
+     * 用户个人偏好设置
+     */
+    public static final UserProfile USER_PROFILE = UserProfile.USER_PROFILE;
 
     /**
      * 个人简短信息

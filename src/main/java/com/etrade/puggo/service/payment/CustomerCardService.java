@@ -67,7 +67,7 @@ public class CustomerCardService extends BaseService {
 
     private static void checkCardType(String type) {
         if (!CardTypeEnum.isValid(type)) {
-            throw new ServiceException(LangErrorEnum.UNKNOWN_CARD_TYPE.lang());
+            throw new ServiceException(LangErrorEnum.INVALID_CARD_TYPE.lang());
         }
     }
 

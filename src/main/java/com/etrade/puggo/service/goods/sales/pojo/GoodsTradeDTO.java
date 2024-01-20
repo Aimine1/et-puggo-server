@@ -24,6 +24,8 @@ public class GoodsTradeDTO {
 
     private Long customerId;
 
+    private Long sellerId;
+
     private String customer;
 
     private BigDecimal tradingPrice;

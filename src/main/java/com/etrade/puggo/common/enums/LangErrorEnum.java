@@ -40,11 +40,13 @@ public enum LangErrorEnum {
     INVALID_CARD_NUMBER("无效的卡号", "Invalid card number"),
     INVALID_EXPIRE_DATE("无效的失效日期", "Invalid expire date"),
     INVALID_PHONE_NUMBER("无效的电话号码", "Invalid phone number"),
-    INVALID_ADDRESS("无效的地址", "Invalid address"),
-    UNKNOWN_CARD_TYPE("未知的银行卡类型", "Unknown card type"),
-    UNKNOWN_ADDRESS_TYPE("未知的地址类型", "Unknown address type"),
-    UNKNOWN_PAYMENT_TYPE("未知的支付类型", "Unknown payment type"),
-    UNKNOWN_SHIPPING_METHOD("未知的交易方式", "Unknown shipping method"),
+    INVALID_DELIVERY_ADDRESS("无效的地址", "Invalid delivery address"),
+    INVALID_BILLING_ADDRESS("无效的地址", "Invalid billing address"),
+    INVALID_CARD_TYPE("未知的银行卡类型", "Invalid card type"),
+    INVALID_ADDRESS_TYPE("未知的地址类型", "Invalid address type"),
+    INVALID_PAYMENT_TYPE("未知的支付类型", "Invalid payment type"),
+    INVALID_SHIPPING_METHOD("未知的交易方式", "Invalid shipping method"),
+    INVALID_PAY("请您先与卖家协商一致再付款", "Please negotiate with the seller before making payment.");
 
 
     ;

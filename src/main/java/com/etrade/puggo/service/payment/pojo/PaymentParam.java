@@ -18,44 +18,49 @@ import java.math.BigDecimal;
 @ApiModel("发起支付参数")
 public class PaymentParam {
 
-    @NotNull
+    @NotNull(message = "Invalid amount")
     @ApiModelProperty("金额")
     private BigDecimal amount;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Invalid paymentType")
+    @NotBlank(message = "Invalid paymentType")
     @ApiModelProperty("付款类型，枚举值有：card、apple_pay、google_pay、wechat、alipay")
     private String paymentType;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Invalid paymentMethodId")
+    @NotBlank(message = "Invalid paymentMethodId")
     @ApiModelProperty("客户端发起支付之前生成")
     private String paymentMethodId;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Invalid token")
+    @NotBlank(message = "Invalid token")
     @ApiModelProperty("客户端发起支付之前生成")
     private String token;
 
-    @NotNull
+    @NotNull(message = "Invalid product")
     @ApiModelProperty("交易商品id")
     private Long goodsId;
 
-    @NotNull
+    @NotNull(message = "Invalid delivery address")
     @ApiModelProperty("收货地址id")
     private Integer deliveryAddressId;
 
-    @NotNull
     @ApiModelProperty("账单地址id，当勾选\"Same as delivery address\"选项时，此值不生效")
     private Integer billingAddressId;
 
-    @NotNull
     @ApiModelProperty("账单地址同收货地址")
     private boolean isSameAsDeliveryAddress = false;
 
-    @NotNull
+    @NotNull(message = "Invalid shipping method")
     @ApiModelProperty("邮寄方式，可选项：1 Public Meetup，2 Standard Shipping，4 Puggo Same-day Delivery，同发布时的选项")
     private Integer shippingMethod;
 
+    @NotNull(message = "Invalid customer")
+    @ApiModelProperty("买家在系统中的用户id")
+    private Long customerId;
 
+    @NotNull(message = "Invalid seller")
+    @ApiModelProperty("卖家在系统中的用户id")
+    private Long sellerId;
+    
 }
