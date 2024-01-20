@@ -5,6 +5,7 @@ import com.etrade.puggo.common.weblog.WebLog;
 import com.etrade.puggo.service.groupon.MoneyKindVO;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
 import com.etrade.puggo.service.setting.*;
+import com.etrade.puggo.service.setting.pojo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +20,7 @@ import java.util.List;
  * @description : 设置接口
  * @date 2023/6/30 15:32
  **/
-@Api(value = "设置接口", tags = "设置接口")
+@Api(value = "系统配置接口", tags = "系统配置接口")
 @RequestMapping("/goods/settings/")
 @RestController
 public class SettingController {

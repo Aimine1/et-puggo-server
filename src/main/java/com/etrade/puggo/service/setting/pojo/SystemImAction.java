@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.setting;
+package com.etrade.puggo.service.setting.pojo;
 
 import lombok.Data;
 

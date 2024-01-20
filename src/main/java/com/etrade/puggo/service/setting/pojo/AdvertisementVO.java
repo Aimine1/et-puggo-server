@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.setting;
+package com.etrade.puggo.service.setting.pojo;
 
 import com.etrade.puggo.service.groupon.dto.S3Picture;
 import io.swagger.annotations.ApiModel;
