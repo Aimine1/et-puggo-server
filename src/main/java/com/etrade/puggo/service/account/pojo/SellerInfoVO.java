@@ -23,7 +23,7 @@ public class SellerInfoVO {
     @ApiModelProperty("邮箱")
     private String email;
 
-    @ApiModelProperty("信誉等级")
+    @ApiModelProperty("信誉评分，最高5分，如果评分为0展示N/A")
     private String creditRating;
 
     @ApiModelProperty("加入日期")

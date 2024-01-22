@@ -5,8 +5,8 @@ import com.etrade.puggo.common.enums.MoneyKindEnum;
 import com.etrade.puggo.common.enums.SettingsEnum;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.constants.GoodsImgType;
-import com.etrade.puggo.dao.setting.SettingDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
+import com.etrade.puggo.dao.setting.SettingDao;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.groupon.MoneyKindVO;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author niuzhenyu
@@ -41,6 +42,11 @@ public class SettingService extends BaseService {
 
     public String k(String k) {
         return settingDao.getVal(k);
+    }
+
+
+    public String k(String k, String defVal) {
+        return Optional.of(settingDao.getVal(k)).orElse(defVal);
     }
 
 

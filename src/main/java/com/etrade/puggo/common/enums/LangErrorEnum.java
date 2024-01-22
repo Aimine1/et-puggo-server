@@ -46,7 +46,10 @@ public enum LangErrorEnum {
     INVALID_ADDRESS_TYPE("未知的地址类型", "Invalid address type"),
     INVALID_PAYMENT_TYPE("未知的支付类型", "Invalid payment type"),
     INVALID_SHIPPING_METHOD("未知的交易方式", "Invalid shipping method"),
-    INVALID_PAY("请您先与卖家协商一致再付款", "Please negotiate with the seller before making payment.");
+    INVALID_PAY("请您先与卖家协商一致再付款", "Please negotiate with the seller before making payment."),
+    INVALID_PRODUCT_PRICE("商品成交价格异常", "Invalid product price"),
+    INVALID_TARGET("未知的支付目的", "Invalid pay target"),
+    PAYMENT_FAILED("支付失败，请您联系客服解决", "Payment failed，please contact customer service for resolution"),
 
 
     ;

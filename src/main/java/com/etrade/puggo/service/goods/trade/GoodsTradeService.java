@@ -137,4 +137,8 @@ public class GoodsTradeService extends BaseService {
         return page;
     }
 
+
+    public MyTradeVO getOne(Long tradeId) {
+        return goodsTradeDao.getOne(tradeId);
+    }
 }

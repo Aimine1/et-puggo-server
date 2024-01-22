@@ -61,6 +61,7 @@ public class UserDao extends BaseDao {
                         USER.JOIN_DATE,
                         USER.CREDIT_RATING,
                         USER.PHONE,
+                        USER.PAYMENT_CUSTOMER_ID,
                         DSL.iif(USER.IS_VERIFIED.eq(IS_VERIFIED), true, false).as("isVerified"),
                         USER.COUNTRY.concat(" ").concat(USER.PROVINCE).concat(" ").concat(USER.CITY).as("region")
                 )
@@ -92,7 +93,7 @@ public class UserDao extends BaseDao {
 
 
     public List<LaunchUserDO> findUserList(List<Long> userIdList) {
-        return db.select(USER.ID.as("userId"), USER.AVATAR, USER.NICKNAME, USER_IM_ACTION.ACCID,
+        return db.select(USER.ID.as("userId"), USER.AVATAR, USER.NICKNAME, USER.CREDIT_RATING, USER_IM_ACTION.ACCID,
                         DSL.iif(USER.IS_VERIFIED.eq(IS_VERIFIED), true, false).as("isVerified"))
                 .from(USER)
                 .leftJoin(USER_IM_ACTION)
@@ -133,4 +134,14 @@ public class UserDao extends BaseDao {
     public void delete(Long userId) {
         db.delete(USER).where(USER.ID.eq(userId)).execute();
     }
+
+
+    public int updatePaymentCustomerId(long userId, String customerId) {
+        return db.update(USER).set(USER.PAYMENT_CUSTOMER_ID, customerId).where(USER.ID.eq(userId)).execute();
+    }
+
+    public String getPaymentCustomerId(long userId) {
+        return db.select(USER.PAYMENT_CUSTOMER_ID).from(USER).where(USER.ID.eq(userId)).fetchAnyInto(String.class);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.etrade.puggo.service.account.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -27,7 +28,7 @@ public class UserInfoVO {
     @ApiModelProperty("邮箱")
     private String email;
 
-    @ApiModelProperty("信誉等级")
+    @ApiModelProperty("信誉评分，最高5分，如果评分为0展示N/A")
     private BigDecimal creditRating;
 
     @ApiModelProperty("加入日期")
@@ -50,5 +51,8 @@ public class UserInfoVO {
 
     @ApiModelProperty("粉丝数量")
     private Integer fansNum;
+
+    @JsonIgnore
+    private String paymentCustomerId;
 
 }

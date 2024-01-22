@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `user_profile`;
 CREATE TABLE `user_profile`
 (
     `id`       bigint       NOT NULL AUTO_INCREMENT,
@@ -11,6 +12,7 @@ CREATE TABLE `user_profile`
     UNIQUE KEY `uk_userid_key` (`user_id`,`key`) USING BTREE
 ) COMMENT='用户个人偏好设置';
 
+DROP TABLE IF EXISTS `payment_card`;
 CREATE TABLE `payment_card`
 (
     `id`           int          NOT NULL AUTO_INCREMENT,
@@ -29,6 +31,7 @@ CREATE TABLE `payment_card`
     KEY            `idx_user_id` (`user_id`) USING BTREE
 ) COMMENT='买家信用卡/借记卡信息';
 
+DROP TABLE IF EXISTS `payment_customer_address`;
 CREATE TABLE `payment_customer_address`
 (
     `id`            int          NOT NULL AUTO_INCREMENT,
@@ -60,3 +63,6 @@ values ('productTaxPercentage', '8', '商税百分比'),
        ('shippingMethods', '["Public Meetup","Puggo Same-day Delivery"]', '交易方式');
 update setting set comment = '系统默认货币（英文缩写）' where `key` = 'moneyKind';
 update setting set comment = '系统IM账号' where `key` = 'systemImAction';
+
+alter table user add payment_customer_id varchar(50) not null default '' comment '支付账户id' after `is_verified`;
+alter table user add key idx_nickname(nickname) using btree;
