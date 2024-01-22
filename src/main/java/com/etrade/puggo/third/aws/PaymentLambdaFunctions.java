@@ -41,7 +41,7 @@ public class PaymentLambdaFunctions {
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(payload);
 
-        return matcher.find() ? matcher.group(1) : payload;
+        return matcher.find() ? matcher.group(1) : "";
     }
 
 

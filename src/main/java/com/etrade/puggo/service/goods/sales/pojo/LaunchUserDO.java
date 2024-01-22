@@ -28,4 +28,7 @@ public class LaunchUserDO {
     @ApiModelProperty("是否认证")
     private Boolean isVerified;
 
+    @ApiModelProperty("信誉评分，最高5分，如果评分为0展示N/A")
+    private String creditRating;
+
 }

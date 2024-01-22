@@ -18,7 +18,7 @@ public class RequestHeaders {
     public static final String DEVICE = "deviceId";
 
     /**
-     * 设备登录端，{@link com.etrade.user.constants.ClientConstants}
+     * 设备登录端，{@link ClientConstants}
      */
     public static final String CLIENT = "client";
 

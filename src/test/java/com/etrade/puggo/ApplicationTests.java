@@ -3,13 +3,18 @@ package com.etrade.puggo;
 
 import com.etrade.puggo.dao.ai.AiBrandListDao;
 import com.etrade.puggo.dao.ai.AiSeriesListDao;
+import com.etrade.puggo.dao.goods.GoodsTradeDao;
 import com.etrade.puggo.service.ai.AiIdentityService;
 import com.etrade.puggo.service.ai.pojo.IdentifySingleParam;
+import com.etrade.puggo.service.goods.trade.GoodsTradeParam;
+import com.etrade.puggo.service.payment.PaymentService;
 import com.etrade.puggo.third.ai.UpdateDataSchedule;
-import javax.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 
 @SpringBootTest
@@ -22,7 +27,7 @@ class ApplicationTests {
     private AiIdentityService aiIdentityService;
 
     @Test
-    void testSchedule(){
+    void testSchedule() {
         updateDataSchedule.update();
     }
 
@@ -48,4 +53,24 @@ class ApplicationTests {
         aiSeriesListDao.updateIsShow();
     }
 
+
+    @Resource
+    private PaymentService paymentService;
+
+    @Test
+    void calculateTotal() {
+        System.out.println(paymentService.calculateTotal(new BigDecimal("100.13")));
+    }
+
+
+    @Resource
+    private GoodsTradeDao goodsTradeDao;
+
+    @Test
+    void testTradeList() {
+        GoodsTradeParam param = new GoodsTradeParam();
+        param.setPageIndex(1);
+        param.setTitle("134");
+        goodsTradeDao.findTradePage(param);
+    }
 }

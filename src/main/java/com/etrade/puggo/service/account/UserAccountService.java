@@ -2,6 +2,9 @@ package com.etrade.puggo.service.account;
 
 import com.etrade.puggo.common.exception.CommonError;
 import com.etrade.puggo.common.exception.ServiceException;
+import com.etrade.puggo.common.filter.AuthContext;
+import com.etrade.puggo.common.filter.DeviceInfoDO;
+import com.etrade.puggo.common.filter.UserInfoDO;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.constants.ClientConstants;
 import com.etrade.puggo.constants.RedisKeys;
@@ -13,30 +16,25 @@ import com.etrade.puggo.dao.user.UserFansDao;
 import com.etrade.puggo.dao.user.UserIMActionDao;
 import com.etrade.puggo.db.tables.records.UserAccountRecord;
 import com.etrade.puggo.db.tables.records.UserImActionRecord;
-import com.etrade.puggo.common.filter.AuthContext;
-import com.etrade.puggo.common.filter.DeviceInfoDO;
-import com.etrade.puggo.common.filter.UserInfoDO;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.pojo.*;
 import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
+import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
 import com.etrade.puggo.third.im.YunxinIMApi;
-import com.etrade.puggo.utils.EmailUtils;
-import com.etrade.puggo.utils.JsonUtils;
-import com.etrade.puggo.utils.OptionalUtils;
-import com.etrade.puggo.utils.PBKDF2Utils;
-import com.etrade.puggo.utils.RedisUtils;
-import com.etrade.puggo.utils.StrUtils;
-import com.etrade.puggo.utils.VerifyCodeUtils;
+import com.etrade.puggo.utils.*;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.lambda.endpoints.internal.Value;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author niuzhenyu
@@ -56,8 +54,6 @@ public class UserAccountService extends BaseService {
     @Resource
     private UserIMActionDao userIMActionDao;
     @Resource
-    private PBKDF2Utils pbkdf2Utils;
-    @Resource
     private RedisUtils redisUtils;
     @Resource
     private EmailUtils emailUtils;
@@ -69,6 +65,8 @@ public class UserAccountService extends BaseService {
     private YunxinIMApi yunxinIMApi;
     @Resource
     private UserFansDao userFansDao;
+    @Resource
+    private PaymentLambdaFunctions paymentLambdaFunctions;
 
 
     /**
@@ -95,7 +93,7 @@ public class UserAccountService extends BaseService {
         }
 
         try {
-            boolean auth = pbkdf2Utils.authenticate(password, userAccount.getPassword(), userAccount.getSalt());
+            boolean auth = PBKDF2Utils.authenticate(password, userAccount.getPassword(), userAccount.getSalt());
             if (!auth) {
                 throw new ServiceException(CommonError.USER_LOGIN_FAILURE);
             }
@@ -107,12 +105,13 @@ public class UserAccountService extends BaseService {
         long userId = userAccount.getUserId();
 
         UserInfoVO user = userDao.findUserInfo(userId);
-
         String nickname = user.getNickname();
         String role = user.getUserRole();
+        String email = user.getEmail();
+        String paymentCustomerId = user.getPaymentCustomerId();
 
         UserInfoDO userInfoDO = new UserInfoDO()
-            .setUserId(userId).setNickname(nickname).setDeviceId(deviceId).setRole(role);
+                .setUserId(userId).setNickname(nickname).setDeviceId(deviceId).setRole(role);
 
         log.info("[AUTH]登录客户端：{}", client);
         log.info("[AUTH]登录用户信息：{}", userInfoDO);
@@ -134,8 +133,38 @@ public class UserAccountService extends BaseService {
         // 记录最近一次登录IP、时间、地点、设备信息
         recordLoginInfoService.lastLogin(request, deviceJson, userAccount.getId());
 
-        // 查询im token
+        LoginResponse loginResponse = LoginResponse.builder().userId(userId).nickname(nickname).token(token).build();
+
+        // 重置im action
+        resetImAction(userId, nickname, loginResponse);
+
+        // 重置paymentCustomerId
+        resetPaymentCustomerId(paymentCustomerId, email, nickname, userId);
+
+        return loginResponse;
+    }
+
+
+    private void resetPaymentCustomerId(String paymentCustomerId, String email, String nickname, long userId) {
+        if (StringUtils.isNotBlank(paymentCustomerId)) {
+            return;
+        }
+        String customer;
+        try {
+            customer = paymentLambdaFunctions.createCustomer(email, nickname);
+        } catch (Exception e) {
+            log.error("登录时获取paymentCustomerId失败", e);
+            customer = null;
+        }
+        if (StringUtils.isNotBlank(customer)) {
+            userDao.updatePaymentCustomerId(userId, customer);
+        }
+    }
+
+
+    private void resetImAction(long userId, String nickname, LoginResponse loginResponse) {
         UserImActionRecord imActionRecord = userIMActionDao.findIMAction(userId);
+
         String imToken = "";
         String imAccid = "";
 
@@ -159,17 +188,21 @@ public class UserAccountService extends BaseService {
             log.error("登录时获取imToken失败", e);
         }
 
-        return LoginResponse.builder().userId(userId).nickname(nickname).token(token).imToken(imToken).imAccid(imAccid)
-            .build();
+        loginResponse.setImAccid(imAccid);
+        loginResponse.setImToken(imToken);
     }
 
 
     private UserAccountRecord getUserAccount(String account) {
-        UserAccountRecord userAccount;
+        UserAccountRecord userAccount = null;
 
-        userAccount = userAccountDao.findUserAccount(account);
+        // account 可能为邮箱
+        if (account.contains("@")) {
+            userAccount = userAccountDao.findUserAccount(account);
+        }
+
         if (userAccount == null) {
-            // 可能账号是昵称
+            // 账号可能是昵称
             Long userId = userDao.findUserIdByNickname(account);
             if (userId != null) {
                 userAccount = userAccountDao.findUserAccount(userId);
@@ -281,15 +314,15 @@ public class UserAccountService extends BaseService {
         String salt;
         String encryptedPassword;
         try {
-            salt = pbkdf2Utils.generateSalt();
-            encryptedPassword = pbkdf2Utils.getEncryptedPassword(password, salt);
+            salt = PBKDF2Utils.generateSalt();
+            encryptedPassword = PBKDF2Utils.getEncryptedPassword(password, salt);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             log.error("[AUTH]密码加密失败: account:{},password:{}", email, password);
             throw new ServiceException(CommonError.GLOBAL_ERROR);
         }
 
         UserAccountParam userAccount = UserAccountParam.builder()
-            .userId(userId).account(email).password(encryptedPassword).salt(salt).build();
+                .userId(userId).account(email).password(encryptedPassword).salt(salt).build();
 
         // 3.2 注册登录账号
         userAccountDao.insertNewAccount(userAccount);
@@ -297,6 +330,13 @@ public class UserAccountService extends BaseService {
         // 4 注册网易云信账号
         String accid = yunxinIMApi.randomAccid(nickname);
         yunxinIMApi.createAction(accid, nickname, userId);
+
+        // 5. 注册支付账号
+        String customerId = paymentLambdaFunctions.createCustomer(email, nickname);
+        if (StringUtils.isNotBlank(customerId)) {
+            userDao.updatePaymentCustomerId(userId, customerId);
+        }
+
     }
 
 
@@ -314,7 +354,7 @@ public class UserAccountService extends BaseService {
         String code = VerifyCodeUtils.generate();
 
         boolean b = Objects.equals(type, (byte) 1) ? emailUtils.SendEmailVerifyCodeForRegister(email, code)
-            : emailUtils.SendEmailVerifyCodeForRetrievePassword(email, code);
+                : emailUtils.SendEmailVerifyCodeForRetrievePassword(email, code);
 
         if (b) {
             log.info("[SEND VERIFY CODE]验证码发送成功 {}", code);
@@ -366,7 +406,7 @@ public class UserAccountService extends BaseService {
         UserAccountRecord userAccount = getUserAccount(account);
 
         try {
-            if (!pbkdf2Utils.authenticate(oldPassword, userAccount.getPassword(), userAccount.getSalt())) {
+            if (!PBKDF2Utils.authenticate(oldPassword, userAccount.getPassword(), userAccount.getSalt())) {
                 throw new ServiceException(CommonError.USER_ACCOUNT_OLD_PASSWORD_ERROR);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -384,8 +424,8 @@ public class UserAccountService extends BaseService {
         String salt;
         String encryptedPassword;
         try {
-            salt = pbkdf2Utils.generateSalt();
-            encryptedPassword = pbkdf2Utils.getEncryptedPassword(newPassword, salt);
+            salt = PBKDF2Utils.generateSalt();
+            encryptedPassword = PBKDF2Utils.getEncryptedPassword(newPassword, salt);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             log.error("[RESET PASSWORD]密码加密失败: account:{},password:{}", account, newPassword);
             throw new ServiceException(CommonError.GLOBAL_ERROR);
@@ -419,8 +459,8 @@ public class UserAccountService extends BaseService {
         String salt;
         String encryptedPassword;
         try {
-            salt = pbkdf2Utils.generateSalt();
-            encryptedPassword = pbkdf2Utils.getEncryptedPassword(newPassword, salt);
+            salt = PBKDF2Utils.generateSalt();
+            encryptedPassword = PBKDF2Utils.getEncryptedPassword(newPassword, salt);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             log.error("[RETRIEVE PASSWORD]密码加密失败: account:{},password:{}", account, newPassword);
             throw new ServiceException(CommonError.GLOBAL_ERROR);
@@ -470,5 +510,10 @@ public class UserAccountService extends BaseService {
      **/
     public Integer verifyUser(Long userId) {
         return userDao.updateUserVerified(userId, (byte) 1);
+    }
+
+
+    public String getPaymentCustomerId(long userId) {
+        return userDao.getPaymentCustomerId(userId);
     }
 }

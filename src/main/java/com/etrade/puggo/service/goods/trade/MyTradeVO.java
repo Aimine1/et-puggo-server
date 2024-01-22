@@ -4,9 +4,10 @@ import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import lombok.Data;
 
 /**
  * @author niuzhenyu
@@ -50,5 +51,11 @@ public class MyTradeVO {
 
     @ApiModelProperty("商品主图")
     private String mainImgUrl;
+
+    @ApiModelProperty("买家")
+    private Long customerId;
+
+    @ApiModelProperty("卖家")
+    private Long sellerId;
 
 }

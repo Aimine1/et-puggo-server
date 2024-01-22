@@ -57,7 +57,7 @@ public class LoginController {
         @Min(1) @Max(2) @RequestParam("type") @ApiParam("验证类型: 1注册验证 2找回密码验证") Byte type) {
         userAccountService.sendVerificationCode(email, type);
 
-        return Result.ok("操作成功");
+        return Result.ok();
     }
 
     @WebLog
@@ -68,7 +68,7 @@ public class LoginController {
         @NotNull @NotBlank @RequestParam("code") @ApiParam("验证码") String code) {
         userAccountService.verifyCode(email, code);
 
-        return Result.ok("验证码核验成功");
+        return Result.ok();
     }
 
     @WebLog
@@ -77,7 +77,7 @@ public class LoginController {
     public Result<String> register(@RequestBody @Validated RegisterAccountParam param) {
         userAccountService.register(param);
 
-        return Result.ok(param.getNickname() + "注册成功");
+        return Result.ok();
     }
 
     @WebLog
@@ -87,7 +87,7 @@ public class LoginController {
         @NotNull @NotBlank @RequestParam("nickname") @ApiParam("用户昵称") String nickname) {
         userAccountService.verifyNicknameExists(nickname);
 
-        return Result.ok("用户昵称没有被使用");
+        return Result.ok();
     }
 
     @WebLog
@@ -96,7 +96,7 @@ public class LoginController {
     public Result<String> logout(HttpServletRequest request) {
         userAccountService.logout(request);
 
-        return Result.ok("用户退出成功");
+        return Result.ok();
     }
 
     @WebLog
@@ -105,7 +105,7 @@ public class LoginController {
     public Result<String> resetPassword(@RequestBody @Validated ResetPasswordParam param) {
         userAccountService.resetPassword(param);
 
-        return Result.ok("重置密码成功");
+        return Result.ok();
     }
 
     @WebLog
@@ -114,7 +114,7 @@ public class LoginController {
     public Result<String> retrievePassword(@RequestBody @Validated RetrievePasswordParam param) {
         userAccountService.retrievePassword(param);
 
-        return Result.ok("密码找回成功");
+        return Result.ok();
     }
 
 
@@ -124,7 +124,7 @@ public class LoginController {
     public Result<String> delete(HttpServletRequest request) {
         userAccountService.delete(request);
 
-        return Result.ok("用户删除成功");
+        return Result.ok();
     }
 
 }

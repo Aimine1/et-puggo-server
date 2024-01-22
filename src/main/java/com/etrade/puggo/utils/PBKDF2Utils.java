@@ -1,13 +1,14 @@
 package com.etrade.puggo.utils;
 
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import org.springframework.stereotype.Component;
 
 /**
  * @ClassName
@@ -41,8 +42,8 @@ public class PBKDF2Utils {
      * @return: boolean
      * @date: 2018/11/2
      */
-    public boolean authenticate(String attemptedPassword, String encryptedPassword, String salt)
-        throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static boolean authenticate(String attemptedPassword, String encryptedPassword, String salt)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         // 用相同的盐值对用户输入的密码进行加密
         String encryptedAttemptedPassword = getEncryptedPassword(attemptedPassword, salt);
         // 把加密后的密文和原密文进行比较，相同则验证成功，否则失败
@@ -57,12 +58,10 @@ public class PBKDF2Utils {
      * @return: java.lang.String
      * @date: 2018/11/2
      */
-    public String getEncryptedPassword(String password, String salt)
-        throws NoSuchAlgorithmException,
-        InvalidKeySpecException {
+    public static String getEncryptedPassword(String password, String salt)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), fromHex(salt), PBKDF2_ITERATIONS,
-            HASH_BIT_SIZE);
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), fromHex(salt), PBKDF2_ITERATIONS, HASH_BIT_SIZE);
         SecretKeyFactory f = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
         return toHex(f.generateSecret(spec).getEncoded());
     }
@@ -75,7 +74,7 @@ public class PBKDF2Utils {
      * @return: java.lang.String
      * @date: 2018/11/2
      */
-    public String generateSalt() throws NoSuchAlgorithmException {
+    public static String generateSalt() throws NoSuchAlgorithmException {
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
         byte[] salt = new byte[SALT_BYTE_SIZE];
         random.nextBytes(salt);

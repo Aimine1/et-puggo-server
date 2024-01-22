@@ -3,10 +3,11 @@ package com.etrade.puggo.service.groupon.user;
 import com.etrade.puggo.dao.user.UserBrowsingHistoryDao;
 import com.etrade.puggo.dao.user.UserLikesDao;
 import com.etrade.puggo.service.BaseService;
-import java.util.List;
-import javax.annotation.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author niuzhenyu
@@ -22,9 +23,9 @@ public class UserGrouponService extends BaseService {
     private UserBrowsingHistoryDao userBrowsingHistoryDao;
 
 
-    // @Async TODO
-    public Long browseGroupon(Long grouponId, Long userId) {
-        return userBrowsingHistoryDao.browseGroupon(grouponId, userId);
+    @Async
+    public void browseGroupon(Long grouponId, Long userId) {
+        userBrowsingHistoryDao.browseGroupon(grouponId, userId);
     }
 
     public Long likeGroupon(Long grouponId) {

@@ -26,7 +26,7 @@ public class AwsLambdaUnitTest {
 
     @Test
     void deleteCustomer() {
-        paymentLambdaFunctions.deleteCustomer("cus_PNtLQbzeHcuByZ");
+        paymentLambdaFunctions.deleteCustomer("cus_PNtQgQvpacHLMP");
     }
 
 

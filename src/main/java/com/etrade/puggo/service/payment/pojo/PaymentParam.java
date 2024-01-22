@@ -18,10 +18,6 @@ import java.math.BigDecimal;
 @ApiModel("发起支付参数")
 public class PaymentParam {
 
-    @NotNull(message = "Invalid amount")
-    @ApiModelProperty("金额")
-    private BigDecimal amount;
-
     @NotNull(message = "Invalid paymentType")
     @NotBlank(message = "Invalid paymentType")
     @ApiModelProperty("付款类型，枚举值有：card、apple_pay、google_pay、wechat、alipay")
@@ -62,5 +58,10 @@ public class PaymentParam {
     @NotNull(message = "Invalid seller")
     @ApiModelProperty("卖家在系统中的用户id")
     private Long sellerId;
-    
+
+    @NotNull(message = "Invalid target")
+    @NotBlank(message = "Invalid target")
+    @ApiModelProperty("支付的目的，哪个模块的付款，目前有两类：product和ai")
+    private String target;
+
 }

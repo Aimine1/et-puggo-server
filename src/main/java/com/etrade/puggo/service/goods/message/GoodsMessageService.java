@@ -15,7 +15,6 @@ import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
 import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.service.goods.sales.pojo.TradeNoVO;
 import com.etrade.puggo.service.goods.trade.GoodsTradeService;
-import com.etrade.puggo.service.setting.SettingService;
 import com.etrade.puggo.service.setting.UserProfileService;
 import com.etrade.puggo.utils.OptionalUtils;
 import org.springframework.stereotype.Service;
@@ -234,16 +233,10 @@ public class GoodsMessageService extends BaseService {
 
     public GoodsMessageLogsRecord getPaymentPendingMsgRecord(Long buyerId, Long sellerId, Long goodsId) {
         GoodsMessageLogsRecord record = messageDao.selectOne(buyerId, sellerId, goodsId);
-
-        if (record == null) {
-            return null;
+        if (record != null && record.getState().equals(GoodsMessageState.PAYMENT_PENDING)) {
+            return record;
         }
-
-        if (!record.getState().equals(GoodsMessageState.PAYMENT_PENDING)) {
-            return null;
-        }
-
-        return record;
+        return null;
     }
 
 }
