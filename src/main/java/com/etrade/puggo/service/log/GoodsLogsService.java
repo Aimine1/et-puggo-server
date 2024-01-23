@@ -37,8 +37,7 @@ public class GoodsLogsService extends BaseService {
      * @editTime 2023/6/28 17:49
      **/
     public void logs(Long goodsId, String operate, String content) {
-        LogsBuilder logs = LogsBuilder.builder()
-            .goodsId(goodsId).userId(userId()).operate(operate).content(content).build();
+        LogsBuilder logs = LogsBuilder.builder().goodsId(goodsId).userId(userId()).operate(operate).content(content).build();
 
         goodsLogsDao.save(logs);
     }
@@ -52,6 +51,7 @@ public class GoodsLogsService extends BaseService {
      * @createTime 2023/6/28 18:59
      * @editTime 2023/6/28 18:59
      **/
+    @Deprecated
     public PageContentContainer<UserLogsVO> getUserGoodsLogs(PageParam param) {
 
         PageContentContainer<UserLogsVO> pageList = goodsLogsDao.findUserGoodsLogs(param);
@@ -73,26 +73,6 @@ public class GoodsLogsService extends BaseService {
         }
 
         return pageList;
-    }
-
-
-    /**
-     * 查询用户商品日志未读数量
-     *
-     * @return 未读数量
-     */
-    @Deprecated
-    public Integer getUnreadCount() {
-        return goodsLogsDao.findUnreadCount(userId());
-    }
-
-
-    /**
-     * 修改日志状态为已读
-     */
-    @Deprecated
-    public void updateToRead() {
-        goodsLogsDao.updateToRead(userId());
     }
 
 }

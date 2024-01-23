@@ -34,16 +34,14 @@ import com.etrade.puggo.db.tables.PaymentCard;
 import com.etrade.puggo.db.tables.PaymentCustomerAddress;
 import com.etrade.puggo.db.tables.PaymentRecord;
 import com.etrade.puggo.db.tables.Setting;
+import com.etrade.puggo.db.tables.StatisticsUserCommentScore;
 import com.etrade.puggo.db.tables.User;
 import com.etrade.puggo.db.tables.UserAccount;
-import com.etrade.puggo.db.tables.UserAddress;
 import com.etrade.puggo.db.tables.UserBrowsingHistory;
 import com.etrade.puggo.db.tables.UserFans;
 import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
-import com.etrade.puggo.db.tables.UserLogs;
 import com.etrade.puggo.db.tables.UserProfile;
-import com.etrade.puggo.db.tables.UserSimpleInfo;
 
 import javax.annotation.processing.Generated;
 
@@ -212,6 +210,11 @@ public class Tables {
     public static final Setting SETTING = Setting.SETTING;
 
     /**
+     * 用户评分统计
+     */
+    public static final StatisticsUserCommentScore STATISTICS_USER_COMMENT_SCORE = StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE;
+
+    /**
      * 个人信息
      */
     public static final User USER = User.USER;
@@ -220,11 +223,6 @@ public class Tables {
      * 用户账号
      */
     public static final UserAccount USER_ACCOUNT = UserAccount.USER_ACCOUNT;
-
-    /**
-     * 收货地址
-     */
-    public static final UserAddress USER_ADDRESS = UserAddress.USER_ADDRESS;
 
     /**
      * 用户浏览历史
@@ -247,17 +245,7 @@ public class Tables {
     public static final UserLikes USER_LIKES = UserLikes.USER_LIKES;
 
     /**
-     * 用户操作日志
-     */
-    public static final UserLogs USER_LOGS = UserLogs.USER_LOGS;
-
-    /**
      * 用户个人偏好设置
      */
     public static final UserProfile USER_PROFILE = UserProfile.USER_PROFILE;
-
-    /**
-     * 个人简短信息
-     */
-    public static final UserSimpleInfo USER_SIMPLE_INFO = UserSimpleInfo.USER_SIMPLE_INFO;
 }

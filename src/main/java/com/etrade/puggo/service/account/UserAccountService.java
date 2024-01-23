@@ -27,10 +27,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import software.amazon.awssdk.services.lambda.endpoints.internal.Value;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
@@ -515,5 +515,13 @@ public class UserAccountService extends BaseService {
 
     public String getPaymentCustomerId(long userId) {
         return userDao.getPaymentCustomerId(userId);
+    }
+
+
+    public void resetUserCreditRating(long userId, BigDecimal averageScore) {
+        UserInfoVO userInfo = userDao.findUserInfo(userId);
+        if (userInfo.getCreditRating().compareTo(averageScore) != 0) {
+            userDao.updateCreditRating(userId, averageScore);
+        }
     }
 }

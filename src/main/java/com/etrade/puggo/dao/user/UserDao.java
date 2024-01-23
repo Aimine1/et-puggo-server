@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -142,6 +143,10 @@ public class UserDao extends BaseDao {
 
     public String getPaymentCustomerId(long userId) {
         return db.select(USER.PAYMENT_CUSTOMER_ID).from(USER).where(USER.ID.eq(userId)).fetchAnyInto(String.class);
+    }
+
+    public int updateCreditRating(long userId, BigDecimal newCreditRating) {
+        return db.update(USER).set(USER.CREDIT_RATING, newCreditRating).where(USER.ID.eq(userId)).execute();
     }
 
 }

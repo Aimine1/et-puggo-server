@@ -34,16 +34,14 @@ import com.etrade.puggo.db.tables.PaymentCard;
 import com.etrade.puggo.db.tables.PaymentCustomerAddress;
 import com.etrade.puggo.db.tables.PaymentRecord;
 import com.etrade.puggo.db.tables.Setting;
+import com.etrade.puggo.db.tables.StatisticsUserCommentScore;
 import com.etrade.puggo.db.tables.User;
 import com.etrade.puggo.db.tables.UserAccount;
-import com.etrade.puggo.db.tables.UserAddress;
 import com.etrade.puggo.db.tables.UserBrowsingHistory;
 import com.etrade.puggo.db.tables.UserFans;
 import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
-import com.etrade.puggo.db.tables.UserLogs;
 import com.etrade.puggo.db.tables.UserProfile;
-import com.etrade.puggo.db.tables.UserSimpleInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +67,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EtradeGoods extends SchemaImpl {
 
-    private static final long serialVersionUID = -1820733330;
+    private static final long serialVersionUID = 755980585;
 
     /**
      * The reference instance of <code>etrade_goods</code>
@@ -227,6 +225,11 @@ public class EtradeGoods extends SchemaImpl {
     public final Setting SETTING = com.etrade.puggo.db.tables.Setting.SETTING;
 
     /**
+     * 用户评分统计
+     */
+    public final StatisticsUserCommentScore STATISTICS_USER_COMMENT_SCORE = com.etrade.puggo.db.tables.StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE;
+
+    /**
      * 个人信息
      */
     public final User USER = com.etrade.puggo.db.tables.User.USER;
@@ -235,11 +238,6 @@ public class EtradeGoods extends SchemaImpl {
      * 用户账号
      */
     public final UserAccount USER_ACCOUNT = com.etrade.puggo.db.tables.UserAccount.USER_ACCOUNT;
-
-    /**
-     * 收货地址
-     */
-    public final UserAddress USER_ADDRESS = com.etrade.puggo.db.tables.UserAddress.USER_ADDRESS;
 
     /**
      * 用户浏览历史
@@ -262,19 +260,9 @@ public class EtradeGoods extends SchemaImpl {
     public final UserLikes USER_LIKES = com.etrade.puggo.db.tables.UserLikes.USER_LIKES;
 
     /**
-     * 用户操作日志
-     */
-    public final UserLogs USER_LOGS = com.etrade.puggo.db.tables.UserLogs.USER_LOGS;
-
-    /**
      * 用户个人偏好设置
      */
     public final UserProfile USER_PROFILE = com.etrade.puggo.db.tables.UserProfile.USER_PROFILE;
-
-    /**
-     * 个人简短信息
-     */
-    public final UserSimpleInfo USER_SIMPLE_INFO = com.etrade.puggo.db.tables.UserSimpleInfo.USER_SIMPLE_INFO;
 
     /**
      * No further instances allowed
@@ -328,15 +316,13 @@ public class EtradeGoods extends SchemaImpl {
             PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS,
             PaymentRecord.PAYMENT_RECORD,
             Setting.SETTING,
+            StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE,
             User.USER,
             UserAccount.USER_ACCOUNT,
-            UserAddress.USER_ADDRESS,
             UserBrowsingHistory.USER_BROWSING_HISTORY,
             UserFans.USER_FANS,
             UserImAction.USER_IM_ACTION,
             UserLikes.USER_LIKES,
-            UserLogs.USER_LOGS,
-            UserProfile.USER_PROFILE,
-            UserSimpleInfo.USER_SIMPLE_INFO);
+            UserProfile.USER_PROFILE);
     }
 }

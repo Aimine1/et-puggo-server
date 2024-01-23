@@ -32,16 +32,14 @@ import com.etrade.puggo.db.tables.MsgNews;
 import com.etrade.puggo.db.tables.PaymentCard;
 import com.etrade.puggo.db.tables.PaymentCustomerAddress;
 import com.etrade.puggo.db.tables.Setting;
+import com.etrade.puggo.db.tables.StatisticsUserCommentScore;
 import com.etrade.puggo.db.tables.User;
 import com.etrade.puggo.db.tables.UserAccount;
-import com.etrade.puggo.db.tables.UserAddress;
 import com.etrade.puggo.db.tables.UserBrowsingHistory;
 import com.etrade.puggo.db.tables.UserFans;
 import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
-import com.etrade.puggo.db.tables.UserLogs;
 import com.etrade.puggo.db.tables.UserProfile;
-import com.etrade.puggo.db.tables.UserSimpleInfo;
 import com.etrade.puggo.db.tables.records.AiAvailableBalanceRecord;
 import com.etrade.puggo.db.tables.records.AiBrandListRecord;
 import com.etrade.puggo.db.tables.records.AiOverallAppraisalRecord;
@@ -70,16 +68,14 @@ import com.etrade.puggo.db.tables.records.MsgNewsRecord;
 import com.etrade.puggo.db.tables.records.PaymentCardRecord;
 import com.etrade.puggo.db.tables.records.PaymentCustomerAddressRecord;
 import com.etrade.puggo.db.tables.records.SettingRecord;
+import com.etrade.puggo.db.tables.records.StatisticsUserCommentScoreRecord;
 import com.etrade.puggo.db.tables.records.UserAccountRecord;
-import com.etrade.puggo.db.tables.records.UserAddressRecord;
 import com.etrade.puggo.db.tables.records.UserBrowsingHistoryRecord;
 import com.etrade.puggo.db.tables.records.UserFansRecord;
 import com.etrade.puggo.db.tables.records.UserImActionRecord;
 import com.etrade.puggo.db.tables.records.UserLikesRecord;
-import com.etrade.puggo.db.tables.records.UserLogsRecord;
 import com.etrade.puggo.db.tables.records.UserProfileRecord;
 import com.etrade.puggo.db.tables.records.UserRecord;
-import com.etrade.puggo.db.tables.records.UserSimpleInfoRecord;
 
 import javax.annotation.processing.Generated;
 
@@ -131,16 +127,14 @@ public class Keys {
     public static final Identity<PaymentCardRecord, Integer> IDENTITY_PAYMENT_CARD = Identities0.IDENTITY_PAYMENT_CARD;
     public static final Identity<PaymentCustomerAddressRecord, Integer> IDENTITY_PAYMENT_CUSTOMER_ADDRESS = Identities0.IDENTITY_PAYMENT_CUSTOMER_ADDRESS;
     public static final Identity<SettingRecord, Long> IDENTITY_SETTING = Identities0.IDENTITY_SETTING;
+    public static final Identity<StatisticsUserCommentScoreRecord, Long> IDENTITY_STATISTICS_USER_COMMENT_SCORE = Identities0.IDENTITY_STATISTICS_USER_COMMENT_SCORE;
     public static final Identity<UserRecord, Long> IDENTITY_USER = Identities0.IDENTITY_USER;
     public static final Identity<UserAccountRecord, Long> IDENTITY_USER_ACCOUNT = Identities0.IDENTITY_USER_ACCOUNT;
-    public static final Identity<UserAddressRecord, Long> IDENTITY_USER_ADDRESS = Identities0.IDENTITY_USER_ADDRESS;
     public static final Identity<UserBrowsingHistoryRecord, Long> IDENTITY_USER_BROWSING_HISTORY = Identities0.IDENTITY_USER_BROWSING_HISTORY;
     public static final Identity<UserFansRecord, Long> IDENTITY_USER_FANS = Identities0.IDENTITY_USER_FANS;
     public static final Identity<UserImActionRecord, Long> IDENTITY_USER_IM_ACTION = Identities0.IDENTITY_USER_IM_ACTION;
     public static final Identity<UserLikesRecord, Long> IDENTITY_USER_LIKES = Identities0.IDENTITY_USER_LIKES;
-    public static final Identity<UserLogsRecord, Long> IDENTITY_USER_LOGS = Identities0.IDENTITY_USER_LOGS;
     public static final Identity<UserProfileRecord, Long> IDENTITY_USER_PROFILE = Identities0.IDENTITY_USER_PROFILE;
-    public static final Identity<UserSimpleInfoRecord, Long> IDENTITY_USER_SIMPLE_INFO = Identities0.IDENTITY_USER_SIMPLE_INFO;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -175,19 +169,17 @@ public class Keys {
     public static final UniqueKey<PaymentCustomerAddressRecord> KEY_PAYMENT_CUSTOMER_ADDRESS_PRIMARY = UniqueKeys0.KEY_PAYMENT_CUSTOMER_ADDRESS_PRIMARY;
     public static final UniqueKey<SettingRecord> KEY_SETTING_PRIMARY = UniqueKeys0.KEY_SETTING_PRIMARY;
     public static final UniqueKey<SettingRecord> KEY_SETTING_UK_SETTING_KEY = UniqueKeys0.KEY_SETTING_UK_SETTING_KEY;
+    public static final UniqueKey<StatisticsUserCommentScoreRecord> KEY_STATISTICS_USER_COMMENT_SCORE_PRIMARY = UniqueKeys0.KEY_STATISTICS_USER_COMMENT_SCORE_PRIMARY;
     public static final UniqueKey<UserRecord> KEY_USER_PRIMARY = UniqueKeys0.KEY_USER_PRIMARY;
     public static final UniqueKey<UserAccountRecord> KEY_USER_ACCOUNT_PRIMARY = UniqueKeys0.KEY_USER_ACCOUNT_PRIMARY;
     public static final UniqueKey<UserAccountRecord> KEY_USER_ACCOUNT_UX_ACCOUNT = UniqueKeys0.KEY_USER_ACCOUNT_UX_ACCOUNT;
-    public static final UniqueKey<UserAddressRecord> KEY_USER_ADDRESS_PRIMARY = UniqueKeys0.KEY_USER_ADDRESS_PRIMARY;
     public static final UniqueKey<UserBrowsingHistoryRecord> KEY_USER_BROWSING_HISTORY_PRIMARY = UniqueKeys0.KEY_USER_BROWSING_HISTORY_PRIMARY;
     public static final UniqueKey<UserFansRecord> KEY_USER_FANS_PRIMARY = UniqueKeys0.KEY_USER_FANS_PRIMARY;
     public static final UniqueKey<UserFansRecord> KEY_USER_FANS_UK_USERID_FANSUSERID = UniqueKeys0.KEY_USER_FANS_UK_USERID_FANSUSERID;
     public static final UniqueKey<UserImActionRecord> KEY_USER_IM_ACTION_PRIMARY = UniqueKeys0.KEY_USER_IM_ACTION_PRIMARY;
     public static final UniqueKey<UserLikesRecord> KEY_USER_LIKES_PRIMARY = UniqueKeys0.KEY_USER_LIKES_PRIMARY;
-    public static final UniqueKey<UserLogsRecord> KEY_USER_LOGS_PRIMARY = UniqueKeys0.KEY_USER_LOGS_PRIMARY;
     public static final UniqueKey<UserProfileRecord> KEY_USER_PROFILE_PRIMARY = UniqueKeys0.KEY_USER_PROFILE_PRIMARY;
     public static final UniqueKey<UserProfileRecord> KEY_USER_PROFILE_UK_USERID_KEY = UniqueKeys0.KEY_USER_PROFILE_UK_USERID_KEY;
-    public static final UniqueKey<UserSimpleInfoRecord> KEY_USER_SIMPLE_INFO_PRIMARY = UniqueKeys0.KEY_USER_SIMPLE_INFO_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -224,16 +216,14 @@ public class Keys {
         public static Identity<PaymentCardRecord, Integer> IDENTITY_PAYMENT_CARD = Internal.createIdentity(PaymentCard.PAYMENT_CARD, PaymentCard.PAYMENT_CARD.ID);
         public static Identity<PaymentCustomerAddressRecord, Integer> IDENTITY_PAYMENT_CUSTOMER_ADDRESS = Internal.createIdentity(PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS, PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS.ID);
         public static Identity<SettingRecord, Long> IDENTITY_SETTING = Internal.createIdentity(Setting.SETTING, Setting.SETTING.ID);
+        public static Identity<StatisticsUserCommentScoreRecord, Long> IDENTITY_STATISTICS_USER_COMMENT_SCORE = Internal.createIdentity(StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE, StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE.ID);
         public static Identity<UserRecord, Long> IDENTITY_USER = Internal.createIdentity(User.USER, User.USER.ID);
         public static Identity<UserAccountRecord, Long> IDENTITY_USER_ACCOUNT = Internal.createIdentity(UserAccount.USER_ACCOUNT, UserAccount.USER_ACCOUNT.ID);
-        public static Identity<UserAddressRecord, Long> IDENTITY_USER_ADDRESS = Internal.createIdentity(UserAddress.USER_ADDRESS, UserAddress.USER_ADDRESS.ID);
         public static Identity<UserBrowsingHistoryRecord, Long> IDENTITY_USER_BROWSING_HISTORY = Internal.createIdentity(UserBrowsingHistory.USER_BROWSING_HISTORY, UserBrowsingHistory.USER_BROWSING_HISTORY.ID);
         public static Identity<UserFansRecord, Long> IDENTITY_USER_FANS = Internal.createIdentity(UserFans.USER_FANS, UserFans.USER_FANS.ID);
         public static Identity<UserImActionRecord, Long> IDENTITY_USER_IM_ACTION = Internal.createIdentity(UserImAction.USER_IM_ACTION, UserImAction.USER_IM_ACTION.ID);
         public static Identity<UserLikesRecord, Long> IDENTITY_USER_LIKES = Internal.createIdentity(UserLikes.USER_LIKES, UserLikes.USER_LIKES.ID);
-        public static Identity<UserLogsRecord, Long> IDENTITY_USER_LOGS = Internal.createIdentity(UserLogs.USER_LOGS, UserLogs.USER_LOGS.ID);
         public static Identity<UserProfileRecord, Long> IDENTITY_USER_PROFILE = Internal.createIdentity(UserProfile.USER_PROFILE, UserProfile.USER_PROFILE.ID);
-        public static Identity<UserSimpleInfoRecord, Long> IDENTITY_USER_SIMPLE_INFO = Internal.createIdentity(UserSimpleInfo.USER_SIMPLE_INFO, UserSimpleInfo.USER_SIMPLE_INFO.ID);
     }
 
     private static class UniqueKeys0 {
@@ -266,18 +256,16 @@ public class Keys {
         public static final UniqueKey<PaymentCustomerAddressRecord> KEY_PAYMENT_CUSTOMER_ADDRESS_PRIMARY = Internal.createUniqueKey(PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS, "KEY_payment_customer_address_PRIMARY", PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS.ID);
         public static final UniqueKey<SettingRecord> KEY_SETTING_PRIMARY = Internal.createUniqueKey(Setting.SETTING, "KEY_setting_PRIMARY", Setting.SETTING.ID);
         public static final UniqueKey<SettingRecord> KEY_SETTING_UK_SETTING_KEY = Internal.createUniqueKey(Setting.SETTING, "KEY_setting_uk_setting_key", Setting.SETTING.KEY);
+        public static final UniqueKey<StatisticsUserCommentScoreRecord> KEY_STATISTICS_USER_COMMENT_SCORE_PRIMARY = Internal.createUniqueKey(StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE, "KEY_statistics_user_comment_score_PRIMARY", StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE.ID);
         public static final UniqueKey<UserRecord> KEY_USER_PRIMARY = Internal.createUniqueKey(User.USER, "KEY_user_PRIMARY", User.USER.ID);
         public static final UniqueKey<UserAccountRecord> KEY_USER_ACCOUNT_PRIMARY = Internal.createUniqueKey(UserAccount.USER_ACCOUNT, "KEY_user_account_PRIMARY", UserAccount.USER_ACCOUNT.ID);
         public static final UniqueKey<UserAccountRecord> KEY_USER_ACCOUNT_UX_ACCOUNT = Internal.createUniqueKey(UserAccount.USER_ACCOUNT, "KEY_user_account_ux_account", UserAccount.USER_ACCOUNT.ACCOUNT);
-        public static final UniqueKey<UserAddressRecord> KEY_USER_ADDRESS_PRIMARY = Internal.createUniqueKey(UserAddress.USER_ADDRESS, "KEY_user_address_PRIMARY", UserAddress.USER_ADDRESS.ID);
         public static final UniqueKey<UserBrowsingHistoryRecord> KEY_USER_BROWSING_HISTORY_PRIMARY = Internal.createUniqueKey(UserBrowsingHistory.USER_BROWSING_HISTORY, "KEY_user_browsing_history_PRIMARY", UserBrowsingHistory.USER_BROWSING_HISTORY.ID);
         public static final UniqueKey<UserFansRecord> KEY_USER_FANS_PRIMARY = Internal.createUniqueKey(UserFans.USER_FANS, "KEY_user_fans_PRIMARY", UserFans.USER_FANS.ID);
         public static final UniqueKey<UserFansRecord> KEY_USER_FANS_UK_USERID_FANSUSERID = Internal.createUniqueKey(UserFans.USER_FANS, "KEY_user_fans_uk_userid_fansuserid", UserFans.USER_FANS.USER_ID, UserFans.USER_FANS.FANS_USER_ID);
         public static final UniqueKey<UserImActionRecord> KEY_USER_IM_ACTION_PRIMARY = Internal.createUniqueKey(UserImAction.USER_IM_ACTION, "KEY_user_im_action_PRIMARY", UserImAction.USER_IM_ACTION.ID);
         public static final UniqueKey<UserLikesRecord> KEY_USER_LIKES_PRIMARY = Internal.createUniqueKey(UserLikes.USER_LIKES, "KEY_user_likes_PRIMARY", UserLikes.USER_LIKES.ID);
-        public static final UniqueKey<UserLogsRecord> KEY_USER_LOGS_PRIMARY = Internal.createUniqueKey(UserLogs.USER_LOGS, "KEY_user_logs_PRIMARY", UserLogs.USER_LOGS.ID);
         public static final UniqueKey<UserProfileRecord> KEY_USER_PROFILE_PRIMARY = Internal.createUniqueKey(UserProfile.USER_PROFILE, "KEY_user_profile_PRIMARY", UserProfile.USER_PROFILE.ID);
         public static final UniqueKey<UserProfileRecord> KEY_USER_PROFILE_UK_USERID_KEY = Internal.createUniqueKey(UserProfile.USER_PROFILE, "KEY_user_profile_uk_userid_key", UserProfile.USER_PROFILE.USER_ID, UserProfile.USER_PROFILE.KEY);
-        public static final UniqueKey<UserSimpleInfoRecord> KEY_USER_SIMPLE_INFO_PRIMARY = Internal.createUniqueKey(UserSimpleInfo.USER_SIMPLE_INFO, "KEY_user_simple_info_PRIMARY", UserSimpleInfo.USER_SIMPLE_INFO.ID);
     }
 }

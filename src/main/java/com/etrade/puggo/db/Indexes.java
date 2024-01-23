@@ -33,16 +33,14 @@ import com.etrade.puggo.db.tables.PaymentCard;
 import com.etrade.puggo.db.tables.PaymentCustomerAddress;
 import com.etrade.puggo.db.tables.PaymentRecord;
 import com.etrade.puggo.db.tables.Setting;
+import com.etrade.puggo.db.tables.StatisticsUserCommentScore;
 import com.etrade.puggo.db.tables.User;
 import com.etrade.puggo.db.tables.UserAccount;
-import com.etrade.puggo.db.tables.UserAddress;
 import com.etrade.puggo.db.tables.UserBrowsingHistory;
 import com.etrade.puggo.db.tables.UserFans;
 import com.etrade.puggo.db.tables.UserImAction;
 import com.etrade.puggo.db.tables.UserLikes;
-import com.etrade.puggo.db.tables.UserLogs;
 import com.etrade.puggo.db.tables.UserProfile;
-import com.etrade.puggo.db.tables.UserSimpleInfo;
 
 import javax.annotation.processing.Generated;
 
@@ -129,11 +127,13 @@ public class Indexes {
     public static final Index PAYMENT_RECORD_IDX_USER_ID = Indexes0.PAYMENT_RECORD_IDX_USER_ID;
     public static final Index SETTING_PRIMARY = Indexes0.SETTING_PRIMARY;
     public static final Index SETTING_UK_SETTING_KEY = Indexes0.SETTING_UK_SETTING_KEY;
+    public static final Index STATISTICS_USER_COMMENT_SCORE_IDX_USER_ID = Indexes0.STATISTICS_USER_COMMENT_SCORE_IDX_USER_ID;
+    public static final Index STATISTICS_USER_COMMENT_SCORE_PRIMARY = Indexes0.STATISTICS_USER_COMMENT_SCORE_PRIMARY;
+    public static final Index USER_IDX_NICKNAME = Indexes0.USER_IDX_NICKNAME;
     public static final Index USER_PRIMARY = Indexes0.USER_PRIMARY;
     public static final Index USER_ACCOUNT_IDX_USER_ID = Indexes0.USER_ACCOUNT_IDX_USER_ID;
     public static final Index USER_ACCOUNT_PRIMARY = Indexes0.USER_ACCOUNT_PRIMARY;
     public static final Index USER_ACCOUNT_UX_ACCOUNT = Indexes0.USER_ACCOUNT_UX_ACCOUNT;
-    public static final Index USER_ADDRESS_PRIMARY = Indexes0.USER_ADDRESS_PRIMARY;
     public static final Index USER_BROWSING_HISTORY_IDX_USER_ID_GROUPON_ID = Indexes0.USER_BROWSING_HISTORY_IDX_USER_ID_GROUPON_ID;
     public static final Index USER_BROWSING_HISTORY_PRIMARY = Indexes0.USER_BROWSING_HISTORY_PRIMARY;
     public static final Index USER_FANS_IDX_FANSUSERID = Indexes0.USER_FANS_IDX_FANSUSERID;
@@ -142,10 +142,8 @@ public class Indexes {
     public static final Index USER_IM_ACTION_PRIMARY = Indexes0.USER_IM_ACTION_PRIMARY;
     public static final Index USER_LIKES_IDX_USER_ID_GROUPON_ID = Indexes0.USER_LIKES_IDX_USER_ID_GROUPON_ID;
     public static final Index USER_LIKES_PRIMARY = Indexes0.USER_LIKES_PRIMARY;
-    public static final Index USER_LOGS_PRIMARY = Indexes0.USER_LOGS_PRIMARY;
     public static final Index USER_PROFILE_PRIMARY = Indexes0.USER_PROFILE_PRIMARY;
     public static final Index USER_PROFILE_UK_USERID_KEY = Indexes0.USER_PROFILE_UK_USERID_KEY;
-    public static final Index USER_SIMPLE_INFO_PRIMARY = Indexes0.USER_SIMPLE_INFO_PRIMARY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -213,11 +211,13 @@ public class Indexes {
         public static Index PAYMENT_RECORD_IDX_USER_ID = Internal.createIndex("idx_user_id", PaymentRecord.PAYMENT_RECORD, new OrderField[] { PaymentRecord.PAYMENT_RECORD.USER_ID }, false);
         public static Index SETTING_PRIMARY = Internal.createIndex("PRIMARY", Setting.SETTING, new OrderField[] { Setting.SETTING.ID }, true);
         public static Index SETTING_UK_SETTING_KEY = Internal.createIndex("uk_setting_key", Setting.SETTING, new OrderField[] { Setting.SETTING.KEY }, true);
+        public static Index STATISTICS_USER_COMMENT_SCORE_IDX_USER_ID = Internal.createIndex("idx_user_id", StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE, new OrderField[] { StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE.USER_ID }, false);
+        public static Index STATISTICS_USER_COMMENT_SCORE_PRIMARY = Internal.createIndex("PRIMARY", StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE, new OrderField[] { StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE.ID }, true);
+        public static Index USER_IDX_NICKNAME = Internal.createIndex("idx_nickname", User.USER, new OrderField[] { User.USER.NICKNAME }, false);
         public static Index USER_PRIMARY = Internal.createIndex("PRIMARY", User.USER, new OrderField[] { User.USER.ID }, true);
         public static Index USER_ACCOUNT_IDX_USER_ID = Internal.createIndex("idx_user_id", UserAccount.USER_ACCOUNT, new OrderField[] { UserAccount.USER_ACCOUNT.USER_ID }, false);
         public static Index USER_ACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", UserAccount.USER_ACCOUNT, new OrderField[] { UserAccount.USER_ACCOUNT.ID }, true);
         public static Index USER_ACCOUNT_UX_ACCOUNT = Internal.createIndex("ux_account", UserAccount.USER_ACCOUNT, new OrderField[] { UserAccount.USER_ACCOUNT.ACCOUNT }, true);
-        public static Index USER_ADDRESS_PRIMARY = Internal.createIndex("PRIMARY", UserAddress.USER_ADDRESS, new OrderField[] { UserAddress.USER_ADDRESS.ID }, true);
         public static Index USER_BROWSING_HISTORY_IDX_USER_ID_GROUPON_ID = Internal.createIndex("idx_user_id_groupon_id", UserBrowsingHistory.USER_BROWSING_HISTORY, new OrderField[] { UserBrowsingHistory.USER_BROWSING_HISTORY.USER_ID, UserBrowsingHistory.USER_BROWSING_HISTORY.GROUPON_ID }, false);
         public static Index USER_BROWSING_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", UserBrowsingHistory.USER_BROWSING_HISTORY, new OrderField[] { UserBrowsingHistory.USER_BROWSING_HISTORY.ID }, true);
         public static Index USER_FANS_IDX_FANSUSERID = Internal.createIndex("idx_fansuserid", UserFans.USER_FANS, new OrderField[] { UserFans.USER_FANS.FANS_USER_ID }, false);
@@ -226,9 +226,7 @@ public class Indexes {
         public static Index USER_IM_ACTION_PRIMARY = Internal.createIndex("PRIMARY", UserImAction.USER_IM_ACTION, new OrderField[] { UserImAction.USER_IM_ACTION.ID }, true);
         public static Index USER_LIKES_IDX_USER_ID_GROUPON_ID = Internal.createIndex("idx_user_id_groupon_id", UserLikes.USER_LIKES, new OrderField[] { UserLikes.USER_LIKES.USER_ID, UserLikes.USER_LIKES.GROUPON_ID }, false);
         public static Index USER_LIKES_PRIMARY = Internal.createIndex("PRIMARY", UserLikes.USER_LIKES, new OrderField[] { UserLikes.USER_LIKES.ID }, true);
-        public static Index USER_LOGS_PRIMARY = Internal.createIndex("PRIMARY", UserLogs.USER_LOGS, new OrderField[] { UserLogs.USER_LOGS.ID }, true);
         public static Index USER_PROFILE_PRIMARY = Internal.createIndex("PRIMARY", UserProfile.USER_PROFILE, new OrderField[] { UserProfile.USER_PROFILE.ID }, true);
         public static Index USER_PROFILE_UK_USERID_KEY = Internal.createIndex("uk_userid_key", UserProfile.USER_PROFILE, new OrderField[] { UserProfile.USER_PROFILE.USER_ID, UserProfile.USER_PROFILE.KEY }, true);
-        public static Index USER_SIMPLE_INFO_PRIMARY = Internal.createIndex("PRIMARY", UserSimpleInfo.USER_SIMPLE_INFO, new OrderField[] { UserSimpleInfo.USER_SIMPLE_INFO.ID }, true);
     }
 }

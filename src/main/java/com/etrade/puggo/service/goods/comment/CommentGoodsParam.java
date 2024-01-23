@@ -22,11 +22,11 @@ public class CommentGoodsParam {
     @ApiModelProperty(value = "商品id", required = true)
     private Long goodsId;
 
-    @NotNull(message = "rate is Null")
+    @NotNull(message = "score is Null")
     @Min(value = 1L, message = "评分最低1.0, 最高5.0")
     @Max(value = 5L, message = "评分最低1.0, 最高5.0")
     @ApiModelProperty(value = "评分，最低1.0, 最高5.0，半颗星表示0.5", required = true)
-    private BigDecimal rate;
+    private BigDecimal score;
 
     @NotNull(message = "评论内容不能为空")
     @NotBlank(message = "评论内容不能为空")

@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsCommentRecord extends UpdatableRecordImpl<GoodsCommentRecord> implements Record12<Long, Long, BigDecimal, Byte, String, Byte, Long, Long, Long, Byte, LocalDateTime, LocalDateTime> {
 
-    private static final long serialVersionUID = -1322062151;
+    private static final long serialVersionUID = 868705677;
 
     /**
      * Setter for <code>etrade_goods.goods_comment.id</code>.
@@ -62,16 +62,16 @@ public class GoodsCommentRecord extends UpdatableRecordImpl<GoodsCommentRecord> 
     }
 
     /**
-     * Setter for <code>etrade_goods.goods_comment.rate</code>. 评分
+     * Setter for <code>etrade_goods.goods_comment.score</code>. 评分
      */
-    public void setRate(BigDecimal value) {
+    public void setScore(BigDecimal value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>etrade_goods.goods_comment.rate</code>. 评分
+     * Getter for <code>etrade_goods.goods_comment.score</code>. 评分
      */
-    public BigDecimal getRate() {
+    public BigDecimal getScore() {
         return (BigDecimal) get(2);
     }
 
@@ -236,7 +236,7 @@ public class GoodsCommentRecord extends UpdatableRecordImpl<GoodsCommentRecord> 
 
     @Override
     public Field<BigDecimal> field3() {
-        return GoodsComment.GOODS_COMMENT.RATE;
+        return GoodsComment.GOODS_COMMENT.SCORE;
     }
 
     @Override
@@ -296,7 +296,7 @@ public class GoodsCommentRecord extends UpdatableRecordImpl<GoodsCommentRecord> 
 
     @Override
     public BigDecimal component3() {
-        return getRate();
+        return getScore();
     }
 
     @Override
@@ -356,7 +356,7 @@ public class GoodsCommentRecord extends UpdatableRecordImpl<GoodsCommentRecord> 
 
     @Override
     public BigDecimal value3() {
-        return getRate();
+        return getScore();
     }
 
     @Override
@@ -418,7 +418,7 @@ public class GoodsCommentRecord extends UpdatableRecordImpl<GoodsCommentRecord> 
 
     @Override
     public GoodsCommentRecord value3(BigDecimal value) {
-        setRate(value);
+        setScore(value);
         return this;
     }
 
@@ -507,12 +507,12 @@ public class GoodsCommentRecord extends UpdatableRecordImpl<GoodsCommentRecord> 
     /**
      * Create a detached, initialised GoodsCommentRecord
      */
-    public GoodsCommentRecord(Long id, Long goodsId, BigDecimal rate, Byte identity, String comment, Byte type, Long fromUserId, Long toUserId, Long lastCommentId, Byte isReply, LocalDateTime created, LocalDateTime modified) {
+    public GoodsCommentRecord(Long id, Long goodsId, BigDecimal score, Byte identity, String comment, Byte type, Long fromUserId, Long toUserId, Long lastCommentId, Byte isReply, LocalDateTime created, LocalDateTime modified) {
         super(GoodsComment.GOODS_COMMENT);
 
         set(0, id);
         set(1, goodsId);
-        set(2, rate);
+        set(2, score);
         set(3, identity);
         set(4, comment);
         set(5, type);

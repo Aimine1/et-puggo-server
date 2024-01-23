@@ -1,23 +1,31 @@
 package com.etrade.puggo.service.goods.comment;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
+import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.page.PageContentContainer;
+import com.etrade.puggo.constants.CommentConstants;
 import com.etrade.puggo.constants.GoodsImgType;
-import com.etrade.puggo.dao.goods.GoodsCommentDao;
+import com.etrade.puggo.dao.comment.GoodsCommentDao;
+import com.etrade.puggo.dao.comment.StatisticsUserCommentScoreDao;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsMessageLogDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.db.tables.records.GoodsCommentRecord;
+import com.etrade.puggo.db.tables.records.StatisticsUserCommentScoreRecord;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
 import com.etrade.puggo.service.goods.comment.CommentVO.ReplyCommentVO;
-import com.etrade.puggo.service.goods.sales.pojo.GoodsDetailVO;
 import com.etrade.puggo.service.goods.sales.GoodsSimpleService;
+import com.etrade.puggo.service.goods.sales.pojo.GoodsDetailVO;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
 import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
 import com.etrade.puggo.third.aws.S3PutObjectResult;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -25,9 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author niuzhenyu
@@ -46,6 +51,8 @@ public class GoodsCommentService extends BaseService {
     @Resource
     private GoodsMessageLogDao goodsMessageLogDao;
     @Resource
+    private StatisticsUserCommentScoreDao statisticsUserCommentScoreDao;
+    @Resource
     private GoodsSimpleService goodsSimpleService;
     @Resource
     private UserAccountService userAccountService;
@@ -54,32 +61,25 @@ public class GoodsCommentService extends BaseService {
     /**
      * 评论
      *
-     * @author niuzhenyu
-     * @lastEditor niuzhenyu
-     * @createTime 2023/6/25 18:14
-     * @editTime 2023/6/25 18:14
-     **/
+     * @param param 前端入参
+     */
     @Transactional(rollbackFor = Throwable.class)
     public void comment(CommentGoodsParam param) {
 
-        BigDecimal rate = param.getRate();
+        BigDecimal score = param.getScore();
         Byte type = param.getType();
         Long goodsId = param.getGoodsId();
         Long toUserId = param.getToUserId();
         Long fromUserId = userId();
 
-        List<Byte> typeList = Arrays.asList(
-            GoodsCommentDao.TYPE_BUYER,
-            GoodsCommentDao.TYPE_SELLER,
-            GoodsCommentDao.TYPE_MESSAGE
-        );
+        List<Byte> typeList = Arrays.asList(CommentConstants.TYPE_BUYER, CommentConstants.TYPE_SELLER);
 
         if (!typeList.contains(type)) {
-            throw new ServiceException("评论类型未知");
+            throw new ServiceException(LangErrorEnum.INVALID_COMMENT_TYPE.lang());
         }
 
         BigDecimal factor = new BigDecimal("0.5");
-        BigDecimal[] results = rate.divideAndRemainder(factor);
+        BigDecimal[] results = score.divideAndRemainder(factor);
 
         if (results[1].compareTo(BigDecimal.ZERO) != 0) {
             throw new ServiceException("评分只能是0.5的倍数");
@@ -87,22 +87,21 @@ public class GoodsCommentService extends BaseService {
 
         GoodsDetailVO goods = goodsDao.findGoodsDetail(goodsId);
         if (goods == null) {
-            throw new ServiceException("无效商品");
+            throw new ServiceException(LangErrorEnum.INVALID_GOODS.lang());
         }
 
         byte identity;
-
-        if (Objects.equals(GoodsCommentDao.TYPE_BUYER, type)) {
+        if (Objects.equals(CommentConstants.TYPE_BUYER, type)) {
             // 评论买家
-            identity = GoodsCommentDao.IDENTITY_SELLER;
+            identity = CommentConstants.IDENTITY_SELLER;
         } else {
             // 评论卖家和私讯
-            identity = GoodsCommentDao.IDENTITY_BUYER;
+            identity = CommentConstants.IDENTITY_BUYER;
         }
 
         GoodsCommentRecord record = new GoodsCommentRecord();
         record.setGoodsId(param.getGoodsId());
-        record.setRate(param.getRate());
+        record.setScore(param.getScore());
         record.setComment(param.getComment());
         record.setType(param.getType());
         record.setFromUserId(userId());
@@ -120,17 +119,50 @@ public class GoodsCommentService extends BaseService {
         }
 
         // 修改商品会话
-        if (Objects.equals(GoodsCommentDao.TYPE_BUYER, type)) {
+        // updateGoodsMessageState(type, toUserId, fromUserId, goodsId);
+
+        // 计算并重置用户信用分
+        calculateAndResetUserCreditRating(toUserId, score, identity);
+    }
+
+
+    /**
+     * 计算并重置用户信用分
+     *
+     * @param toUserId 评论对象
+     * @param score    评分
+     * @param identity 评论者身份
+     */
+    private void calculateAndResetUserCreditRating(Long toUserId, BigDecimal score, byte identity) {
+        // 重新计算平均评分
+        statisticsUserCommentScoreDao.saveOrUpdate(toUserId, score, identity);
+        // 查询平均分
+        StatisticsUserCommentScoreRecord statRecord = statisticsUserCommentScoreDao.getOneRecord(toUserId);
+        BigDecimal averageScore = statRecord.getAverageScore();
+        // 给用户设置平均分
+        userAccountService.resetUserCreditRating(toUserId, averageScore);
+    }
+
+
+    /**
+     * 修改商品会话评论状态，目前已经废弃
+     *
+     * @param type       评论类型
+     * @param toUserId   评论对象
+     * @param fromUserId 评论者
+     * @param goodsId    商品id
+     */
+    private void updateGoodsMessageState(Byte type, Long toUserId, Long fromUserId, Long goodsId) {
+        if (Objects.equals(CommentConstants.TYPE_BUYER, type)) {
             // 评论买家
             goodsMessageLogDao.updateIsBuyerComment(toUserId, fromUserId, goodsId);
-        } else if (Objects.equals(GoodsCommentDao.TYPE_SELLER, type)) {
+        } else if (Objects.equals(CommentConstants.TYPE_SELLER, type)) {
             // 评论卖家
             goodsMessageLogDao.updateIsSellerComment(fromUserId, toUserId, goodsId);
-        } else if (Objects.equals(GoodsCommentDao.TYPE_MESSAGE, type)) {
+        } else if (Objects.equals(CommentConstants.TYPE_MESSAGE, type)) {
             // 评论商品
             goodsMessageLogDao.updateIsGoodsComment(fromUserId, toUserId, goodsId);
         }
-
     }
 
 
@@ -160,13 +192,13 @@ public class GoodsCommentService extends BaseService {
             identity = lastComment.getIdentity();
         } else {
             // 别人回复
-            identity = lastComment.getIdentity().equals(GoodsCommentDao.IDENTITY_BUYER) ? GoodsCommentDao.TYPE_SELLER
-                : GoodsCommentDao.IDENTITY_BUYER;
+            identity = lastComment.getIdentity().equals(CommentConstants.IDENTITY_BUYER) ? CommentConstants.TYPE_SELLER
+                    : CommentConstants.IDENTITY_BUYER;
         }
 
         GoodsCommentRecord record = new GoodsCommentRecord();
         record.setGoodsId(lastComment.getGoodsId());
-        record.setRate(BigDecimal.ZERO);
+        record.setScore(BigDecimal.ZERO);
         record.setComment(comment);
         record.setType(lastComment.getType());
         record.setFromUserId(userId);
@@ -209,7 +241,7 @@ public class GoodsCommentService extends BaseService {
         List<LaunchUserDO> userList = userAccountService.getUserList(userIdList);
 
         Map<Long, LaunchUserDO> userMap = userList.stream()
-            .collect(Collectors.toMap(LaunchUserDO::getUserId, Function.identity()));
+                .collect(Collectors.toMap(LaunchUserDO::getUserId, Function.identity()));
 
         // 回复评论
         List<Long> commentIdList = list.stream().map(CommentVO::getCommentId).collect(Collectors.toList());
@@ -217,13 +249,13 @@ public class GoodsCommentService extends BaseService {
         List<ReplyCommentVO> replyCommentList = goodsCommentDao.findReplyCommentList(commentIdList);
 
         Map<Long, ReplyCommentVO> replyMap = replyCommentList.stream()
-            .collect(Collectors.toMap(ReplyCommentVO::getLastCommentId, Function.identity()));
+                .collect(Collectors.toMap(ReplyCommentVO::getLastCommentId, Function.identity()));
 
         // 图片内容
         List<S3Picture> pictures = goodsPictureDao.findTargetPictures(commentIdList, GoodsImgType.COMMENT);
 
         Map<Long, List<S3Picture>> pictureMap = pictures.stream()
-            .collect(Collectors.groupingBy(S3Picture::getTargetId));
+                .collect(Collectors.groupingBy(S3Picture::getTargetId));
 
         for (CommentVO vo : list) {
             Long fromUserId = vo.getFromUserId();
