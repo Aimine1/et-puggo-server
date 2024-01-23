@@ -45,7 +45,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = 226136867;
+    private static final long serialVersionUID = -982717321;
 
     /**
      * The reference instance of <code>etrade_goods.user</code>
@@ -205,7 +205,7 @@ public class User extends TableImpl<UserRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USER_PRIMARY);
+        return Arrays.<Index>asList(Indexes.USER_IDX_NICKNAME, Indexes.USER_PRIMARY);
     }
 
     @Override

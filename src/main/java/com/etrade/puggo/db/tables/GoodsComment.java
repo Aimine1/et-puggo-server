@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsComment extends TableImpl<GoodsCommentRecord> {
 
-    private static final long serialVersionUID = 1658495301;
+    private static final long serialVersionUID = 485473359;
 
     /**
      * The reference instance of <code>etrade_goods.goods_comment</code>
@@ -70,9 +70,9 @@ public class GoodsComment extends TableImpl<GoodsCommentRecord> {
     public final TableField<GoodsCommentRecord, Long> GOODS_ID = createField(DSL.name("goods_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "商品id");
 
     /**
-     * The column <code>etrade_goods.goods_comment.rate</code>. 评分
+     * The column <code>etrade_goods.goods_comment.score</code>. 评分
      */
-    public final TableField<GoodsCommentRecord, BigDecimal> RATE = createField(DSL.name("rate"), org.jooq.impl.SQLDataType.DECIMAL(10, 1).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0", org.jooq.impl.SQLDataType.DECIMAL)), this, "评分");
+    public final TableField<GoodsCommentRecord, BigDecimal> SCORE = createField(DSL.name("score"), org.jooq.impl.SQLDataType.DECIMAL(10, 1).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0", org.jooq.impl.SQLDataType.DECIMAL)), this, "评分");
 
     /**
      * The column <code>etrade_goods.goods_comment.identity</code>. 评论者身份, 1买家身份 2卖家身份

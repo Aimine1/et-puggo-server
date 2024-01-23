@@ -216,15 +216,14 @@ public class GoodsSalesService extends BaseService {
         GoodsDetailVO detail = goodsDao.findGoodsDetail(goodsId);
 
         if (detail == null) {
-            throw new ServiceException("商品不存在");
+            throw new ServiceException(LangErrorEnum.INVALID_GOODS.lang());
         }
 
         List<S3Picture> goodsPictures = goodsPictureDao.findTargetPictures(goodsId, GoodsImgType.GOODS);
 
         detail.setPictureList(goodsPictures);
 
-        List<LaunchUserDO> userList = userAccountService.getUserList(
-            Collections.singletonList(detail.getLaunchUserId()));
+        List<LaunchUserDO> userList = userAccountService.getUserList(List.of(detail.getLaunchUserId()));
 
         detail.setLaunchUser(userList.get(0));
 
@@ -233,7 +232,7 @@ public class GoodsSalesService extends BaseService {
             userGoodsService.browseGoods(goodsId);
 
             // 判断用户是否收藏该商品
-            List<Long> likeGoods = userGoodsService.isLike(Collections.singletonList(detail.getGoodsId()));
+            List<Long> likeGoods = userGoodsService.isLike(List.of(detail.getGoodsId()));
             detail.setIsLike(likeGoods.contains(detail.getGoodsId()));
         } else {
             detail.setIsLike(false);

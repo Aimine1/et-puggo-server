@@ -36,7 +36,7 @@ public enum LangErrorEnum {
      * 支付
      */
     INVALID_AMOUNT("无效金额", "Invalid amount"),
-    INVALID_GOODS("无效货品", "Invalid product"),
+    INVALID_GOODS("无效商品", "Invalid product"),
     INVALID_CARD_NUMBER("无效的卡号", "Invalid card number"),
     INVALID_EXPIRE_DATE("无效的失效日期", "Invalid expire date"),
     INVALID_PHONE_NUMBER("无效的电话号码", "Invalid phone number"),
@@ -50,7 +50,7 @@ public enum LangErrorEnum {
     INVALID_PRODUCT_PRICE("商品成交价格异常", "Invalid product price"),
     INVALID_TARGET("未知的支付目的", "Invalid pay target"),
     PAYMENT_FAILED("支付失败，请您联系客服解决", "Payment failed，please contact customer service for resolution"),
-
+    INVALID_COMMENT_TYPE("未知的评论类型", "Invalid review type"),
 
     ;
 

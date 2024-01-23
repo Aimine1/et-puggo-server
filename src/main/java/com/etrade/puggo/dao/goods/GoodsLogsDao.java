@@ -45,15 +45,4 @@ public class GoodsLogsDao extends BaseDao {
         return getPageResult(sql, param, UserLogsVO.class);
     }
 
-
-    public void updateToRead(Long userId) {
-        db.update(GOODS_LOGS).set(GOODS_LOGS.IS_UNREAD, (byte) 0).where(GOODS_LOGS.USER_ID.eq(userId)).execute();
-    }
-
-
-    public Integer findUnreadCount(Long userId) {
-        return db.selectCount().from(GOODS_LOGS)
-            .where(GOODS_LOGS.USER_ID.eq(userId).and(GOODS_LOGS.IS_UNREAD.eq((byte) 1))).fetchAnyInto(Integer.class);
-    }
-
 }

@@ -54,6 +54,26 @@ CREATE TABLE `payment_customer_address`
     KEY             `idx_user_id` (`user_id`) USING BTREE
 ) COMMENT='账单地址/买家收货地址';
 
+
+DROP TABLE IF EXISTS `statistics_user_comment_score`;
+CREATE TABLE `statistics_user_comment_score`
+(
+    `id`                          bigint         NOT NULL AUTO_INCREMENT,
+    `user_id`                     bigint         NOT NULL DEFAULT '0' COMMENT '用户id',
+    `average_score`               decimal(10, 1) NOT NULL DEFAULT '0.0' COMMENT '平均评分，等于用户信用评分',
+    `total_score`                 decimal(10, 1) NOT NULL DEFAULT '0.0' COMMENT '总评分',
+    `from_seller_score`           decimal(10, 1) NOT NULL DEFAULT '0.0' COMMENT '来自卖家评分',
+    `from_customer_score`         decimal(10, 1) NOT NULL DEFAULT '0.0' COMMENT '来自买家评分',
+    `total_comment`               int            NOT NULL DEFAULT 0 COMMENT '总评论数',
+    `total_from_seller_comment`   int            NOT NULL DEFAULT 0 COMMENT '来自卖家评论数',
+    `total_from_customer_comment` int            NOT NULL DEFAULT 0 COMMENT '来自买家评论数',
+    `created`                     timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified`                    timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`) USING BTREE,
+    KEY                           `idx_user_id` (`user_id`) USING BTREE
+) COMMENT='用户评分统计';
+
+
 alter table goods_trade
     add seller_id bigint NOT NULL DEFAULT '0' COMMENT '卖家id' after customer;
 
@@ -61,8 +81,20 @@ insert into setting(`key`, `value`, `comment`)
 values ('productTaxPercentage', '8', '商税百分比'),
        ('sameDayDeliveryCharge', '18', '同城配送费用'),
        ('shippingMethods', '["Public Meetup","Puggo Same-day Delivery"]', '交易方式');
-update setting set comment = '系统默认货币（英文缩写）' where `key` = 'moneyKind';
-update setting set comment = '系统IM账号' where `key` = 'systemImAction';
+update setting
+set comment = '系统默认货币（英文缩写）'
+where `key` = 'moneyKind';
+update setting
+set comment = '系统IM账号'
+where `key` = 'systemImAction';
 
-alter table user add payment_customer_id varchar(50) not null default '' comment '支付账户id' after `is_verified`;
-alter table user add key idx_nickname(nickname) using btree;
+alter table user
+    add payment_customer_id varchar(50) not null default '' comment '支付账户id' after `is_verified`,
+    add key idx_nickname(nickname) using btree;
+
+drop table if exists `user_logs`;
+drop table if exists `user_simple_info`;
+drop table if exists `user_address`;
+
+alter table goods_comment change `rate` `score` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '评分';
+
