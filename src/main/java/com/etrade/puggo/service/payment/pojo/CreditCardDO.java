@@ -44,18 +44,7 @@ public class CreditCardDO {
     @ApiModelProperty(value = "安全码，一般为3-4位数字", example = "123/1234", required = true)
     private String cvc;
 
-    @NotNull(message = "brand is empty")
-    @NotBlank(message = "brand is empty")
-    @Length(min = 1, max = 20, message = "invalid brand")
-    @ApiModelProperty(value = "信用卡品牌，比如：Visa、MasterCard、American Express、Discover、JCB (Japan Credit Bureau)、Diners Club International等", example = "Visa", required = true)
-    private String brand;
-
     @ApiModelProperty(value = "是否是默认卡", example = "true")
     private Boolean isDefault;
-
-    @NotNull(message = "type is empty")
-    @NotBlank(message = "type is empty")
-    @ApiModelProperty(value = "卡类型：借记卡传debit，信用卡传credit", example = "credit", required = true)
-    private String type;
 
 }

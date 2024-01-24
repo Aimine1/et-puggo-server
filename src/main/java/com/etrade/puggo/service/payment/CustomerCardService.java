@@ -35,8 +35,6 @@ public class CustomerCardService extends BaseService {
 
         checkExpireYearAndMonth(param.getExpireYear(), param.getExpireMonth());
 
-        checkCardType(param.getType());
-
         customerCardDao.save(param, userId());
     }
 
@@ -46,8 +44,6 @@ public class CustomerCardService extends BaseService {
         checkCardNumber(param.getCardNumber());
 
         checkExpireYearAndMonth(param.getExpireYear(), param.getExpireMonth());
-
-        checkCardType(param.getType());
 
         customerCardDao.update(param, userId());
     }

@@ -68,8 +68,6 @@ public class CustomerCardDao extends BaseDao {
         record.setCvs(param.getCvc());
         record.setTitle(OptionalUtils.valueOrDefault(param.getTitle()));
         record.setIsDefault(BooleanUtils.isTrue(param.getIsDefault()) ? (byte) 1 : (byte) 0);
-        record.setBrand(param.getBrand());
-        record.setType(param.getType());
         record.setUserId(userId);
         return record;
     }
