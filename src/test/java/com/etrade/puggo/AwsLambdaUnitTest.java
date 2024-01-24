@@ -1,10 +1,14 @@
 package com.etrade.puggo;
 
+import com.etrade.puggo.common.enums.CardTypeEnum;
+import com.etrade.puggo.common.enums.PaymentTypeEnum;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
+import com.etrade.puggo.third.aws.pojo.CreatePaymentIntentReq;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 /**
  * @author zhenyu
@@ -42,4 +46,15 @@ public class AwsLambdaUnitTest {
     }
 
 
+    @Test
+    void createPaymentIntent() {
+        CreatePaymentIntentReq req = new CreatePaymentIntentReq();
+        req.setCurrency("CAD");
+        req.setPaymentMethodId("pm_1Oc58tGjtDrE34Dqaqpm2LEU");
+        req.setToken("tok_1Oc58tGjtDrE34Dqs7BceJv6,");
+        req.setCustomerId("cus_PQ4RwjPZ130DJG");
+        req.setPaymentType(PaymentTypeEnum.card.name());
+        req.setAmount(new BigDecimal("1"));
+        paymentLambdaFunctions.createPaymentIntent(req);
+    }
 }

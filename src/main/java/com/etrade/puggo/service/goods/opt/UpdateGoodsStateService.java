@@ -9,12 +9,13 @@ import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
 import com.etrade.puggo.stream.producer.StreamProducer;
 import com.etrade.puggo.third.im.pojo.SendNewsParam;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
-import org.springframework.stereotype.Service;
 
 /**
  * @author niuzhenyu
@@ -40,7 +41,9 @@ public class UpdateGoodsStateService extends BaseService {
         // 草稿、已发布可以流转未删除
         stateFlowMap.put(GoodsState.DELETED, Arrays.asList(GoodsState.DRAFT, GoodsState.PUBLISHED));
         // 已发布可以流转为预定
-        stateFlowMap.put(GoodsState.OCCUPY, Arrays.asList(GoodsState.PUBLISHED));
+        stateFlowMap.put(GoodsState.OCCUPY, List.of(GoodsState.PUBLISHED));
+        // 兼容之前的
+        stateFlowMap.put("OCCUPY", List.of(GoodsState.PUBLISHED));
         // 已发布可以流转为已售卖
         stateFlowMap.put(GoodsState.SOLD, Arrays.asList(GoodsState.PUBLISHED, GoodsState.OCCUPY));
         // 草稿、已发布、预定可以流转为下架
@@ -85,12 +88,12 @@ public class UpdateGoodsStateService extends BaseService {
             String goodsMainPic = goodsPictureDao.findGoodsMainPic(goodsId);
 
             SendNewsParam newsParam = SendNewsParam.builder()
-                .goodsId(goodsId)
-                .goodsMainPic(goodsMainPic)
-                .attach(String.format("%s 存在违规行为 您的商品已下架", "系统"))
-                .pushcontent("您有一条消息待查看")
-                .toUserId(goodsInfo.getLaunchUserId())
-                .build();
+                    .goodsId(goodsId)
+                    .goodsMainPic(goodsMainPic)
+                    .attach(String.format("%s 存在违规行为 您的商品已下架", "系统"))
+                    .pushcontent("您有一条消息待查看")
+                    .toUserId(goodsInfo.getLaunchUserId())
+                    .build();
 
             streamProducer.sendNews(newsParam);
         }

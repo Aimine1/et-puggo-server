@@ -16,7 +16,7 @@ public class GoodsState {
     // 已发布
     public static final String PUBLISHED = "PUBLISHED";
     // 预定
-    public static final String OCCUPY = "OCCUPY";
+    public static final String OCCUPY = "RESERVED";
     // 已售
     public static final String SOLD = "SOLD";
     // 完成

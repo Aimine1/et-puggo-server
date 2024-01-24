@@ -21,7 +21,7 @@ public class UpdateGoodsStateParam {
 
     @NotNull(message = "state is null")
     @NotBlank(message = "state is null")
-    @ApiModelProperty(value = "商品状态，DELETED-已发布到删除，OCCUPY-已发布到预留，SOLD-已发布到已售 PUBLISHED-从其他状态修改为发布状态", required = true)
+    @ApiModelProperty(value = "商品状态，DELETED-已发布到删除，RESERVED-已发布到已预留，SOLD-已发布到已售 PUBLISHED-从其他状态修改为发布状态", required = true)
     private String state;
 
 }

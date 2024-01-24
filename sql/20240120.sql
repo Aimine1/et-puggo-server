@@ -96,5 +96,8 @@ drop table if exists `user_logs`;
 drop table if exists `user_simple_info`;
 drop table if exists `user_address`;
 
-alter table goods_comment change `rate` `score` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '评分';
+alter table goods_comment change `rate` `score` decimal (10,1) NOT NULL DEFAULT '0.0' COMMENT '评分';
 
+update goods
+set state = 'RESERVED'
+where state = 'OCCUPY';
