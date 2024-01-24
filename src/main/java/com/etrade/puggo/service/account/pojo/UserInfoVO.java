@@ -52,7 +52,7 @@ public class UserInfoVO {
     @ApiModelProperty("粉丝数量")
     private Integer fansNum;
 
-    @JsonIgnore
+    @ApiModelProperty("买家支付id")
     private String paymentCustomerId;
 
 }
