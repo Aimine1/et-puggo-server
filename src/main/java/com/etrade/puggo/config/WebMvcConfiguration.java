@@ -10,14 +10,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import javax.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
@@ -27,6 +19,15 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * webMvc配置
@@ -38,17 +39,17 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private AuthInterceptor authInterceptor;
 
     private final List<String> swaggers = Arrays.asList("/v2/api-docs", "/swagger-ui.html", "/swagger-resources/**",
-        "/webjars/**");
+            "/webjars/**");
 
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("*")
-            .allowedMethods("*")
-            .allowedHeaders("*")
-            .allowCredentials(false)
-            .maxAge(3600L);
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600L);
     }
 
 
@@ -108,20 +109,20 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
         // 输出默认UTC标准时区
         DateTimeFormatter UTCFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            .withZone(ZoneId.of("UTC"));
+                .withZone(ZoneId.of("UTC"));
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(UTCFormatter));
         javaTimeModule.addSerializer(LocalDate.class,
-            new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         javaTimeModule.addSerializer(
-            LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
         //反序列，读取输入流，只能反序列化放到Body里的json格式数据哦
         javaTimeModule.addDeserializer(
-            LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         javaTimeModule.addDeserializer(
-            LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         javaTimeModule.addDeserializer(
-            LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
         converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
     }
