@@ -78,6 +78,7 @@ public class PaymentLambdaFunctions {
     }
 
 
+    @Deprecated
     public String createPaymentIntent(@Valid CreatePaymentIntentReq param) {
         return AwsLambdaUtils.invokeFunction("create_payment_intent", param);
     }
@@ -115,17 +116,15 @@ public class PaymentLambdaFunctions {
     }
 
 
-    public String updatePaymentMethod(@Valid UpdatePaymentMethodReq req) {
-        return AwsLambdaUtils.invokeFunction("update_payment_method", req);
-    }
-
-
     public String retrievePaymentIntent(@NotNull String paymentIntentId) {
         ImmutableMap<String, String> param = ImmutableMap.of("paymentIntentId", paymentIntentId);
         return AwsLambdaUtils.invokeFunction("retrieve_payment_intent", param);
     }
 
 
+    /**
+     * 检索paymentMethod
+     */
     public String retrievePaymentMethod(@NotNull String paymentMethodId) {
         ImmutableMap<String, String> param = ImmutableMap.of("paymentMethodId", paymentMethodId);
         return AwsLambdaUtils.invokeFunction("retrieve_payment_method", param);
@@ -138,10 +137,32 @@ public class PaymentLambdaFunctions {
     }
 
 
-    public String deletePaymentMethod(@NotNull String paymentMethodId) {
-        ImmutableMap<String, String> param = ImmutableMap.of("paymentMethodId", paymentMethodId);
-        return AwsLambdaUtils.invokeFunction("delete_payment_method", param);
+    public String createInvoice(@Valid CreateInvoiceReq req) {
+        return AwsLambdaUtils.invokeFunction("create_invoice", req);
     }
 
+
+    /**
+     * 创建卖家支付账号
+     *
+     * @param email 邮箱
+     * @return sellerAccountId
+     */
+    public String createSellerAccount(@NotNull String email) {
+        ImmutableMap<String, String> param = ImmutableMap.of("sellerEmail", email);
+        return AwsLambdaUtils.invokeFunction("create_seller_account", param);
+    }
+
+
+    /**
+     * 注册卖家的Link
+     *
+     * @param sellerAccountId 卖家支付账号id
+     * @return 卖家注册link
+     */
+    public String createSellerAccountLink(@NotNull String sellerAccountId) {
+        ImmutableMap<String, String> param = ImmutableMap.of("AccountId", sellerAccountId);
+        return AwsLambdaUtils.invokeFunction("create_seller_account_link", param);
+    }
 
 }
