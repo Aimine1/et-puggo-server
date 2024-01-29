@@ -9,19 +9,8 @@ import com.etrade.puggo.config.TouristUrlProperties;
 import com.etrade.puggo.constants.RequestHeaders;
 import com.etrade.puggo.constants.SpringProfiles;
 import com.etrade.puggo.constants.UserRoleConstants;
-import com.etrade.puggo.utils.Convert;
-import com.etrade.puggo.utils.IpUtils;
-import com.etrade.puggo.utils.JsonUtils;
-import com.etrade.puggo.utils.JwtUtils;
-import com.etrade.puggo.utils.StrUtils;
+import com.etrade.puggo.utils.*;
 import io.jsonwebtoken.Claims;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +19,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 授权拦截
@@ -64,9 +62,13 @@ public class AuthInterceptor implements HandlerInterceptor {
      * @editTime 2023/5/26 22:33
      **/
     @Override
-    public boolean preHandle(
-        @NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler)
-        throws Exception {
+    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
+                             @NotNull Object handler) throws Exception {
+
+        // 排除OPTIONS请求
+        if (Objects.equals(request.getMethod(), "OPTIONS")) {
+            return true;
+        }
 
         if (isIgnoreAPI(request)) {
             log.info("开放接口，跳过token校验");
@@ -215,7 +217,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     @SuppressWarnings("NullableProblems")
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-        Object handler, @Nullable Exception ex) {
+                                Object handler, @Nullable Exception ex) {
         AuthContext.remove();
     }
 
@@ -251,7 +253,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         String pre = SpringProfiles.pre.name();
         log.info("当前的环境是:{}", active);
         return StrUtils.startsWithIgnoreCase(active, prod)
-            || StrUtils.startsWithIgnoreCase(active, pre);
+                || StrUtils.startsWithIgnoreCase(active, pre);
     }
 
 
