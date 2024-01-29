@@ -1,7 +1,7 @@
 package com.etrade.puggo.service.goods.clazz;
 
 import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.constants.GoodsImgType;
+import com.etrade.puggo.common.constants.GoodsImgType;
 import com.etrade.puggo.dao.goods.GoodsClassDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.service.BaseService;

@@ -2,7 +2,7 @@ package com.etrade.puggo.dao.goods;
 
 import static com.etrade.puggo.db.Tables.GOODS_PICTURE;
 
-import com.etrade.puggo.constants.GoodsImgType;
+import com.etrade.puggo.common.constants.GoodsImgType;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.records.GoodsPictureRecord;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsMainPicUrlDTO;

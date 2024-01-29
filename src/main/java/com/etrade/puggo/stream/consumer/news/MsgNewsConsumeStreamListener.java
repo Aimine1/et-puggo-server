@@ -1,7 +1,7 @@
 package com.etrade.puggo.stream.consumer.news;
 
 import com.alibaba.fastjson.JSONObject;
-import com.etrade.puggo.constants.MsgNewsState;
+import com.etrade.puggo.common.constants.MsgNewsState;
 import com.etrade.puggo.dao.im.MsgNewsDao;
 import com.etrade.puggo.stream.consumer.StreamKeys.StreamMsgNewsKey;
 import com.etrade.puggo.third.im.YunxinIMApi;

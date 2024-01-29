@@ -2,7 +2,7 @@ package com.etrade.puggo.service.goods.trade;
 
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.page.PageContentContainer;
-import com.etrade.puggo.constants.GoodsTradeState;
+import com.etrade.puggo.common.constants.GoodsTradeState;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.dao.goods.GoodsTradeDao;
 import com.etrade.puggo.service.BaseService;

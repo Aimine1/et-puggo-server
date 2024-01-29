@@ -8,7 +8,7 @@ import static com.etrade.puggo.db.Tables.GROUPON_COUPON_RULE;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.etrade.puggo.common.page.PageContentContainer;
-import com.etrade.puggo.constants.GrouponState;
+import com.etrade.puggo.common.constants.GrouponState;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.service.groupon.GrouponCouponDTO;
 import com.etrade.puggo.service.groupon.GrouponCouponDetailDTO;

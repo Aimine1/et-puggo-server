@@ -1,7 +1,7 @@
 package com.etrade.puggo.common.filter;
 
-import com.etrade.puggo.constants.LangConstant;
-import com.etrade.puggo.constants.RequestHeaders;
+import com.etrade.puggo.common.constants.LangConstant;
+import com.etrade.puggo.common.constants.RequestHeaders;
 import com.etrade.puggo.utils.OptionalUtils;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

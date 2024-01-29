@@ -2,7 +2,7 @@ package com.etrade.puggo.dao.goods;
 
 import static com.etrade.puggo.db.Tables.GOODS_MESSAGE_LOGS;
 
-import com.etrade.puggo.constants.GoodsMessageState;
+import com.etrade.puggo.common.constants.GoodsMessageState;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.records.GoodsMessageLogsRecord;
 import com.etrade.puggo.service.goods.message.BuyerOfferPriceCallbackParam;

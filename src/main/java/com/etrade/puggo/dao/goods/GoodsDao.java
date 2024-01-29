@@ -5,7 +5,7 @@ import static com.etrade.puggo.db.Tables.GOODS_CLASS;
 import static com.etrade.puggo.db.Tables.GOODS_DATA;
 
 import com.etrade.puggo.common.page.PageContentContainer;
-import com.etrade.puggo.constants.GoodsState;
+import com.etrade.puggo.common.constants.GoodsState;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.Goods;
 import com.etrade.puggo.db.tables.records.GoodsRecord;

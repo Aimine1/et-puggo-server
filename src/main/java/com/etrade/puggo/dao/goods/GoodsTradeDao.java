@@ -1,7 +1,6 @@
 package com.etrade.puggo.dao.goods;
 
 import com.etrade.puggo.common.page.PageContentContainer;
-import com.etrade.puggo.constants.GoodsTradeState;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsTradeDTO;
 import com.etrade.puggo.service.goods.trade.GoodsTradeParam;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import static com.etrade.puggo.db.Tables.*;
 

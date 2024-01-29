@@ -1,6 +1,6 @@
 package com.etrade.puggo.dao.comment;
 
-import com.etrade.puggo.constants.CommentConstants;
+import com.etrade.puggo.common.constants.CommentConstants;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.records.StatisticsUserCommentScoreRecord;
 import org.springframework.stereotype.Repository;
