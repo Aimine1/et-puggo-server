@@ -1,6 +1,5 @@
 package com.etrade.puggo;
 
-import com.etrade.puggo.common.enums.CardTypeEnum;
 import com.etrade.puggo.common.enums.PaymentTypeEnum;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
 import com.etrade.puggo.third.aws.pojo.CreatePaymentIntentReq;
@@ -56,5 +55,21 @@ public class AwsLambdaUnitTest {
         req.setPaymentType(PaymentTypeEnum.card.name());
         req.setAmount(new BigDecimal("1"));
         paymentLambdaFunctions.createPaymentIntent(req);
+    }
+
+    @Test
+    void retrievePaymentMethod() {
+        paymentLambdaFunctions.retrievePaymentMethod("pm_1Oc58tGjtDrE34Dqaqpm2LEU");
+    }
+
+    @Test
+    void createSellerAccount() {
+        paymentLambdaFunctions.createSellerAccount("1412264952@qq.com");
+    }
+
+
+    @Test
+    void createSellerAccountLink() {
+        paymentLambdaFunctions.createSellerAccountLink("acct_1A2B3C4D5E6F7G8H");
     }
 }
