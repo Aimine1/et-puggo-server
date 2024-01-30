@@ -1,6 +1,6 @@
 package com.etrade.puggo.utils;
 
-import com.etrade.puggo.constants.RedisKeys;
+import com.etrade.puggo.common.constants.RedisKeys;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;

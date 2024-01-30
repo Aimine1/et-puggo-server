@@ -1,13 +1,14 @@
 package com.etrade.puggo.dao.goods;
 
+import com.etrade.puggo.common.constants.GoodsTradeState;
 import com.etrade.puggo.common.page.PageContentContainer;
-import com.etrade.puggo.constants.GoodsTradeState;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsTradeDTO;
 import com.etrade.puggo.service.goods.trade.GoodsTradeParam;
 import com.etrade.puggo.service.goods.trade.GoodsTradeVO;
 import com.etrade.puggo.service.goods.trade.MyTradeVO;
 import com.etrade.puggo.service.goods.trade.UserGoodsTradeParam;
+import com.etrade.puggo.utils.DateTimeUtils;
 import com.etrade.puggo.utils.SQLUtils;
 import com.etrade.puggo.utils.StrUtils;
 import org.jooq.Record11;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.List;
 
 import static com.etrade.puggo.db.Tables.*;
 
@@ -72,7 +73,7 @@ public class GoodsTradeDao extends BaseDao {
     }
 
 
-    public PageContentContainer<GoodsTradeVO> findTradePage(GoodsTradeParam param) {
+    public PageContentContainer<GoodsTradeVO> listTradePage(GoodsTradeParam param) {
         SelectConditionStep<?> sql = db
                 .select(
                         GOODS_TRADE.GOODS_ID,
@@ -109,7 +110,7 @@ public class GoodsTradeDao extends BaseDao {
     }
 
 
-    public PageContentContainer<MyTradeVO> findMyTradePage(UserGoodsTradeParam param) {
+    public PageContentContainer<MyTradeVO> listMyTradePage(UserGoodsTradeParam param) {
         SelectConditionStep<Record11<Long, Long, String, BigDecimal, LocalDateTime, String, Long, Long, String, String, Long>> sql =
                 db.select(
                                 GOODS_TRADE.GOODS_ID,
@@ -135,6 +136,20 @@ public class GoodsTradeDao extends BaseDao {
         }
 
         return getPageResult(sql, param, MyTradeVO.class);
+    }
+
+
+    public List<Long> getTradesWithPaymentTimeout() {
+        return db.select(GOODS_TRADE.ID)
+                .from(GOODS_TRADE)
+                .where(GOODS_TRADE.STATE.eq(GoodsTradeState.TO_USE)
+                        .and(GOODS_TRADE.CREATED.le(DateTimeUtils.now())))
+                .fetchInto(Long.class);
+    }
+
+
+    public void batchUpdateState(List<Long> tradeIds, String state) {
+        db.update(GOODS_TRADE).set(GOODS_TRADE.STATE, state).where(GOODS_TRADE.ID.in(ascendingOrder(tradeIds))).execute();
     }
 
 }

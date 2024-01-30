@@ -2,7 +2,7 @@ package com.etrade.puggo.stream.producer;
 
 import com.etrade.puggo.common.exception.CommonError;
 import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.constants.MsgNewsState;
+import com.etrade.puggo.common.constants.MsgNewsState;
 import com.etrade.puggo.dao.im.MsgNewsDao;
 import com.etrade.puggo.dao.user.UserIMActionDao;
 import com.etrade.puggo.db.tables.records.MsgNewsRecord;

@@ -70,7 +70,13 @@ class ApplicationTests {
     void testTradeList() {
         GoodsTradeParam param = new GoodsTradeParam();
         param.setPageIndex(1);
-        param.setTitle("134");
-        goodsTradeDao.findTradePage(param);
+        goodsTradeDao.listTradePage(param);
     }
+
+
+    @Test
+    void getTradesWithPaymentTimeout() {
+        System.out.println(goodsTradeDao.getTradesWithPaymentTimeout());
+    }
+
 }

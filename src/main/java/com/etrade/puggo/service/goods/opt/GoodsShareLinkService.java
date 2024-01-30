@@ -1,7 +1,7 @@
 package com.etrade.puggo.service.goods.opt;
 
 import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.constants.LangConstant;
+import com.etrade.puggo.common.constants.LangConstant;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.db.tables.records.GoodsRecord;
 import com.etrade.puggo.common.filter.AuthContext;

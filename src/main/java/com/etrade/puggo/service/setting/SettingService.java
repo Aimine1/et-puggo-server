@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.etrade.puggo.common.enums.MoneyKindEnum;
 import com.etrade.puggo.common.enums.SettingsEnum;
 import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.constants.GoodsImgType;
+import com.etrade.puggo.common.constants.GoodsImgType;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.dao.setting.SettingDao;
 import com.etrade.puggo.service.BaseService;

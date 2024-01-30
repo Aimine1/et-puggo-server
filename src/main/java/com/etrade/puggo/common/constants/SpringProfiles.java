@@ -1,4 +1,4 @@
-package com.etrade.puggo.constants;
+package com.etrade.puggo.common.constants;
 
 /**
  * 各个部署环境的英文名称

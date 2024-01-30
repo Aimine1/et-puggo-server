@@ -7,7 +7,7 @@ import static com.etrade.puggo.db.Tables.GROUPON_COUPON_TRADE;
 
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.page.PageParam;
-import com.etrade.puggo.constants.GrouponTradeState;
+import com.etrade.puggo.common.constants.GrouponTradeState;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.service.groupon.trade.TradeGrouponCouponDetailDTO;
 import com.etrade.puggo.service.groupon.trade.TradeGrouponCouponListVO;

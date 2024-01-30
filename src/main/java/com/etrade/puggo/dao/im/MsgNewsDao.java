@@ -4,7 +4,7 @@ import static com.etrade.puggo.db.tables.MsgNews.MSG_NEWS;
 
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.page.PageParam;
-import com.etrade.puggo.constants.MsgNewsState;
+import com.etrade.puggo.common.constants.MsgNewsState;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.records.MsgNewsRecord;
 import com.etrade.puggo.service.message.UserNewsVO;

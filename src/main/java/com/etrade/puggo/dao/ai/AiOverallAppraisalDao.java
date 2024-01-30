@@ -6,7 +6,7 @@ import static com.etrade.puggo.db.Tables.AI_SERIES_LIST;
 import static com.etrade.puggo.db.Tables.AI_SINGLE_APPRAISAL;
 
 import com.etrade.puggo.common.page.PageContentContainer;
-import com.etrade.puggo.constants.AIState;
+import com.etrade.puggo.common.constants.AIState;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.db.tables.records.AiOverallAppraisalRecord;
 import com.etrade.puggo.service.ai.pojo.AIIdentifyRecord;

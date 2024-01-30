@@ -2,8 +2,8 @@ package com.etrade.puggo.service.goods.message;
 
 import com.etrade.puggo.common.enums.UserProfileEnum;
 import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.constants.GoodsMessageState;
-import com.etrade.puggo.constants.GoodsState;
+import com.etrade.puggo.common.constants.GoodsMessageState;
+import com.etrade.puggo.common.constants.GoodsState;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsMessageLogDao;
 import com.etrade.puggo.db.tables.records.GoodsMessageLogsRecord;

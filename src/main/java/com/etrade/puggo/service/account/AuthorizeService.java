@@ -2,8 +2,8 @@ package com.etrade.puggo.service.account;
 
 import com.etrade.puggo.common.exception.CommonError;
 import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.constants.ClientConstants;
-import com.etrade.puggo.constants.RedisKeys;
+import com.etrade.puggo.common.constants.ClientConstants;
+import com.etrade.puggo.common.constants.RedisKeys;
 import com.etrade.puggo.common.filter.AuthInterceptor;
 import com.etrade.puggo.common.filter.UserInfoDO;
 import com.etrade.puggo.utils.Convert;

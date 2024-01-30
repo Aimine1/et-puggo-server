@@ -3,7 +3,7 @@ package com.etrade.puggo.service.groupon;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.page.PageParam;
-import com.etrade.puggo.constants.GrouponState;
+import com.etrade.puggo.common.constants.GrouponState;
 import com.etrade.puggo.common.enums.MoneyKindEnum;
 import com.etrade.puggo.dao.groupon.GrouponClassDao;
 import com.etrade.puggo.dao.groupon.GrouponCouponDao;
