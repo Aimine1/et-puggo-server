@@ -140,10 +140,11 @@ public class GoodsTradeDao extends BaseDao {
 
 
     public List<Long> getTradesWithPaymentTimeout() {
+        LocalDateTime deadline = DateTimeUtils.now().minusDays(1);
         return db.select(GOODS_TRADE.ID)
                 .from(GOODS_TRADE)
                 .where(GOODS_TRADE.STATE.eq(GoodsTradeState.TO_USE)
-                        .and(GOODS_TRADE.CREATED.le(DateTimeUtils.now())))
+                        .and(GOODS_TRADE.CREATED.lt(deadline)))
                 .fetchInto(Long.class);
     }
 
