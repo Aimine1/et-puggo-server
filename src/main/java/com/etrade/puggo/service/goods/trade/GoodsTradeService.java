@@ -92,13 +92,13 @@ public class GoodsTradeService extends BaseService {
 
 
     public PageContentContainer<GoodsTradeVO> getGoodsTradeList(GoodsTradeParam param) {
-        return goodsTradeDao.findTradePage(param);
+        return goodsTradeDao.listTradePage(param);
     }
 
 
     public PageContentContainer<MyTradeVO> getMyTradeList(UserGoodsTradeParam param) {
 
-        PageContentContainer<MyTradeVO> page = goodsTradeDao.findMyTradePage(param);
+        PageContentContainer<MyTradeVO> page = goodsTradeDao.listMyTradePage(param);
 
         if (page.isEmpty()) {
             return page;
@@ -141,4 +141,5 @@ public class GoodsTradeService extends BaseService {
     public MyTradeVO getOne(Long tradeId) {
         return goodsTradeDao.getOne(tradeId);
     }
+
 }

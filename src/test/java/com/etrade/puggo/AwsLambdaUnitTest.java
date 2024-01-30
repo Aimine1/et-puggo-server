@@ -64,7 +64,7 @@ public class AwsLambdaUnitTest {
 
     @Test
     void createSellerAccount() {
-        paymentLambdaFunctions.createSellerAccount("1412264952@qq.com");
+        paymentLambdaFunctions.createSellerAccount("everythingtradeltd.verify@gmail.com");
     }
 
 
