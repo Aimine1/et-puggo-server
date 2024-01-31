@@ -88,7 +88,7 @@ public class GoodsController {
 
 
     @WebLog
-    @ApiOperation(value = "商品详情页-商品推荐列表", response = GoodsSimpleVO.class)
+    @ApiOperation(value = "商品推荐列表", response = GoodsSimpleVO.class)
     @PostMapping("/recommend/list")
     public Result<PageContentContainer<GoodsSimpleVO>> getRecommendGoodsList(
         @Validated @RequestBody RecommendGoodsParam param) {

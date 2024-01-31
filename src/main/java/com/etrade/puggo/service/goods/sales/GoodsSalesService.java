@@ -1,27 +1,20 @@
 package com.etrade.puggo.service.goods.sales;
 
-import com.etrade.puggo.common.enums.LangErrorEnum;
-import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.common.page.PageContentContainer;
-import com.etrade.puggo.common.page.PageParam;
 import com.etrade.puggo.common.constants.GoodsImgType;
 import com.etrade.puggo.common.constants.GoodsState;
+import com.etrade.puggo.common.enums.LangErrorEnum;
+import com.etrade.puggo.common.exception.ServiceException;
+import com.etrade.puggo.common.filter.AuthContext;
+import com.etrade.puggo.common.page.PageContentContainer;
+import com.etrade.puggo.common.page.PageParam;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsDataDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
-import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
 import com.etrade.puggo.service.fans.UserFansService;
 import com.etrade.puggo.service.goods.publish.PublishGoodsParam.DeliveryTypeDTO;
-import com.etrade.puggo.service.goods.sales.pojo.ExpendGoodsSearchParam;
-import com.etrade.puggo.service.goods.sales.pojo.GoodsDetailVO;
-import com.etrade.puggo.service.goods.sales.pojo.GoodsMainPicUrlDTO;
-import com.etrade.puggo.service.goods.sales.pojo.GoodsSearchParam;
-import com.etrade.puggo.service.goods.sales.pojo.GoodsSimpleVO;
-import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
-import com.etrade.puggo.service.goods.sales.pojo.RecommendGoodsParam;
-import com.etrade.puggo.service.goods.sales.pojo.UserGoodsListParam;
+import com.etrade.puggo.service.goods.sales.pojo.*;
 import com.etrade.puggo.service.goods.user.UserGoodsService;
 import com.etrade.puggo.service.groupon.dto.S3Picture;
 import com.etrade.puggo.service.groupon.user.UserBrowseHistoryVO;
@@ -29,17 +22,14 @@ import com.etrade.puggo.service.log.GoodsLogsService;
 import com.etrade.puggo.stream.producer.StreamProducer;
 import com.etrade.puggo.third.im.pojo.SendNewsParam;
 import com.etrade.puggo.utils.StrUtils;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.jooq.SortOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author niuzhenyu
@@ -99,7 +89,7 @@ public class GoodsSalesService extends BaseService {
                     List<UserBrowseHistoryVO> browseHistory = userGoodsService.getBrowseHistory(param);
                     if (!browseHistory.isEmpty()) {
                         List<Long> goodsIdList = browseHistory.stream().map(UserBrowseHistoryVO::getGoodsId).sorted()
-                            .collect(Collectors.toList());
+                                .collect(Collectors.toList());
                         expendParam.setGoodsIdList(goodsIdList);
                     }
                 }
@@ -108,7 +98,7 @@ public class GoodsSalesService extends BaseService {
                 if (!AuthContext.isTourist()) {
                     List<LaunchUserDO> launchUserDOS = userFansService.listFollow(userId());
                     List<Long> userList = launchUserDOS.stream().map(LaunchUserDO::getUserId)
-                        .collect(Collectors.toList());
+                            .collect(Collectors.toList());
                     if (!userList.isEmpty()) {
                         expendParam.setLaunchUserId(userList);
                     }
@@ -166,7 +156,7 @@ public class GoodsSalesService extends BaseService {
         List<GoodsMainPicUrlDTO> mainPicList = goodsPictureDao.findGoodsMainPicList(goodsIdList);
 
         Map<Long, String> mainPicMap = mainPicList.stream()
-            .collect(Collectors.toMap(GoodsMainPicUrlDTO::getGoodsId, GoodsMainPicUrlDTO::getUrl, (o1, o2) -> o1));
+                .collect(Collectors.toMap(GoodsMainPicUrlDTO::getGoodsId, GoodsMainPicUrlDTO::getUrl, (o1, o2) -> o1));
 
         // 是否收藏
         List<Long> likeGoods = new ArrayList<>();
@@ -189,7 +179,7 @@ public class GoodsSalesService extends BaseService {
             List<LaunchUserDO> userList = userAccountService.getUserList(userIdList);
 
             Map<Long, LaunchUserDO> userMap = userList.stream()
-                .collect(Collectors.toMap(LaunchUserDO::getUserId, Function.identity()));
+                    .collect(Collectors.toMap(LaunchUserDO::getUserId, Function.identity()));
 
             for (GoodsSimpleVO vo : list) {
                 if (userMap.containsKey(vo.getLaunchUserId())) {
@@ -224,11 +214,14 @@ public class GoodsSalesService extends BaseService {
 
         List<LaunchUserDO> userList = userAccountService.getUserList(List.of(detail.getLaunchUserId()));
 
-        detail.setLaunchUser(userList.get(0));
+        LaunchUserDO launchUser = userList.get(0);
+        detail.setLaunchUser(launchUser);
 
         if (!AuthContext.isTourist()) {
-            // 浏览记录+1
-            userGoodsService.browseGoods(goodsId);
+            // 非本人浏览，浏览记录+1
+            if (!launchUser.getUserId().equals(userId())) {
+                userGoodsService.browseGoods(goodsId, userId());
+            }
 
             // 判断用户是否收藏该商品
             List<Long> likeGoods = userGoodsService.isLike(List.of(detail.getGoodsId()));
@@ -273,13 +266,13 @@ public class GoodsSalesService extends BaseService {
         String goodsMainPic = goodsPictureDao.findGoodsMainPic(goodsId);
 
         SendNewsParam newsParam = SendNewsParam.builder()
-            .goodsId(goodsId)
-            .goodsMainPic(goodsMainPic)
-            .attach(String.format(LangErrorEnum.MSG_LIKE.lang(), userName()))
-            .pushcontent(LangErrorEnum.MSG_NEW.lang())
-            .toUserId(goodsInfo.getLaunchUserId())
-            .fromUserId(userId())
-            .build();
+                .goodsId(goodsId)
+                .goodsMainPic(goodsMainPic)
+                .attach(String.format(LangErrorEnum.MSG_LIKE.lang(), userName()))
+                .pushcontent(LangErrorEnum.MSG_NEW.lang())
+                .toUserId(goodsInfo.getLaunchUserId())
+                .fromUserId(userId())
+                .build();
 
         streamProducer.sendNews(newsParam);
 
@@ -429,7 +422,7 @@ public class GoodsSalesService extends BaseService {
         List<GoodsMainPicUrlDTO> mainPicList = goodsPictureDao.findGoodsMainPicList(goodsIdList);
 
         Map<Long, String> mainPicMap = mainPicList.stream()
-            .collect(Collectors.toMap(GoodsMainPicUrlDTO::getGoodsId, GoodsMainPicUrlDTO::getUrl, (o1, o2) -> o1));
+                .collect(Collectors.toMap(GoodsMainPicUrlDTO::getGoodsId, GoodsMainPicUrlDTO::getUrl, (o1, o2) -> o1));
 
         for (GoodsSimpleVO vo : list) {
             if (mainPicMap.containsKey(vo.getGoodsId())) {

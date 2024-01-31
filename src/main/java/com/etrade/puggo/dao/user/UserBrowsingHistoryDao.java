@@ -60,9 +60,7 @@ public class UserBrowsingHistoryDao extends BaseDao {
     }
 
 
-    public Long browseGoods(Long goodsId) {
-        long userId = userId();
-
+    public Long browseGoods(Long goodsId, Long userId) {
         Long id = db.select(USER_BROWSING_HISTORY.ID)
             .from(USER_BROWSING_HISTORY)
             .where(USER_BROWSING_HISTORY.USER_ID.eq(userId))
