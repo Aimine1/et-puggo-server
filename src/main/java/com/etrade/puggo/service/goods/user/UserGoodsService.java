@@ -35,8 +35,8 @@ public class UserGoodsService extends BaseService {
 
     @Async
     @Transactional(rollbackFor = Throwable.class)
-    public void browseGoods(Long goodsId) {
-        userBrowsingHistoryDao.browseGoods(goodsId);
+    public void browseGoods(Long goodsId, Long userId) {
+        userBrowsingHistoryDao.browseGoods(goodsId, userId);
         goodsDataDao.incBrowseNumber(goodsId);
     }
 
