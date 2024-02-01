@@ -6,12 +6,15 @@ import com.etrade.puggo.service.payment.CustomerAddressService;
 import com.etrade.puggo.service.payment.CustomerCardService;
 import com.etrade.puggo.service.payment.PaymentService;
 import com.etrade.puggo.service.payment.pojo.*;
+import com.etrade.puggo.utils.JsonUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -20,6 +23,7 @@ import java.util.List;
  * @description: 支付接口
  * @date 2024/1/19 11:30
  */
+@Slf4j
 @Api(value = "支付接口", tags = "支付接口")
 @RestController
 @RequestMapping("/payment")
@@ -111,6 +115,15 @@ public class PaymentController {
     @ApiOperation("用户支付")
     public Result<?> pay(@Validated @RequestBody PaymentParam param) {
         paymentService.pay(param);
+        return Result.ok();
+    }
+
+
+    @WebLog
+    @GetMapping("/seller/account/callback")
+    @ApiOperation("商家账号回调接口")
+    public Result<?> sellerAccountCallback(HttpServletRequest request) {
+        log.info("callback request parameter = {}", JsonUtils.toJson(request.getParameterMap()));
         return Result.ok();
     }
 
