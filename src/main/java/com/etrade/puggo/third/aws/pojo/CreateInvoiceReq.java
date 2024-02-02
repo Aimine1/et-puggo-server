@@ -21,6 +21,8 @@ public class CreateInvoiceReq {
 
     private String paymentType;
 
+    private String token;
+
     private BigDecimal amount;
 
     private BigDecimal fees;

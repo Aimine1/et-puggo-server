@@ -89,7 +89,10 @@ set comment = '系统IM账号'
 where `key` = 'systemImAction';
 
 alter table user
-    add payment_customer_id varchar(50) not null default '' comment '支付账户id' after `is_verified`,
+    add `payment_customer_id` varchar(50) not null default '' comment '买家身份支付账户id' after `is_verified`;
+alter table user
+    add `payment_seller_id` varchar(50) not null default '' comment '商家身份支付账户id' after `payment_customer_id`;
+alter table user
     add key idx_nickname(nickname) using btree;
 
 drop table if exists `user_logs`;
@@ -101,3 +104,5 @@ alter table goods_comment change `rate` `score` decimal (10,1) NOT NULL DEFAULT 
 update goods
 set state = 'RESERVED'
 where state = 'OCCUPY';
+
+
