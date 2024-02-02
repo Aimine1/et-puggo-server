@@ -2,14 +2,17 @@ package com.etrade.puggo.service.payment;
 
 import com.etrade.puggo.common.enums.*;
 import com.etrade.puggo.common.exception.ServiceException;
+import com.etrade.puggo.dao.user.UserDao;
 import com.etrade.puggo.db.tables.records.GoodsMessageLogsRecord;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
+import com.etrade.puggo.service.account.pojo.UserInfoVO;
 import com.etrade.puggo.service.goods.message.GoodsMessageService;
 import com.etrade.puggo.service.payment.pojo.PaymentParam;
 import com.etrade.puggo.service.setting.SettingService;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
 import com.etrade.puggo.third.aws.pojo.CreatePaymentIntentReq;
+import com.etrade.puggo.third.aws.pojo.SellerAccountDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -47,6 +50,9 @@ public class PaymentService extends BaseService {
 
     @Resource
     private UserAccountService userAccountService;
+
+    @Resource
+    private UserDao userDao;
 
 
     @Transactional(rollbackFor = Throwable.class)
@@ -165,6 +171,24 @@ public class PaymentService extends BaseService {
                 return false;
             }
         }
+    }
+
+
+    public String createSellerAccount() {
+        // 获取商家邮件
+        UserInfoVO userInfo = userDao.findUserInfo(userId());
+
+        String email = userInfo.getEmail();
+
+        // 创建商家支付账号
+        SellerAccountDTO sellerAccount = paymentLambdaFunctions.createSellerAccount(email);
+
+        // 保存商家支付账号
+        if (sellerAccount != null && sellerAccount.getAccountId() != null) {
+            userDao.updatePaymentSellerId(userId(), sellerAccount.getAccountId());
+        }
+
+        return sellerAccount != null ? sellerAccount.getAccountLinkURL() : null;
     }
 
 }

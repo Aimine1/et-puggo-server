@@ -148,9 +148,10 @@ public class PaymentLambdaFunctions {
      * @param email 邮箱
      * @return sellerAccountId
      */
-    public String createSellerAccount(@NotNull String email) {
+    public SellerAccountDTO createSellerAccount(@NotNull String email) {
         ImmutableMap<String, String> param = ImmutableMap.of("sellerEmail", email);
-        return AwsLambdaUtils.invokeFunction("create_seller_account", param);
+        String payload = AwsLambdaUtils.invokeFunction("create_seller_account", param);
+        return JSONObject.parseObject(payload, SellerAccountDTO.class);
     }
 
 

@@ -141,12 +141,19 @@ public class UserDao extends BaseDao {
         return db.update(USER).set(USER.PAYMENT_CUSTOMER_ID, customerId).where(USER.ID.eq(userId)).execute();
     }
 
+
     public String getPaymentCustomerId(long userId) {
         return db.select(USER.PAYMENT_CUSTOMER_ID).from(USER).where(USER.ID.eq(userId)).fetchAnyInto(String.class);
     }
 
+
     public int updateCreditRating(long userId, BigDecimal newCreditRating) {
         return db.update(USER).set(USER.CREDIT_RATING, newCreditRating).where(USER.ID.eq(userId)).execute();
+    }
+
+
+    public int updatePaymentSellerId(long userId, String paymentSellerId) {
+        return db.update(USER).set(USER.PAYMENT_SELLER_ID, paymentSellerId).where(USER.ID.eq(userId)).execute();
     }
 
 }

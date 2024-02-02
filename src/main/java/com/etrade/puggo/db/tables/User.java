@@ -23,7 +23,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row21;
+import org.jooq.Row22;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -45,7 +45,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -982717321;
+    private static final long serialVersionUID = 1400632099;
 
     /**
      * The reference instance of <code>etrade_goods.user</code>
@@ -156,6 +156,11 @@ public class User extends TableImpl<UserRecord> {
     public final TableField<UserRecord, String> PAYMENT_CUSTOMER_ID = createField(DSL.name("payment_customer_id"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付账户id");
 
     /**
+     * The column <code>etrade_goods.user.payment_seller_id</code>. 商家身份支付账户id
+     */
+    public final TableField<UserRecord, String> PAYMENT_SELLER_ID = createField(DSL.name("payment_seller_id"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "商家身份支付账户id");
+
+    /**
      * The column <code>etrade_goods.user.created</code>.
      */
     public final TableField<UserRecord, LocalDateTime> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
@@ -250,11 +255,11 @@ public class User extends TableImpl<UserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row21 type methods
+    // Row22 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row21<Long, String, Byte, String, String, String, String, LocalDateTime, LocalDate, LocalDate, Byte, String, String, String, String, BigDecimal, String, Byte, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row21) super.fieldsRow();
+    public Row22<Long, String, Byte, String, String, String, String, LocalDateTime, LocalDate, LocalDate, Byte, String, String, String, String, BigDecimal, String, Byte, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row22) super.fieldsRow();
     }
 }

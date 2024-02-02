@@ -2,6 +2,7 @@ package com.etrade.puggo;
 
 import com.etrade.puggo.common.enums.PaymentTypeEnum;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
+import com.etrade.puggo.third.aws.pojo.CreateInvoiceReq;
 import com.etrade.puggo.third.aws.pojo.CreatePaymentIntentReq;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -64,12 +65,29 @@ public class AwsLambdaUnitTest {
 
     @Test
     void createSellerAccount() {
-        paymentLambdaFunctions.createSellerAccount("everythingtradeltd.verify@gmail.com");
+        // {"accountId":"acct_1OfFlBBSebdESxTR","accountLinkURL":"https://connect.stripe.com/setup/e/acct_1OfFlBBSebdESxTR/vYRusLhiNuMb"}
+        System.out.println(paymentLambdaFunctions.createSellerAccount("everythingtradeltd.verify@gmail.com"));
     }
 
 
     @Test
     void createSellerAccountLink() {
-        paymentLambdaFunctions.createSellerAccountLink("acct_1A2B3C4D5E6F7G8H");
+        paymentLambdaFunctions.createSellerAccountLink("acct_1OfFlBBSebdESxTR");
+    }
+
+
+    @Test
+    void createInvoice() {
+        CreateInvoiceReq req = new CreateInvoiceReq();
+        req.setSellerAccountId("acct_1OfFlBBSebdESxTR");
+        req.setPaymentMethodId("pm_1Oc58tGjtDrE34Dqaqpm2LEU");
+        req.setCustomerId("cus_PQ4RwjPZ130DJG");
+        req.setPaymentType(PaymentTypeEnum.card.name());
+        req.setAmount(new BigDecimal(1));
+        req.setTax(new BigDecimal("0.8"));
+        req.setFees(new BigDecimal(18));
+        req.setToken("tok_1Oc58tGjtDrE34Dqs7BceJv6");
+
+        paymentLambdaFunctions.createInvoice(req);
     }
 }

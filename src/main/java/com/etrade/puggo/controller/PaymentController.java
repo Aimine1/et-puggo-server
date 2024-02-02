@@ -122,9 +122,18 @@ public class PaymentController {
     @WebLog
     @GetMapping("/seller/account/callback")
     @ApiOperation("商家账号回调接口")
-    public Result<?> sellerAccountCallback(HttpServletRequest request) {
+    public Result<?> callbackSellerAccount(HttpServletRequest request) {
         log.info("callback request parameter = {}", JsonUtils.toJson(request.getParameterMap()));
         return Result.ok();
     }
+
+
+    @WebLog
+    @PutMapping("/seller/account/create")
+    @ApiOperation("创建商家账号")
+    public Result<String> createSellerAccount() {
+        return Result.ok(paymentService.createSellerAccount());
+    }
+
 
 }
