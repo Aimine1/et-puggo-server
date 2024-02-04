@@ -56,7 +56,7 @@ public class GoodsTradeDao extends BaseDao {
     }
 
 
-    public MyTradeVO getOne(Long customerId, Long sellerId,  Long goodsId) {
+    public MyTradeVO getOne(Long customerId, Long sellerId, Long goodsId) {
         return db.select(
                         GOODS_TRADE.GOODS_ID,
                         GOODS_TRADE.ID.as("tradeId"),
@@ -72,6 +72,23 @@ public class GoodsTradeDao extends BaseDao {
                         .and(GOODS_TRADE.SELLER_ID.eq(sellerId))
                         .and(GOODS_TRADE.GOODS_ID.eq(goodsId))
                 )
+                .fetchAnyInto(MyTradeVO.class);
+    }
+
+
+    public MyTradeVO getOne(Long tradeId) {
+        return db.select(
+                        GOODS_TRADE.GOODS_ID,
+                        GOODS_TRADE.ID.as("tradeId"),
+                        GOODS_TRADE.TRADE_NO,
+                        GOODS_TRADE.TRADING_PRICE,
+                        GOODS_TRADE.TRADING_TIME,
+                        GOODS_TRADE.STATE,
+                        GOODS_TRADE.CUSTOMER_ID,
+                        GOODS_TRADE.SELLER_ID
+                )
+                .from(GOODS_TRADE)
+                .where(GOODS_TRADE.ID.eq(tradeId))
                 .fetchAnyInto(MyTradeVO.class);
     }
 

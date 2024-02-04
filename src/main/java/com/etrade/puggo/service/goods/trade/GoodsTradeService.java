@@ -151,4 +151,11 @@ public class GoodsTradeService extends BaseService {
         return goodsTradeDao.getOne(param.getCustomerId(), param.getSellerId(), param.getGoodsId());
     }
 
+
+    public MyTradeVO getOne(Long tradeId) {
+        if (tradeId == null) {
+            return null;
+        }
+        return goodsTradeDao.getOne(tradeId);
+    }
 }

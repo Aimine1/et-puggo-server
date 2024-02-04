@@ -25,7 +25,7 @@ public class AwsLambdaUnitTest {
     @Test
     void createCustomer() {
         System.out.println(paymentLambdaFunctions.createCustomer("niuzhenyuself@163.com", "Aimin"));
-        // cus_PNtQgQvpacHLMP
+        // cus_PV4wiC3EIR7hQu
     }
 
     @Test
@@ -79,14 +79,14 @@ public class AwsLambdaUnitTest {
     @Test
     void createInvoice() {
         CreateInvoiceReq req = new CreateInvoiceReq();
-        req.setSellerAccountId("acct_1OfFlBBSebdESxTR");
-        req.setPaymentMethodId("pm_1Oc58tGjtDrE34Dqaqpm2LEU");
-        req.setCustomerId("cus_PQ4RwjPZ130DJG");
+        req.setSellerAccountId("acct_1Og4DrPnpvYQXaZD");
+        req.setPaymentMethodId("pm_1Og4U9BMUZ8hfYAihQ1YnXEL");
+        req.setCustomerId("cus_PV4wiC3EIR7hQu");
         req.setPaymentType(PaymentTypeEnum.card.name());
-        req.setAmount(new BigDecimal(1));
-        req.setTax(new BigDecimal("0.8"));
-        req.setFees(new BigDecimal(18));
-        req.setToken("tok_1Oc58tGjtDrE34Dqs7BceJv6");
+        req.setAmount(new BigDecimal(3680));
+        req.setTax(new BigDecimal("320"));
+        req.setFees(new BigDecimal(1800));
+        req.setToken("tok_1Og4UABMUZ8hfYAi5wBOkTOF");
 
         paymentLambdaFunctions.createInvoice(req);
     }

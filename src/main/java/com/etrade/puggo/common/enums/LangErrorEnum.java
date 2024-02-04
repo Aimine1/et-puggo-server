@@ -1,7 +1,7 @@
 package com.etrade.puggo.common.enums;
 
-import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.common.constants.LangConstant;
+import com.etrade.puggo.common.filter.AuthContext;
 
 public enum LangErrorEnum {
 
@@ -51,7 +51,7 @@ public enum LangErrorEnum {
     INVALID_TARGET("未知的支付目的", "Invalid pay target"),
     PAYMENT_FAILED("支付失败，请您联系客服解决", "Payment failed，please contact customer service for resolution"),
     INVALID_COMMENT_TYPE("未知的评论类型", "Invalid review type"),
-
+    INVALID_TRADE("未知的待支付订单", "Invalid payment pending trade"),
     ;
 
     final String zh_cn;
