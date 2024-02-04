@@ -11,7 +11,7 @@ import com.etrade.puggo.service.goods.message.GoodsMessageService;
 import com.etrade.puggo.service.payment.pojo.PaymentParam;
 import com.etrade.puggo.service.setting.SettingService;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
-import com.etrade.puggo.third.aws.pojo.CreatePaymentIntentReq;
+import com.etrade.puggo.third.aws.pojo.CreateInvoiceReq;
 import com.etrade.puggo.third.aws.pojo.SellerAccountDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -54,56 +54,113 @@ public class PaymentService extends BaseService {
     @Resource
     private UserDao userDao;
 
+    private static final BigDecimal Dollar2CentUnit = new BigDecimal(100);
+
 
     @Transactional(rollbackFor = Throwable.class)
-    public void pay(PaymentParam param) {
+    public String pay(PaymentParam param) {
 
         // 参数验证
         checkParameter(param);
 
+        // 发起支付
+        if (PaymentTargetEnum.product.name().equals(param.getTarget())) {
+            return payForProduct(param);
+        } else {
+            return payForAI(param);
+        }
+
+        // 后续步骤 TODO
+    }
+
+
+    private String payForProduct(PaymentParam param) {
         // 检查买家与卖家协商一致的记录，否则是非法的支付
         GoodsMessageLogsRecord msgRecord = goodsMessageService.getPaymentPendingMsgRecord(
                 param.getCustomerId(), param.getSellerId(), param.getGoodsId());
+
         if (msgRecord == null) {
             log.error("支付失败，没有找到协商记录");
             throw new ServiceException(LangErrorEnum.INVALID_PAY.lang());
         }
 
-        // 计算费用
-        BigDecimal totalAmount;
-        if (PaymentTargetEnum.product.name().equals(param.getTarget())) {
-            totalAmount = calculateTotal(msgRecord.getBuyerPrice());
-        } else {
-            // TODO.
-            totalAmount = BigDecimal.ZERO;
-        }
-
-        // 发起支付
-        execute(totalAmount, param.getPaymentType(), param.getPaymentMethodId());
-    }
-
-
-    private void execute(BigDecimal amount, String paymentType, String paymentMethodId) {
-        String paymentCustomerId = userAccountService.getPaymentCustomerId(userId());
+        String paymentCustomerId = userAccountService.getPaymentCustomerId(param.getCustomerId());
 
         if (StringUtils.isBlank(paymentCustomerId)) {
-            log.error("支付失败，paymentCustomerId is null， userId={}", userId());
+            log.error("支付失败，paymentCustomerId is null，customerId={}", param.getSellerId());
             throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
         }
 
-        CreatePaymentIntentReq req = new CreatePaymentIntentReq();
-        req.setAmount(amount);
+        String paymentSellerId = userAccountService.getPaymentSellerId(param.getSellerId());
+
+        if (StringUtils.isBlank(paymentSellerId)) {
+            log.error("支付失败，paymentSellerId is null，sellerId={}", param.getSellerId());
+            throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
+        }
+
+        // 商品总金额
+        BigDecimal totalAmount = msgRecord.getBuyerPrice();
+
+        // 邮费，这个给系统
+        String shippingSetting = settingService.k(SettingsEnum.sameDayDeliveryCharge.v());
+        BigDecimal shippingFees = isNumber(shippingSetting) ? new BigDecimal(shippingSetting) : default_shipping;
+
+        // 商品税，这个给系统
+        String taxPercentageSetting = settingService.k(SettingsEnum.productTaxPercentage.v());
+        BigDecimal taxPercentage = isValidPercentage(new BigDecimal(taxPercentageSetting)) ?
+                new BigDecimal(taxPercentageSetting) : default_tax_percentage;
+        BigDecimal tax = totalAmount.multiply(taxPercentage);
+
+        // 商品金额，这个给商家
+        BigDecimal amount = totalAmount.subtract(tax);
+
+        return execute(amount, tax, shippingFees, paymentCustomerId, paymentSellerId, param.getPaymentType(),
+                param.getPaymentMethodId(), param.getToken());
+    }
+
+
+    private String payForAI(PaymentParam param) {
+
+        String paymentCustomerId = userAccountService.getPaymentCustomerId(param.getCustomerId());
+
+        if (StringUtils.isBlank(paymentCustomerId)) {
+            log.error("支付失败，paymentCustomerId is null，customerId={}", param.getSellerId());
+            throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
+        }
+
+        BigDecimal amount = BigDecimal.ZERO;
+
+        return execute(amount, BigDecimal.ZERO, BigDecimal.ZERO, paymentCustomerId, null, param.getPaymentType(),
+                param.getPaymentMethodId(), param.getToken());
+    }
+
+
+    private String execute(BigDecimal amount, BigDecimal tax, BigDecimal shippingFees,
+                           String paymentCustomerId, String paymentSellerId, String paymentType, String paymentMethodId,
+                           String token) {
+
+        CreateInvoiceReq req = new CreateInvoiceReq();
+        // 商品金额，单位:分
+        req.setAmount(amount.multiply(Dollar2CentUnit));
+        // 税，单位:分
+        req.setTax(tax.multiply(Dollar2CentUnit));
+        // 邮费，单位:分
+        req.setFees(shippingFees.multiply(Dollar2CentUnit));
         req.setCustomerId(paymentCustomerId);
         req.setPaymentType(paymentType);
         req.setPaymentMethodId(paymentMethodId);
-        req.setCurrency(settingService.k(SettingsEnum.moneyKind.v(), default_currency));
+        req.setSellerAccountId(paymentSellerId);
+        req.setToken(token);
 
         try {
-            String payload = paymentLambdaFunctions.createPaymentIntent(req);
+            String payload = paymentLambdaFunctions.createInvoice(req);
             log.info("支付结果为: {}", payload);
+            return payload;
         } catch (Exception e) {
             log.error("支付失败，userId={}，原因={}", userId(), e.getMessage());
         }
+
+        return null;
     }
 
 
@@ -142,23 +199,6 @@ public class PaymentService extends BaseService {
     }
 
 
-    /**
-     * 计算订单总价 orderTotal = productPrice + shippingCharge
-     *
-     * @param productPrice 商品成交价格
-     * @return 订单总价
-     */
-    public BigDecimal calculateTotal(BigDecimal productPrice) {
-        if (productPrice == null || productPrice.compareTo(BigDecimal.ZERO) <= 0) {
-            log.error("支付失败，商品成交价异常 productPrice={}", productPrice);
-            throw new ServiceException(LangErrorEnum.INVALID_PRODUCT_PRICE.lang());
-        }
-        String shippingCharge = settingService.k(SettingsEnum.sameDayDeliveryCharge.v());
-        BigDecimal shippingChargeBdc = isNumber(shippingCharge) ? new BigDecimal(shippingCharge) : default_shipping;
-        return productPrice.add(shippingChargeBdc);
-    }
-
-
     public static boolean isNumber(String str) {
         try {
             Integer.parseInt(str);
@@ -171,6 +211,11 @@ public class PaymentService extends BaseService {
                 return false;
             }
         }
+    }
+
+
+    public static boolean isValidPercentage(BigDecimal percentage) {
+        return percentage.compareTo(BigDecimal.ZERO) > 0 && percentage.compareTo(BigDecimal.ONE) < 1;
     }
 
 

@@ -57,11 +57,6 @@ class ApplicationTests {
     @Resource
     private PaymentService paymentService;
 
-    @Test
-    void calculateTotal() {
-        System.out.println(paymentService.calculateTotal(new BigDecimal("100.13")));
-    }
-
 
     @Resource
     private GoodsTradeDao goodsTradeDao;

@@ -114,8 +114,8 @@ public class PaymentController {
     @PostMapping("/customer/pay")
     @ApiOperation("用户支付")
     public Result<?> pay(@Validated @RequestBody PaymentParam param) {
-        paymentService.pay(param);
-        return Result.ok();
+        String payload = paymentService.pay(param);
+        return Result.ok(payload);
     }
 
 

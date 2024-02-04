@@ -156,4 +156,11 @@ public class UserDao extends BaseDao {
         return db.update(USER).set(USER.PAYMENT_SELLER_ID, paymentSellerId).where(USER.ID.eq(userId)).execute();
     }
 
+
+    public String getPaymentSellerId(long userId) {
+        return db.select(USER.PAYMENT_SELLER_ID).from(USER)
+                .where(USER.ID.eq(userId).and(USER.IS_VERIFIED.eq(IS_VERIFIED)))
+                .fetchAnyInto(String.class);
+    }
+
 }
