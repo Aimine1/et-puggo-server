@@ -10,6 +10,8 @@ import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
 import com.etrade.puggo.service.account.pojo.UserInfoVO;
 import com.etrade.puggo.service.goods.message.GoodsMessageService;
+import com.etrade.puggo.service.goods.trade.GoodsTradeService;
+import com.etrade.puggo.service.goods.trade.pojo.MyTradeVO;
 import com.etrade.puggo.service.payment.pojo.PaymentParam;
 import com.etrade.puggo.service.setting.SettingService;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * @author zhenyu
@@ -54,6 +57,9 @@ public class PaymentService extends BaseService {
     private UserAccountService userAccountService;
 
     @Resource
+    private GoodsTradeService goodsTradeService;
+
+    @Resource
     private UserDao userDao;
 
     @Resource
@@ -82,35 +88,40 @@ public class PaymentService extends BaseService {
 
     private String payForProduct(PaymentParam param) {
 
+        MyTradeVO oneTrade = goodsTradeService.getOne(param.getTradeId());
+
+        if (oneTrade == null) {
+            throw new ServiceException(LangErrorEnum.INVALID_TRADE.lang());
+        }
+
         // 商品总金额
         BigDecimal totalAmount;
 
         // 检查买家与卖家协商一致的记录，否则是非法的支付
         GoodsMessageLogsRecord msgRecord = goodsMessageService.getPaymentPendingMsgRecord(
-                param.getCustomerId(), param.getSellerId(), param.getGoodsId());
+                oneTrade.getCustomerId(), oneTrade.getSellerId(), oneTrade.getGoodsId());
 
         if (msgRecord == null) {
             // 如果没有聊天协商记录，说明是直接付款
-            GoodsRecord goodsRecord = goodsDao.findOne(param.getGoodsId());
+            GoodsRecord goodsRecord = goodsDao.findOne(oneTrade.getGoodsId());
             totalAmount = goodsRecord.getRealPrice();
         } else {
             totalAmount = msgRecord.getBuyerPrice();
         }
 
-        String paymentCustomerId = userAccountService.getPaymentCustomerId(param.getCustomerId());
+        String paymentCustomerId = userAccountService.getPaymentCustomerId(oneTrade.getCustomerId());
 
         if (StringUtils.isBlank(paymentCustomerId)) {
-            log.error("支付失败，paymentCustomerId is null，customerId={}", param.getSellerId());
+            log.error("支付失败，paymentCustomerId is null，customerId={}", oneTrade.getSellerId());
             throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
         }
 
-        String paymentSellerId = userAccountService.getPaymentSellerId(param.getSellerId());
+        String paymentSellerId = userAccountService.getPaymentSellerId(oneTrade.getSellerId());
 
         if (StringUtils.isBlank(paymentSellerId)) {
-            log.error("支付失败，paymentSellerId is null，sellerId={}", param.getSellerId());
+            log.error("支付失败，paymentSellerId is null，sellerId={}", oneTrade.getSellerId());
             throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
         }
-
 
         // 邮费，这个给系统
         String shippingSetting = settingService.k(SettingsEnum.sameDayDeliveryCharge.v());
@@ -125,23 +136,31 @@ public class PaymentService extends BaseService {
         // 商品金额，这个给商家
         BigDecimal amount = totalAmount.subtract(tax);
 
-        return execute(amount, tax, shippingFees, paymentCustomerId, paymentSellerId, param.getPaymentType(),
-                param.getPaymentMethodId(), param.getToken());
+        return execute(
+                amount.setScale(0, RoundingMode.UP),
+                tax.setScale(0, RoundingMode.UP),
+                shippingFees,
+                paymentCustomerId,
+                paymentSellerId,
+                param.getPaymentType(),
+                param.getPaymentMethodId(),
+                param.getToken()
+        );
     }
 
 
     private String payForAI(PaymentParam param) {
 
-        String paymentCustomerId = userAccountService.getPaymentCustomerId(param.getCustomerId());
-
-        if (StringUtils.isBlank(paymentCustomerId)) {
-            log.error("支付失败，paymentCustomerId is null，customerId={}", param.getSellerId());
-            throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
-        }
+//        String paymentCustomerId = userAccountService.getPaymentCustomerId(param.getCustomerId());
+//
+//        if (StringUtils.isBlank(paymentCustomerId)) {
+//            log.error("支付失败，paymentCustomerId is null，customerId={}", param.getCustomerId());
+//            throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
+//        }
 
         BigDecimal amount = BigDecimal.ZERO;
 
-        return execute(amount, BigDecimal.ZERO, BigDecimal.ZERO, paymentCustomerId, null, param.getPaymentType(),
+        return execute(amount, BigDecimal.ZERO, BigDecimal.ZERO, null, null, param.getPaymentType(),
                 param.getPaymentMethodId(), param.getToken());
     }
 

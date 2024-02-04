@@ -33,9 +33,9 @@ public class PaymentParam {
     @ApiModelProperty("客户端发起支付之前生成")
     private String token;
 
-    @NotNull(message = "Invalid product")
-    @ApiModelProperty("交易商品id")
-    private Long goodsId;
+    @NotNull(message = "Invalid trade")
+    @ApiModelProperty("商品交易订单id")
+    private Long tradeId;
 
     @NotNull(message = "Invalid delivery address")
     @ApiModelProperty("收货地址id")
@@ -50,14 +50,6 @@ public class PaymentParam {
     @NotNull(message = "Invalid shipping method")
     @ApiModelProperty("邮寄方式，可选项：1 Public Meetup，2 Standard Shipping，4 Puggo Same-day Delivery，同发布时的选项")
     private Integer shippingMethod;
-
-    @NotNull(message = "Invalid customer")
-    @ApiModelProperty("买家在系统中的用户id")
-    private Long customerId;
-
-    @NotNull(message = "Invalid seller")
-    @ApiModelProperty("卖家在系统中的用户id")
-    private Long sellerId;
 
     @NotNull(message = "Invalid target")
     @NotBlank(message = "Invalid target")
