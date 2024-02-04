@@ -84,15 +84,6 @@ public class GoodsMessageController {
 
 
     @WebLog
-    @PostMapping("/buyer/readyToPay/callback")
-    @ApiOperation(value = "买家准备支付的回调接口", response = TradeNoVO.class)
-    public Result<TradeNoVO> readyToPay(@RequestBody @Validated TransactionMsgCallbackParam param) {
-
-        return Result.ok(goodsMessageService.customerReadyToPayCallback(param));
-    }
-
-
-    @WebLog
     @PostMapping("/message/get")
     @ApiOperation(value = "获取商品会话日志，如果商品id为null则返回最后一条会话日志", response = GoodsMessageLogVO.class)
     public Result<GoodsMessageLogVO> getGoodsMessageLog(@RequestBody @Validated GetGoodsMessageParam param) {

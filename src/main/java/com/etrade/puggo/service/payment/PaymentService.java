@@ -2,8 +2,10 @@ package com.etrade.puggo.service.payment;
 
 import com.etrade.puggo.common.enums.*;
 import com.etrade.puggo.common.exception.ServiceException;
+import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.user.UserDao;
 import com.etrade.puggo.db.tables.records.GoodsMessageLogsRecord;
+import com.etrade.puggo.db.tables.records.GoodsRecord;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
 import com.etrade.puggo.service.account.pojo.UserInfoVO;
@@ -54,6 +56,10 @@ public class PaymentService extends BaseService {
     @Resource
     private UserDao userDao;
 
+    @Resource
+    private GoodsDao goodsDao;
+
+
     private static final BigDecimal Dollar2CentUnit = new BigDecimal(100);
 
 
@@ -75,13 +81,20 @@ public class PaymentService extends BaseService {
 
 
     private String payForProduct(PaymentParam param) {
+
+        // 商品总金额
+        BigDecimal totalAmount;
+
         // 检查买家与卖家协商一致的记录，否则是非法的支付
         GoodsMessageLogsRecord msgRecord = goodsMessageService.getPaymentPendingMsgRecord(
                 param.getCustomerId(), param.getSellerId(), param.getGoodsId());
 
         if (msgRecord == null) {
-            log.error("支付失败，没有找到协商记录");
-            throw new ServiceException(LangErrorEnum.INVALID_PAY.lang());
+            // 如果没有聊天协商记录，说明是直接付款
+            GoodsRecord goodsRecord = goodsDao.findOne(param.getGoodsId());
+            totalAmount = goodsRecord.getRealPrice();
+        } else {
+            totalAmount = msgRecord.getBuyerPrice();
         }
 
         String paymentCustomerId = userAccountService.getPaymentCustomerId(param.getCustomerId());
@@ -98,8 +111,6 @@ public class PaymentService extends BaseService {
             throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
         }
 
-        // 商品总金额
-        BigDecimal totalAmount = msgRecord.getBuyerPrice();
 
         // 邮费，这个给系统
         String shippingSetting = settingService.k(SettingsEnum.sameDayDeliveryCharge.v());

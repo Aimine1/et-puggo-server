@@ -1,8 +1,8 @@
 package com.etrade.puggo.service.goods.trade;
 
+import com.etrade.puggo.common.constants.GoodsTradeState;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.page.PageContentContainer;
-import com.etrade.puggo.common.constants.GoodsTradeState;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.dao.goods.GoodsTradeDao;
 import com.etrade.puggo.service.BaseService;
@@ -11,6 +11,7 @@ import com.etrade.puggo.service.goods.sales.pojo.GoodsMainPicUrlDTO;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsTradeDTO;
 import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.service.goods.sales.pojo.TradeNoVO;
+import com.etrade.puggo.service.goods.trade.pojo.*;
 import com.etrade.puggo.utils.DateTimeUtils;
 import com.etrade.puggo.utils.IncrTradeNoUtils;
 import com.google.common.collect.Lists;
@@ -50,16 +51,24 @@ public class GoodsTradeService extends BaseService {
     /**
      * 生成订单
      *
-     * @param customerId 买家ID
-     * @param goodsId    商品id
-     * @param price      交易价格
-     * @return
+     * @param param 交易信息
+     * @return 订单编号信息
      */
-    public TradeNoVO saveTrade(Long customerId, Long sellerId, Long goodsId, BigDecimal price) {
+    public TradeNoVO saveTrade(SaveTradeParam param) {
+
+        Long customerId = param.getCustomerId();
+        Long sellerId = param.getSellerId();
+        BigDecimal price = param.getPrice();
+        Long goodsId = param.getGoodsId();
+
+        MyTradeVO oneTrade = getOne(param);
+        if (oneTrade != null) {
+            return new TradeNoVO(oneTrade.getTradeId(), oneTrade.getTradeNo());
+        }
 
         List<LaunchUserDO> userList = userAccountService.getUserList(Lists.newArrayList(customerId, sellerId));
 
-        Optional<LaunchUserDO> anySeller = userList.stream().filter(u -> u.getUserId().equals(customerId)).findAny();
+        Optional<LaunchUserDO> anySeller = userList.stream().filter(u -> u.getUserId().equals(sellerId)).findAny();
         LaunchUserDO seller = anySeller.orElse(null);
 
         if (seller == null) {
@@ -138,8 +147,8 @@ public class GoodsTradeService extends BaseService {
     }
 
 
-    public MyTradeVO getOne(Long tradeId) {
-        return goodsTradeDao.getOne(tradeId);
+    public MyTradeVO getOne(GetTradeParam param) {
+        return goodsTradeDao.getOne(param.getCustomerId(), param.getSellerId(), param.getGoodsId());
     }
 
 }
