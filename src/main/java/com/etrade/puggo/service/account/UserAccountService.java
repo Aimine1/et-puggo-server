@@ -524,4 +524,9 @@ public class UserAccountService extends BaseService {
             userDao.updateCreditRating(userId, averageScore);
         }
     }
+
+
+    public String getPaymentSellerId(long userId) {
+        return userDao.getPaymentSellerId(userId);
+    }
 }
