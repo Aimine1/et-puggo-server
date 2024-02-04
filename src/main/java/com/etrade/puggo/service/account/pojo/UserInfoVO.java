@@ -1,11 +1,11 @@
 package com.etrade.puggo.service.account.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import lombok.Data;
 
 /**
  * @author niuzhenyu
@@ -52,7 +52,10 @@ public class UserInfoVO {
     @ApiModelProperty("粉丝数量")
     private Integer fansNum;
 
-    @ApiModelProperty("买家支付id")
+    @ApiModelProperty("买家身份支付id")
     private String paymentCustomerId;
+
+    @ApiModelProperty("卖家身份支付id")
+    private String paymentSellerId;
 
 }

@@ -162,8 +162,11 @@ public class PaymentLambdaFunctions {
      * @return 卖家注册link
      */
     public String createSellerAccountLink(@NotNull String sellerAccountId) {
+        // {"accountLinkURL":"https://connect.stripe.com/setup/e/acct_1OfIKYBOyCotwqNZ/RRV77ATgz9ED"}
         ImmutableMap<String, String> param = ImmutableMap.of("AccountId", sellerAccountId);
-        return AwsLambdaUtils.invokeFunction("create_seller_account_link", param);
+        String payload = AwsLambdaUtils.invokeFunction("create_seller_account_link", param);
+        JSONObject jsonObject = JSONObject.parseObject(payload);
+        return (String) jsonObject.get("accountLinkURL");
     }
 
 }
