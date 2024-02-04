@@ -219,21 +219,36 @@ public class PaymentService extends BaseService {
     }
 
 
+    /**
+     * 创建/更新商家支付账号
+     *
+     * @return 商家Stripe注册链接
+     */
     public String createSellerAccount() {
         // 获取商家邮件
         UserInfoVO userInfo = userDao.findUserInfo(userId());
 
         String email = userInfo.getEmail();
+        String paymentSellerId = userInfo.getPaymentSellerId();
 
-        // 创建商家支付账号
-        SellerAccountDTO sellerAccount = paymentLambdaFunctions.createSellerAccount(email);
+        String sellerAccountLinkURL;
 
-        // 保存商家支付账号
-        if (sellerAccount != null && sellerAccount.getAccountId() != null) {
-            userDao.updatePaymentSellerId(userId(), sellerAccount.getAccountId());
+        if (StringUtils.isBlank(paymentSellerId)) {
+            // 创建商家支付账号
+            SellerAccountDTO sellerAccount = paymentLambdaFunctions.createSellerAccount(email);
+
+            // 保存商家支付账号
+            if (sellerAccount != null && sellerAccount.getAccountId() != null) {
+                userDao.updatePaymentSellerId(userId(), sellerAccount.getAccountId());
+            }
+
+            sellerAccountLinkURL = sellerAccount != null ? sellerAccount.getAccountLinkURL() : null;
+        } else {
+            // 重新获取Stripe账号注册链接
+            sellerAccountLinkURL = paymentLambdaFunctions.createSellerAccountLink(paymentSellerId);
         }
 
-        return sellerAccount != null ? sellerAccount.getAccountLinkURL() : null;
+        return sellerAccountLinkURL;
     }
 
 }

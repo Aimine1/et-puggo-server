@@ -63,6 +63,7 @@ public class UserDao extends BaseDao {
                         USER.CREDIT_RATING,
                         USER.PHONE,
                         USER.PAYMENT_CUSTOMER_ID,
+                        USER.PAYMENT_SELLER_ID,
                         DSL.iif(USER.IS_VERIFIED.eq(IS_VERIFIED), true, false).as("isVerified"),
                         USER.COUNTRY.concat(" ").concat(USER.PROVINCE).concat(" ").concat(USER.CITY).as("region")
                 )
