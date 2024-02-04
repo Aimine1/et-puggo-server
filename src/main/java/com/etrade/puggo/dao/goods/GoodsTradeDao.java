@@ -4,10 +4,10 @@ import com.etrade.puggo.common.constants.GoodsTradeState;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsTradeDTO;
-import com.etrade.puggo.service.goods.trade.GoodsTradeParam;
-import com.etrade.puggo.service.goods.trade.GoodsTradeVO;
-import com.etrade.puggo.service.goods.trade.MyTradeVO;
-import com.etrade.puggo.service.goods.trade.UserGoodsTradeParam;
+import com.etrade.puggo.service.goods.trade.pojo.GoodsTradeParam;
+import com.etrade.puggo.service.goods.trade.pojo.GoodsTradeVO;
+import com.etrade.puggo.service.goods.trade.pojo.MyTradeVO;
+import com.etrade.puggo.service.goods.trade.pojo.UserGoodsTradeParam;
 import com.etrade.puggo.utils.DateTimeUtils;
 import com.etrade.puggo.utils.SQLUtils;
 import com.etrade.puggo.utils.StrUtils;
@@ -56,7 +56,7 @@ public class GoodsTradeDao extends BaseDao {
     }
 
 
-    public MyTradeVO getOne(Long goodsId) {
+    public MyTradeVO getOne(Long customerId, Long sellerId,  Long goodsId) {
         return db.select(
                         GOODS_TRADE.GOODS_ID,
                         GOODS_TRADE.ID.as("tradeId"),
@@ -68,7 +68,10 @@ public class GoodsTradeDao extends BaseDao {
                         GOODS_TRADE.SELLER_ID
                 )
                 .from(GOODS_TRADE)
-                .where(GOODS_TRADE.ID.eq(goodsId))
+                .where(GOODS_TRADE.CUSTOMER_ID.eq(customerId)
+                        .and(GOODS_TRADE.SELLER_ID.eq(sellerId))
+                        .and(GOODS_TRADE.GOODS_ID.eq(goodsId))
+                )
                 .fetchAnyInto(MyTradeVO.class);
     }
 

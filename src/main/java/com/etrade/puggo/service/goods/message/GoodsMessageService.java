@@ -132,34 +132,6 @@ public class GoodsMessageService extends BaseService {
     }
 
 
-    @Transactional(rollbackFor = Throwable.class)
-    public TradeNoVO customerReadyToPayCallback(TransactionMsgCallbackParam param) {
-
-        Long goodsId = param.getGoodsId();
-        Long buyerId = param.getCustomerId();
-        Long sellerId = param.getSellerId();
-        BigDecimal price = param.getPrice();
-
-        if (buyerId == null || sellerId == null) {
-            throw new ServiceException("Invalid parameter");
-        }
-
-        GoodsDetailVO goodsDetail = goodsDao.findGoodsDetail(goodsId);
-
-        if (goodsDetail == null) {
-            throw new ServiceException("Invalid product");
-        }
-
-        GoodsMessageLogsRecord record = messageDao.selectOne(buyerId, sellerId, goodsId);
-
-        if (record != null) {
-            messageDao.updateState(buyerId, sellerId, goodsId, GoodsMessageState.PAYMENT_PENDING);
-        }
-
-        return goodsTradeService.saveTrade(buyerId, sellerId, goodsId, price);
-    }
-
-
     /**
      * 买家接受出价
      *
@@ -233,7 +205,7 @@ public class GoodsMessageService extends BaseService {
 
     public GoodsMessageLogsRecord getPaymentPendingMsgRecord(Long buyerId, Long sellerId, Long goodsId) {
         GoodsMessageLogsRecord record = messageDao.selectOne(buyerId, sellerId, goodsId);
-        if (record != null && record.getState().equals(GoodsMessageState.PAYMENT_PENDING)) {
+        if (record != null && record.getState().equals(GoodsMessageState.ACCEPT_PRICE)) {
             return record;
         }
         return null;

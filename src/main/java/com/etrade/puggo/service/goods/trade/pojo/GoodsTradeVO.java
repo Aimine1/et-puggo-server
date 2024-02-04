@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.goods.trade;
+package com.etrade.puggo.service.goods.trade.pojo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

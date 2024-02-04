@@ -17,6 +17,4 @@ public class GoodsMessageState {
 
     public static final String REJECT_PRICE = "REJECT_PRICE";
 
-    public static final String PAYMENT_PENDING = "PAYMENT_PENDING";
-
 }

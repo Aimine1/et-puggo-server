@@ -6,7 +6,7 @@ import com.etrade.puggo.dao.ai.AiSeriesListDao;
 import com.etrade.puggo.dao.goods.GoodsTradeDao;
 import com.etrade.puggo.service.ai.AiIdentityService;
 import com.etrade.puggo.service.ai.pojo.IdentifySingleParam;
-import com.etrade.puggo.service.goods.trade.GoodsTradeParam;
+import com.etrade.puggo.service.goods.trade.pojo.GoodsTradeParam;
 import com.etrade.puggo.service.payment.PaymentService;
 import com.etrade.puggo.third.ai.UpdateDataSchedule;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 
 
 @SpringBootTest

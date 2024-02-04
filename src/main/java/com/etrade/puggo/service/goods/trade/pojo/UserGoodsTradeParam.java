@@ -1,4 +1,4 @@
-package com.etrade.puggo.service.goods.trade;
+package com.etrade.puggo.service.goods.trade.pojo;
 
 import com.etrade.puggo.common.page.PageParam;
 import io.swagger.annotations.ApiModelProperty;
