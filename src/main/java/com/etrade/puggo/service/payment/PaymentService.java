@@ -1,25 +1,27 @@
 package com.etrade.puggo.service.payment;
 
-import com.etrade.puggo.common.enums.*;
-import com.etrade.puggo.common.exception.CommonErrorV2;
+import com.etrade.puggo.common.constants.GoodsState;
+import com.etrade.puggo.common.enums.LangErrorEnum;
+import com.etrade.puggo.common.enums.PaymentTargetEnum;
+import com.etrade.puggo.common.enums.PaymentTypeEnum;
+import com.etrade.puggo.common.enums.SettingsEnum;
 import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.user.UserDao;
-import com.etrade.puggo.db.tables.records.GoodsMessageLogsRecord;
-import com.etrade.puggo.db.tables.records.GoodsRecord;
 import com.etrade.puggo.service.BaseService;
-import com.etrade.puggo.service.account.UserAccountService;
 import com.etrade.puggo.service.account.pojo.UserInfoVO;
-import com.etrade.puggo.service.goods.message.GoodsMessageService;
+import com.etrade.puggo.service.goods.opt.UpdateGoodsStateService;
 import com.etrade.puggo.service.goods.trade.GoodsTradeService;
 import com.etrade.puggo.service.goods.trade.pojo.MyTradeVO;
+import com.etrade.puggo.service.goods.trade.pojo.UpdateTradeParam;
+import com.etrade.puggo.service.payment.pojo.PayResult;
 import com.etrade.puggo.service.payment.pojo.PaymentParam;
 import com.etrade.puggo.service.setting.SettingService;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
 import com.etrade.puggo.third.aws.pojo.CreateInvoiceReq;
-import com.etrade.puggo.third.aws.pojo.PaymentMethodDTO;
 import com.etrade.puggo.third.aws.pojo.SellerAccountDTO;
+import com.etrade.puggo.utils.OptionalUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author zhenyu
@@ -43,35 +42,30 @@ public class PaymentService extends BaseService {
 
 
     private static final BigDecimal default_shipping = new BigDecimal(18);
+
     private static final BigDecimal default_tax_percentage = new BigDecimal("0.08");
+
     private static final String default_currency = "CAD";
 
-    @Resource
-    private CustomerAddressService customerAddressService;
+    private static final BigDecimal Dollar2CentUnit = new BigDecimal(100);
 
     @Resource
     private PaymentLambdaFunctions paymentLambdaFunctions;
 
     @Resource
-    private GoodsMessageService goodsMessageService;
-
-    @Resource
     private SettingService settingService;
-
-    @Resource
-    private UserAccountService userAccountService;
 
     @Resource
     private GoodsTradeService goodsTradeService;
 
     @Resource
-    private UserDao userDao;
+    private PaymentCheckUtils paymentCheckUtils;
 
     @Resource
-    private GoodsDao goodsDao;
+    private UpdateGoodsStateService updateGoodsSale;
 
-
-    private static final BigDecimal Dollar2CentUnit = new BigDecimal(100);
+    @Resource
+    private UserDao userDao;
 
 
     @Transactional(rollbackFor = Throwable.class)
@@ -80,53 +74,63 @@ public class PaymentService extends BaseService {
         // 参数验证
         checkParameter(param);
 
-        // 发起支付
-        if (PaymentTargetEnum.product.name().equals(param.getTarget())) {
-            return payForProduct(param);
-        } else {
-            return payForAI(param);
-        }
 
-        // 后续步骤 TODO
-    }
-
-
-    private String payForProduct(PaymentParam param) {
-
-        MyTradeVO oneTrade = goodsTradeService.getOne(param.getTradeId());
-
-        if (oneTrade == null) {
+        // 验证支付订单
+        MyTradeVO payTrade = goodsTradeService.getOne(param.getTradeId());
+        if (payTrade == null) {
             throw new ServiceException(LangErrorEnum.INVALID_TRADE.lang());
         }
 
-        // 商品总金额
-        BigDecimal totalAmount;
-
-        // 检查买家与卖家协商一致的记录，否则是非法的支付
-        GoodsMessageLogsRecord msgRecord = goodsMessageService.getPaymentPendingMsgRecord(
-                oneTrade.getCustomerId(), oneTrade.getSellerId(), oneTrade.getGoodsId());
-
-        if (msgRecord == null) {
-            // 如果没有聊天协商记录，说明是直接付款
-            GoodsRecord goodsRecord = goodsDao.findOne(oneTrade.getGoodsId());
-            totalAmount = goodsRecord.getRealPrice();
+        // 发起支付
+        PayResult payResult;
+        if (PaymentTargetEnum.product.name().equals(param.getTarget())) {
+            payResult = payForProduct(param, payTrade);
         } else {
-            totalAmount = msgRecord.getBuyerPrice();
+            payResult = payForAI(param);
         }
 
-        String paymentCustomerId = userAccountService.getPaymentCustomerId(oneTrade.getCustomerId());
+        // 后续步骤
+        // 1. 更新支付订单信息
+        UpdateTradeParam updateTradeParam = buildUpdateTradeParam(param, payResult);
 
-        if (StringUtils.isBlank(paymentCustomerId)) {
-            log.error("支付失败，paymentCustomerId is null，customerId={}", oneTrade.getSellerId());
-            throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
-        }
+        goodsTradeService.updateTradePaymentInfo(updateTradeParam);
 
-        String paymentSellerId = userAccountService.getPaymentSellerId(oneTrade.getSellerId());
+        // 2. 更新商品状态为已售
+        updateGoodsSale.updateStateInner(payTrade.getGoodsId(), GoodsState.SOLD);
 
-        if (StringUtils.isBlank(paymentSellerId)) {
-            log.error("支付失败，paymentSellerId is null，sellerId={}", oneTrade.getSellerId());
-            throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
-        }
+        return payResult.getInvoiceId();
+    }
+
+
+    private static UpdateTradeParam buildUpdateTradeParam(PaymentParam param, PayResult payResult) {
+        UpdateTradeParam updateTradeParam = new UpdateTradeParam();
+        updateTradeParam.setPaymentType(param.getPaymentType());
+        updateTradeParam.setPaymentMethodId(param.getPaymentMethodId());
+        updateTradeParam.setDeliveryAddressId(param.getDeliveryAddressId());
+        updateTradeParam.setBillingAddressId(param.getBillingAddressId());
+        updateTradeParam.setIsSameAsDeliveryAddress(param.getIsSameAsDeliveryAddress());
+        updateTradeParam.setShippingMethod(param.getShippingMethod());
+        updateTradeParam.setPaymentCardId(OptionalUtils.valueOrDefault(param.getPaymentCardId()));
+        updateTradeParam.setSubtotal(payResult.getSubtotal());
+        updateTradeParam.setTax(payResult.getTax());
+        updateTradeParam.setOtherFees(payResult.getOtherFees());
+        updateTradeParam.setInvoiceId(payResult.getInvoiceId());
+        updateTradeParam.setTradeId(param.getTradeId());
+        return updateTradeParam;
+    }
+
+
+    private PayResult payForProduct(PaymentParam param, MyTradeVO oneTrade) {
+
+
+        // 商品成交总金额
+        BigDecimal totalAmount = oneTrade.getTradingPrice();
+
+        // 买家支付账号
+        String paymentCustomerId = paymentCheckUtils.getPaymentCustomerId(oneTrade.getCustomerId());
+
+        // 卖家支付账号
+        String paymentSellerId = paymentCheckUtils.getPaymentSellerId(oneTrade.getSellerId());
 
         // 邮费，这个给系统
         String shippingSetting = settingService.k(SettingsEnum.sameDayDeliveryCharge.v());
@@ -141,7 +145,8 @@ public class PaymentService extends BaseService {
         // 商品金额，这个给商家
         BigDecimal amount = totalAmount.subtract(tax);
 
-        return execute(
+        // 发起支付
+        String invoiceId = execute(
                 amount.setScale(0, RoundingMode.UP),
                 tax.setScale(0, RoundingMode.UP),
                 shippingFees,
@@ -151,22 +156,19 @@ public class PaymentService extends BaseService {
                 param.getPaymentMethodId(),
                 param.getToken()
         );
+
+        return PayResult.builder().subtotal(amount).tax(tax).otherFees(shippingFees).invoiceId(invoiceId).build();
     }
 
 
-    private String payForAI(PaymentParam param) {
-
-//        String paymentCustomerId = userAccountService.getPaymentCustomerId(param.getCustomerId());
-//
-//        if (StringUtils.isBlank(paymentCustomerId)) {
-//            log.error("支付失败，paymentCustomerId is null，customerId={}", param.getCustomerId());
-//            throw new ServiceException(LangErrorEnum.PAYMENT_FAILED.lang());
-//        }
+    private PayResult payForAI(PaymentParam param) {
 
         BigDecimal amount = BigDecimal.ZERO;
 
-        return execute(amount, BigDecimal.ZERO, BigDecimal.ZERO, null, null, param.getPaymentType(),
+        execute(amount, BigDecimal.ZERO, BigDecimal.ZERO, null, null, param.getPaymentType(),
                 param.getPaymentMethodId(), param.getToken());
+
+        return null;
     }
 
 
@@ -195,34 +197,26 @@ public class PaymentService extends BaseService {
 
     private void checkParameter(PaymentParam param) {
 
-        if (!PaymentTypeEnum.isValid(param.getPaymentType())) {
-            log.error("支付失败，支付类型异常 paymentType={}", param.getPaymentType());
-            throw new ServiceException(LangErrorEnum.INVALID_SHIPPING_METHOD.lang());
-        }
+        // 检查支付方式
+        paymentCheckUtils.checkPaymentType(param.getPaymentType());
 
-        if (!ShippingMethodEnum.isValid(param.getShippingMethod())) {
-            log.error("支付失败，货品交易方式异常 shippingMethod={}", param.getShippingMethod());
-            throw new ServiceException(LangErrorEnum.INVALID_PAYMENT_TYPE.lang());
-        }
+        // 检查交易方式
+        paymentCheckUtils.checkShippingMethod(param.getShippingMethod());
 
         // 检查收货地址
-        if (!customerAddressService.check(AddressTypeEnum.delivery, param.getDeliveryAddressId())) {
-            log.error("支付失败，未知的收货地址 addressId={}", param.getDeliveryAddressId());
-            throw new ServiceException(LangErrorEnum.INVALID_DELIVERY_ADDRESS.lang());
-        }
+        paymentCheckUtils.checkDeliveryAddress(param.getDeliveryAddressId());
 
         // 检查账单地址
-        if (!param.isSameAsDeliveryAddress()) {
-            if (!customerAddressService.check(AddressTypeEnum.billing, param.getBillingAddressId())) {
-                log.error("支付失败，未知的账单地址 addressId={}", param.getBillingAddressId());
-                throw new ServiceException(LangErrorEnum.INVALID_BILLING_ADDRESS.lang());
-            }
+        if (BooleanUtils.isNotTrue(param.getIsSameAsDeliveryAddress())) {
+            paymentCheckUtils.checkBillingAddress(param.getBillingAddressId());
         }
 
-        // 检查支付目的
-        if (!PaymentTargetEnum.isValid(param.getTarget())) {
-            log.error("支付失败，货品交易方式异常 target={}", param.getTarget());
-            throw new ServiceException(LangErrorEnum.INVALID_TARGET.lang());
+        // 检查类型
+        paymentCheckUtils.checkTarget(param.getTarget());
+
+        // 检查银行卡信息
+        if (param.getPaymentType().equals(PaymentTypeEnum.card.name())) {
+            paymentCheckUtils.checkCardInfo(param.getPaymentCardId());
         }
 
     }
@@ -243,7 +237,7 @@ public class PaymentService extends BaseService {
     }
 
 
-    public static boolean isValidPercentage(BigDecimal percentage) {
+    private static boolean isValidPercentage(BigDecimal percentage) {
         return percentage.compareTo(BigDecimal.ZERO) > 0 && percentage.compareTo(BigDecimal.ONE) < 1;
     }
 
@@ -279,7 +273,6 @@ public class PaymentService extends BaseService {
 
         return sellerAccountLinkURL;
     }
-
 
 
 }

@@ -42,7 +42,7 @@ public class GoodsTradeController {
 
 
     @WebLog
-    @ApiOperation(value = "根据id查询单个商品交易订单，用来查询计算待支付倒计时", response = MyTradeVO.class)
+    @ApiOperation(value = "查询单个商品交易订单，用来查询计算待支付倒计时", response = MyTradeVO.class)
     @PostMapping("/myTrade/get")
     public Result<MyTradeVO> getOneTrade(@RequestBody @Validated GetTradeParam param) {
 

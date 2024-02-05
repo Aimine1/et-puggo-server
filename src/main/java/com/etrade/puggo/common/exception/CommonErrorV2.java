@@ -10,11 +10,16 @@ import com.etrade.puggo.common.enums.LangErrorEnum;
 public enum CommonErrorV2 implements ErrorMsg {
 
     /**
+     * 商品异常
+     */
+    GOODS_IS_RESERVED(1601, LangErrorEnum.GOODS_IS_RESERVED),
+
+
+    /**
      * 支付异常
      */
     PAYMENT_ERROR(3000, LangErrorEnum.PAYMENT_FAILED),
     PAYMENT_CUSTOMER_ERROR(3001, LangErrorEnum.INVALID_PAYMENT_CUSTOMER),
-
     ;
 
     private Integer code;

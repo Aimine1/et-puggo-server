@@ -7,7 +7,7 @@ package com.etrade.puggo.common.constants;
  **/
 public class GoodsTradeState {
 
-    public static final String TO_USE = "Pending payment";
+    public static final String PAY_PENDING = "Pending payment";
     public static final String COMPLETE = "Completed";
     public static final String FAILED = "Payment failed";
 

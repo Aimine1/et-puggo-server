@@ -1,7 +1,7 @@
 package com.etrade.puggo.service.goods.opt;
 
-import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.common.constants.GoodsState;
+import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.db.tables.records.GoodsRecord;
@@ -72,6 +72,11 @@ public class UpdateGoodsStateService extends BaseService {
         }
 
         return goodsDao.updateGoodsSale(goodsId, state);
+    }
+
+
+    public void updateStateInner(Long goodsId, String state) {
+        goodsDao.updateGoodsSale(goodsId, state);
     }
 
 

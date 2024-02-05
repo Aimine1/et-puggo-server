@@ -40,10 +40,12 @@ public enum CommonError implements ErrorMsg {
     GROUPON_USEAGE_DATE_ILLEGAL(1503, "Groupon Coupon Useage Date is illegal."),
     TELEPHONE_IS_ILLEGAL(1504, "Telephone is illegal."),
 
+
     /**
      * 统一系统运行时错误
      */
     GLOBAL_ERROR(2001, "Sorry, the system is busy."),
+
 
     /**
      * S3上传异常

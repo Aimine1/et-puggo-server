@@ -52,10 +52,34 @@ public class MyTradeVO {
     @ApiModelProperty("商品主图")
     private String mainImgUrl;
 
-    @ApiModelProperty("买家")
+    @ApiModelProperty("买家用户id")
     private Long customerId;
 
-    @ApiModelProperty("卖家")
+    @ApiModelProperty("卖家用户id")
     private Long sellerId;
+
+    @ApiModelProperty("付款类型，枚举值有：card、apple_pay、google_pay、wechat、alipay")
+    private String paymentType;
+
+    @ApiModelProperty("客户端发起支付之前生成")
+    private String paymentMethodId;
+
+    @ApiModelProperty("收货地址id")
+    private Integer deliveryAddressId;
+
+    @ApiModelProperty("账单地址id，当勾选\"Same as delivery address\"选项时，此值不生效")
+    private Integer billingAddressId;
+
+    @ApiModelProperty("账单地址同收货地址")
+    private boolean isSameAsDeliveryAddress = false;
+
+    @ApiModelProperty("邮寄方式，可选项：1 Public Meetup，2 Standard Shipping，4 Puggo Same-day Delivery，同发布时的选项")
+    private Integer shippingMethod;
+
+    @ApiModelProperty("交易title")
+    private String title;
+
+    @ApiModelProperty("如果支付方式是card，信用卡id")
+    private Integer paymentCardId;
 
 }
