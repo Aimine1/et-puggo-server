@@ -48,7 +48,6 @@ public class CustomerCardDao extends BaseDao {
         return db.select(
                         PAYMENT_CARD.ID.as("cardId"),
                         PAYMENT_CARD.CARD_NUMBER,
-                        PAYMENT_CARD.CARD_NUMBER,
                         PAYMENT_CARD.TITLE,
                         PAYMENT_CARD.TYPE,
                         PAYMENT_CARD.BRAND,
@@ -70,6 +69,11 @@ public class CustomerCardDao extends BaseDao {
         record.setIsDefault(BooleanUtils.isTrue(param.getIsDefault()) ? (byte) 1 : (byte) 0);
         record.setUserId(userId);
         return record;
+    }
+
+
+    public PaymentCardRecord selectOne(Integer id) {
+        return db.selectFrom(PAYMENT_CARD).where(PAYMENT_CARD.ID.eq(id)).fetchAnyInto(PaymentCardRecord.class);
     }
 
 }

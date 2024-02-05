@@ -15,6 +15,7 @@ public enum LangErrorEnum {
     GOODS_QUALITY("请选择商品成色", "Please select a item condition"),
     EMPTY_DESC("商品描述信息不允许为空", "Description cannot be empty"),
     GOODS_PRICE("价格不允许为0", "The price cannot be Zero"),
+    GOODS_IS_RESERVED("商品已经预售，不可以购买", "Sorry, The product is already reserved"),
 
     /**
      * 用户消息类
@@ -46,13 +47,15 @@ public enum LangErrorEnum {
     INVALID_ADDRESS_TYPE("未知的地址类型", "Invalid address type"),
     INVALID_PAYMENT_TYPE("未知的支付类型", "Invalid payment type"),
     INVALID_SHIPPING_METHOD("未知的交易方式", "Invalid shipping method"),
-    INVALID_PAY("请您先与卖家协商一致再付款", "Please negotiate with the seller before making payment."),
     INVALID_PRODUCT_PRICE("商品成交价格异常", "Invalid product price"),
     INVALID_TARGET("未知的支付目的", "Invalid pay target"),
     PAYMENT_FAILED("支付失败，请您联系客服解决", "Payment failed，please contact customer service for resolution"),
     INVALID_COMMENT_TYPE("未知的评论类型", "Invalid review type"),
     INVALID_TRADE("未知的待支付订单", "Invalid payment pending trade"),
     INVALID_PAYMENT_CUSTOMER("支付账号异常，请您退出重新登录", "The payment account is abnormal. Please log out and log in again."),
+    INVALID_PAYMENT_SELLER("未知的卖家支付账号", "Invalid seller payment account"),
+    INVALID_CARD("无效卡号", "Invalid card info"),
+
     ;
 
     final String zh_cn;

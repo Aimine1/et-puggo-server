@@ -1,9 +1,9 @@
 package com.etrade.puggo.service.payment;
 
-import com.etrade.puggo.common.enums.CardTypeEnum;
 import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.dao.payment.CustomerCardDao;
+import com.etrade.puggo.db.tables.records.PaymentCardRecord;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.payment.pojo.CreditCardDO;
 import com.etrade.puggo.service.payment.pojo.CreditCardVO;
@@ -61,10 +61,9 @@ public class CustomerCardService extends BaseService {
     }
 
 
-    private static void checkCardType(String type) {
-        if (!CardTypeEnum.isValid(type)) {
-            throw new ServiceException(LangErrorEnum.INVALID_CARD_TYPE.lang());
-        }
+    public Integer getCardId(Integer id) {
+        PaymentCardRecord paymentCardRecord = customerCardDao.selectOne(id);
+        return paymentCardRecord == null ? null : paymentCardRecord.getId();
     }
 
 

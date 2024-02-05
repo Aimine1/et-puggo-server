@@ -4,19 +4,17 @@ import com.etrade.puggo.common.constants.GoodsTradeState;
 import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.dao.BaseDao;
 import com.etrade.puggo.service.goods.sales.pojo.GoodsTradeDTO;
-import com.etrade.puggo.service.goods.trade.pojo.GoodsTradeParam;
-import com.etrade.puggo.service.goods.trade.pojo.GoodsTradeVO;
-import com.etrade.puggo.service.goods.trade.pojo.MyTradeVO;
-import com.etrade.puggo.service.goods.trade.pojo.UserGoodsTradeParam;
+import com.etrade.puggo.service.goods.trade.pojo.*;
 import com.etrade.puggo.utils.DateTimeUtils;
 import com.etrade.puggo.utils.SQLUtils;
 import com.etrade.puggo.utils.StrUtils;
-import org.jooq.Record11;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.BooleanUtils;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectFieldOrAsterisk;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,6 +28,26 @@ import static com.etrade.puggo.db.Tables.*;
 @Repository
 public class GoodsTradeDao extends BaseDao {
 
+    private static final List<? extends SelectFieldOrAsterisk> MY_TRADE_FIELDS =
+            Lists.newArrayList(
+                    GOODS_TRADE.GOODS_ID,
+                    GOODS_TRADE.ID.as("tradeId"),
+                    GOODS_TRADE.TRADE_NO,
+                    GOODS_TRADE.TRADING_PRICE,
+                    GOODS_TRADE.TRADING_TIME,
+                    GOODS_TRADE.STATE,
+                    GOODS_TRADE.CUSTOMER_ID,
+                    GOODS_TRADE.SELLER_ID,
+                    GOODS_TRADE.SHIPPING_METHOD,
+                    GOODS_TRADE.PAYMENT_METHOD_ID,
+                    GOODS_TRADE.PAYMENT_TYPE,
+                    GOODS_TRADE.DELIVERY_ADDRESS_ID,
+                    GOODS_TRADE.BILLING_ADDRESS_ID,
+                    GOODS_TRADE.IS_SAME_AS_DELIVERY_ADDRESS,
+                    GOODS_TRADE.PAYMENT_CARD_ID,
+                    GOODS_TRADE.TITLE);
+
+
     public long save(GoodsTradeDTO trade, String tradeNo) {
         return db.insertInto(
                         GOODS_TRADE,
@@ -40,7 +58,15 @@ public class GoodsTradeDao extends BaseDao {
                         GOODS_TRADE.SELLER_ID,
                         GOODS_TRADE.TRADING_PRICE,
                         GOODS_TRADE.TRADING_TIME,
-                        GOODS_TRADE.STATE
+                        GOODS_TRADE.STATE,
+                        GOODS_TRADE.SHIPPING_METHOD,
+                        GOODS_TRADE.PAYMENT_METHOD_ID,
+                        GOODS_TRADE.PAYMENT_TYPE,
+                        GOODS_TRADE.DELIVERY_ADDRESS_ID,
+                        GOODS_TRADE.BILLING_ADDRESS_ID,
+                        GOODS_TRADE.IS_SAME_AS_DELIVERY_ADDRESS,
+                        GOODS_TRADE.PAYMENT_CARD_ID,
+                        GOODS_TRADE.TITLE
                 )
                 .values(
                         tradeNo,
@@ -50,23 +76,22 @@ public class GoodsTradeDao extends BaseDao {
                         trade.getSellerId(),
                         trade.getTradingPrice(),
                         trade.getTradingTime(),
-                        trade.getState()
+                        trade.getState(),
+                        trade.getShippingMethod(),
+                        trade.getPaymentMethodId(),
+                        trade.getPaymentType(),
+                        trade.getDeliveryAddressId(),
+                        trade.getBillingAddressId(),
+                        trade.getIsSameAsDeliveryAddress(),
+                        trade.getPaymentCardId(),
+                        trade.getTitle()
                 )
                 .returning(GOODS_TRADE.ID).fetchOne().getId();
     }
 
 
     public MyTradeVO getOne(Long customerId, Long sellerId, Long goodsId) {
-        return db.select(
-                        GOODS_TRADE.GOODS_ID,
-                        GOODS_TRADE.ID.as("tradeId"),
-                        GOODS_TRADE.TRADE_NO,
-                        GOODS_TRADE.TRADING_PRICE,
-                        GOODS_TRADE.TRADING_TIME,
-                        GOODS_TRADE.STATE,
-                        GOODS_TRADE.CUSTOMER_ID,
-                        GOODS_TRADE.SELLER_ID
-                )
+        return db.select(MY_TRADE_FIELDS)
                 .from(GOODS_TRADE)
                 .where(GOODS_TRADE.CUSTOMER_ID.eq(customerId)
                         .and(GOODS_TRADE.SELLER_ID.eq(sellerId))
@@ -77,16 +102,7 @@ public class GoodsTradeDao extends BaseDao {
 
 
     public MyTradeVO getOne(Long tradeId) {
-        return db.select(
-                        GOODS_TRADE.GOODS_ID,
-                        GOODS_TRADE.ID.as("tradeId"),
-                        GOODS_TRADE.TRADE_NO,
-                        GOODS_TRADE.TRADING_PRICE,
-                        GOODS_TRADE.TRADING_TIME,
-                        GOODS_TRADE.STATE,
-                        GOODS_TRADE.CUSTOMER_ID,
-                        GOODS_TRADE.SELLER_ID
-                )
+        return db.select(MY_TRADE_FIELDS)
                 .from(GOODS_TRADE)
                 .where(GOODS_TRADE.ID.eq(tradeId))
                 .fetchAnyInto(MyTradeVO.class);
@@ -126,30 +142,37 @@ public class GoodsTradeDao extends BaseDao {
         }
 
         return getPageResult(sql, param, GoodsTradeVO.class);
-
     }
 
 
     public PageContentContainer<MyTradeVO> listMyTradePage(UserGoodsTradeParam param) {
-        SelectConditionStep<Record11<Long, Long, String, BigDecimal, LocalDateTime, String, Long, Long, String, String, Long>> sql =
-                db.select(
-                                GOODS_TRADE.GOODS_ID,
-                                GOODS_TRADE.ID.as("tradeId"),
-                                GOODS_TRADE.TRADE_NO,
-                                GOODS_TRADE.TRADING_PRICE,
-                                GOODS_TRADE.TRADING_TIME,
-                                GOODS_TRADE.STATE,
-                                GOODS_TRADE.CUSTOMER_ID,
-                                GOODS_TRADE.SELLER_ID,
 
-                                GOODS.TITLE.as("goodsTitle"),
-                                GOODS.MONEY_KIND,
-                                GOODS.LAUNCH_USER_ID
-                        )
-                        .from(GOODS_TRADE)
-                        .join(GOODS)
-                        .on(GOODS.ID.eq(GOODS_TRADE.GOODS_ID))
-                        .where(GOODS_TRADE.CUSTOMER_ID.eq(userId()));
+        SelectConditionStep<?> sql = db.select(
+                        GOODS_TRADE.GOODS_ID,
+                        GOODS_TRADE.ID.as("tradeId"),
+                        GOODS_TRADE.TRADE_NO,
+                        GOODS_TRADE.TRADING_PRICE,
+                        GOODS_TRADE.TRADING_TIME,
+                        GOODS_TRADE.STATE,
+                        GOODS_TRADE.CUSTOMER_ID,
+                        GOODS_TRADE.SELLER_ID,
+                        GOODS_TRADE.SHIPPING_METHOD,
+                        GOODS_TRADE.PAYMENT_METHOD_ID,
+                        GOODS_TRADE.PAYMENT_TYPE,
+                        GOODS_TRADE.DELIVERY_ADDRESS_ID,
+                        GOODS_TRADE.BILLING_ADDRESS_ID,
+                        GOODS_TRADE.IS_SAME_AS_DELIVERY_ADDRESS,
+                        GOODS_TRADE.PAYMENT_CARD_ID,
+                        GOODS_TRADE.TITLE,
+
+                        GOODS.TITLE.as("goodsTitle"),
+                        GOODS.MONEY_KIND,
+                        GOODS.LAUNCH_USER_ID
+                )
+                .from(GOODS_TRADE)
+                .join(GOODS)
+                .on(GOODS.ID.eq(GOODS_TRADE.GOODS_ID))
+                .where(GOODS_TRADE.CUSTOMER_ID.eq(userId()));
 
         if (!StrUtils.isBlank(param.getState())) {
             sql.and(GOODS_TRADE.STATE.eq(param.getState()));
@@ -163,7 +186,7 @@ public class GoodsTradeDao extends BaseDao {
         LocalDateTime deadline = DateTimeUtils.now().minusDays(1);
         return db.select(GOODS_TRADE.ID)
                 .from(GOODS_TRADE)
-                .where(GOODS_TRADE.STATE.eq(GoodsTradeState.TO_USE)
+                .where(GOODS_TRADE.STATE.eq(GoodsTradeState.PAY_PENDING)
                         .and(GOODS_TRADE.CREATED.lt(deadline)))
                 .fetchInto(Long.class);
     }
@@ -173,4 +196,20 @@ public class GoodsTradeDao extends BaseDao {
         db.update(GOODS_TRADE).set(GOODS_TRADE.STATE, state).where(GOODS_TRADE.ID.in(ascendingOrder(tradeIds))).execute();
     }
 
+
+    public void updateGoodsTrade(UpdateTradeParam param) {
+        db.update(GOODS_TRADE)
+                .set(GOODS_TRADE.SHIPPING_METHOD, param.getShippingMethod())
+                .set(GOODS_TRADE.PAYMENT_METHOD_ID, param.getPaymentMethodId())
+                .set(GOODS_TRADE.PAYMENT_TYPE, param.getPaymentType())
+                .set(GOODS_TRADE.DELIVERY_ADDRESS_ID, param.getDeliveryAddressId())
+                .set(GOODS_TRADE.BILLING_ADDRESS_ID, param.getBillingAddressId())
+                .set(GOODS_TRADE.IS_SAME_AS_DELIVERY_ADDRESS, BooleanUtils.isTrue(param.getIsSameAsDeliveryAddress()) ? (byte) 1 : (byte) 0)
+                .set(GOODS_TRADE.PAYMENT_CARD_ID, param.getPaymentCardId())
+                .set(GOODS_TRADE.SUBTOTAL, param.getSubtotal())
+                .set(GOODS_TRADE.TAX, param.getTax())
+                .set(GOODS_TRADE.INVOICE_ID, param.getInvoiceId())
+                .where(GOODS_TRADE.ID.eq(param.getTradeId()))
+                .execute();
+    }
 }

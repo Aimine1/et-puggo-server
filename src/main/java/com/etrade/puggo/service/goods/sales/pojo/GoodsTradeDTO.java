@@ -1,11 +1,12 @@
 package com.etrade.puggo.service.goods.sales.pojo;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @author niuzhenyu
@@ -31,5 +32,21 @@ public class GoodsTradeDTO {
     private BigDecimal tradingPrice;
 
     private LocalDateTime tradingTime;
+
+    private Integer shippingMethod;
+
+    private String paymentMethodId;
+
+    private String paymentType;
+
+    private Integer deliveryAddressId;
+
+    private Integer billingAddressId;
+
+    private Byte isSameAsDeliveryAddress;
+
+    private Integer paymentCardId;
+
+    private String title;
 
 }

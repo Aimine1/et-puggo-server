@@ -45,7 +45,7 @@ public class PaymentParam {
     private Integer billingAddressId;
 
     @ApiModelProperty("账单地址同收货地址")
-    private boolean isSameAsDeliveryAddress = false;
+    private Boolean isSameAsDeliveryAddress;
 
     @NotNull(message = "Invalid shipping method")
     @ApiModelProperty("邮寄方式，可选项：1 Public Meetup，2 Standard Shipping，4 Puggo Same-day Delivery，同发布时的选项")
@@ -56,4 +56,6 @@ public class PaymentParam {
     @ApiModelProperty("支付的目的，哪个模块的付款，目前有两类：product和ai")
     private String target;
 
+    @ApiModelProperty("如果支付方式是card，信用卡id")
+    private Integer paymentCardId;
 }
