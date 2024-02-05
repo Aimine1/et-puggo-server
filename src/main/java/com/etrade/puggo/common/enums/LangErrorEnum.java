@@ -52,6 +52,7 @@ public enum LangErrorEnum {
     PAYMENT_FAILED("支付失败，请您联系客服解决", "Payment failed，please contact customer service for resolution"),
     INVALID_COMMENT_TYPE("未知的评论类型", "Invalid review type"),
     INVALID_TRADE("未知的待支付订单", "Invalid payment pending trade"),
+    INVALID_PAYMENT_CUSTOMER("支付账号异常，请您退出重新登录", "The payment account is abnormal. Please log out and log in again."),
     ;
 
     final String zh_cn;

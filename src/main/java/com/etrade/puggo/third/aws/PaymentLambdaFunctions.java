@@ -1,5 +1,6 @@
 package com.etrade.puggo.third.aws;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.shaded.com.google.common.collect.ImmutableMap;
 import com.etrade.puggo.third.aws.pojo.*;
@@ -8,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -90,7 +92,7 @@ public class PaymentLambdaFunctions {
      * @param customerId 用户id
      * @return 未知
      */
-    public Object listPaymentMethod(@NotNull String customerId) {
+    public List<PaymentMethodDTO> listPaymentMethod(@NotNull String customerId) {
         ImmutableMap<String, String> param = ImmutableMap.of("customerId", customerId);
 
         // {"has_more":false,"total_count":0,"url":"","data":null}
@@ -98,8 +100,11 @@ public class PaymentLambdaFunctions {
 
         JSONObject jsonObject = JSONObject.parseObject(payload);
 
-        if ((int) jsonObject.get("total_count") > 0) {
-            return jsonObject.get("data");
+        Object data = jsonObject.get("data");
+
+        if (data instanceof JSONArray) {
+            JSONArray jsonArray = (JSONArray) data;
+            return jsonArray.toJavaList(PaymentMethodDTO.class);
         }
 
         return null;
@@ -138,7 +143,9 @@ public class PaymentLambdaFunctions {
 
 
     public String createInvoice(@Valid CreateInvoiceReq req) {
-        return AwsLambdaUtils.invokeFunction("create_invoice", req);
+        String payload = AwsLambdaUtils.invokeFunction("create_invoice", req);
+        JSONObject jsonObject = JSONObject.parseObject(payload);
+        return (String) jsonObject.get("invoiceId");
     }
 
 
@@ -167,6 +174,22 @@ public class PaymentLambdaFunctions {
         String payload = AwsLambdaUtils.invokeFunction("create_seller_account_link", param);
         JSONObject jsonObject = JSONObject.parseObject(payload);
         return (String) jsonObject.get("accountLinkURL");
+    }
+
+
+    /**
+     * 更新PaymentMethod
+     *
+     * @param customerId      买家支付id
+     * @param paymentMethodId paymentMethodId
+     * @return paymentMethodId
+     */
+    public String updatePaymentMethod(@NotNull String customerId, @NotNull String paymentMethodId) {
+        ImmutableMap<String, Object> param = ImmutableMap.of(
+                "customerId", customerId,
+                "paymentMethodId", paymentMethodId,
+                "attach", true);
+        return AwsLambdaUtils.invokeFunction("update_payment_method", param);
     }
 
 }

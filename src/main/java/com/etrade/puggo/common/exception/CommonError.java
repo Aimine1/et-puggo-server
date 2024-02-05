@@ -33,11 +33,6 @@ public enum CommonError implements ErrorMsg {
 
 
     /**
-     * 商品服务错误码 1101 - 1500
-     */
-
-
-    /**
      * 团购券服务错误码 1501 - 2000
      */
     GROUPON_IS_UNKNOWN(1501, "Groupon Coupon is unknown."),
@@ -50,11 +45,15 @@ public enum CommonError implements ErrorMsg {
      */
     GLOBAL_ERROR(2001, "Sorry, the system is busy."),
 
+    /**
+     * S3上传异常
+     */
     S3_UPLOAD_ERROR(2101, "文件上传S3失败"),
     S3_REMOVE_ERROR(2102, "文件从S3删除失败"),
     S3_LIST_ERROR(2103, "从S3获取文件失败"),
     S3_OPERATE_ERROR(2104, "文件从S3操作失败"),
     S3_FILE_IS_EXISTS(2105, "文件已存在，请重新上传"),
+
     ;
 
     private Integer code;

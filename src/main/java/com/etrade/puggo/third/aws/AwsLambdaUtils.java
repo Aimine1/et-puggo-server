@@ -2,6 +2,7 @@ package com.etrade.puggo.third.aws;
 
 import com.alibaba.fastjson.JSONObject;
 import com.etrade.puggo.common.exception.AwsException;
+import com.etrade.puggo.common.exception.PaymentException;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
@@ -44,7 +45,12 @@ public class AwsLambdaUtils {
             log.info("Aws lambda invokeFunction code={} payload={}", code, resPayload);
 
             if (code != 200) {
-                throw new AwsException(resPayload);
+                throw new PaymentException(resPayload);
+            }
+
+            if (resPayload.contains("errorMessage")) {
+                JSONObject jsonObject = JSONObject.parseObject(resPayload);
+                throw new PaymentException((String) jsonObject.get("errorMessage"));
             }
 
             return resPayload;
