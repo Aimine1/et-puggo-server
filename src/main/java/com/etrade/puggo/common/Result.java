@@ -1,13 +1,12 @@
 package com.etrade.puggo.common;
 
-import com.etrade.puggo.common.exception.ErrorMsg;
 import com.etrade.puggo.common.enums.LangErrorEnum;
+import com.etrade.puggo.common.exception.ErrorMsg;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import software.amazon.awssdk.services.lambda.endpoints.internal.Value;
 
 /**
  * @Description 接口返回值规范
@@ -94,8 +93,8 @@ public class Result<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Result<T> error(ErrorMsg errorMsg, T data) {
-        return new Result(errorMsg.getCode(), data, errorMsg.getMsg());
+    public static <T> Result<T> error(ErrorMsg errorMsg, String error) {
+        return new Result(errorMsg.getCode(), null, errorMsg.getMsg(), error);
     }
 
     public int getCode() {

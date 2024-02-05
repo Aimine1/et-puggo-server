@@ -2,10 +2,6 @@ package com.etrade.puggo.common.exception;
 
 import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.enums.LangErrorEnum;
-import java.util.stream.Collectors;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import java.util.stream.Collectors;
 
 /**
  * 全局异常处理
@@ -47,9 +48,9 @@ public class GlobalExceptionHandler {
         String message;
         if (e instanceof ConstraintViolationException) {
             message = ((ConstraintViolationException) e).getConstraintViolations()
-                .stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining());
+                    .stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining());
         } else {
             message = e.getMessage();
         }
@@ -132,7 +133,7 @@ public class GlobalExceptionHandler {
         if (e.getCode() != null) {
             return Result.error(e.getCode(), e.getMessage(), e.getData());
         } else {
-            return Result.error(0, e.getMessage());
+            return Result.error(CommonError.GLOBAL_ERROR.getCode(), e.getMessage());
         }
     }
 
@@ -150,7 +151,7 @@ public class GlobalExceptionHandler {
         if (e.getCode() != null) {
             return Result.error(e.getCode(), e.getMessage());
         } else {
-            return Result.error(0, e.getMessage());
+            return Result.error(CommonError.GLOBAL_ERROR.getCode(), e.getMessage());
         }
     }
 
@@ -171,17 +172,31 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ClientAbortException.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Result handleClientAbortException(ClientAbortException e) {
-        log.error("ClientAbortException", e);
-        return Result.error(0, "ClientAbort");
+    public Result<?> handleClientAbortException(ClientAbortException e) {
+        log.error("ClientAbortException:", e);
+        return Result.error(CommonError.GLOBAL_ERROR.getCode(), "ClientAbort");
     }
 
+    /**
+     * 兜底的异常拦截
+     */
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Result<?> handleException(Throwable t) {
         log.error("统一服务内部异常处理:", t);
         return Result.error(CommonError.GLOBAL_ERROR.getCode(), LangErrorEnum.GLOBAL_ERROR.lang(), t.getMessage());
+    }
+
+    /**
+     * 支付模块异常
+     */
+    @ExceptionHandler(PaymentException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Result<?> PaymentExceptionHandler(PaymentException e) {
+        log.error("PaymentException:", e);
+        return Result.error(CommonErrorV2.PAYMENT_ERROR, e.getMessage());
     }
 
 }

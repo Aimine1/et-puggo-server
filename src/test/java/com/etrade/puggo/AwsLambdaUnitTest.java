@@ -4,11 +4,14 @@ import com.etrade.puggo.common.enums.PaymentTypeEnum;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
 import com.etrade.puggo.third.aws.pojo.CreateInvoiceReq;
 import com.etrade.puggo.third.aws.pojo.CreatePaymentIntentReq;
+import com.etrade.puggo.third.aws.pojo.PaymentMethodDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author zhenyu
@@ -42,7 +45,9 @@ public class AwsLambdaUnitTest {
 
     @Test
     void listPaymentMethod() {
-        paymentLambdaFunctions.listPaymentMethod("cus_PNtQgQvpacHLMP");
+        List<PaymentMethodDTO> paymentMethodList = paymentLambdaFunctions.listPaymentMethod("cus_PV4wiC3EIR7hQu");
+        List<String> list = paymentMethodList.stream().map(PaymentMethodDTO::getId).collect(Collectors.toList());
+        System.out.println(list);
     }
 
 
@@ -80,14 +85,21 @@ public class AwsLambdaUnitTest {
     void createInvoice() {
         CreateInvoiceReq req = new CreateInvoiceReq();
         req.setSellerAccountId("acct_1Og4DrPnpvYQXaZD");
-        req.setPaymentMethodId("pm_1Og4U9BMUZ8hfYAihQ1YnXEL");
-        req.setCustomerId("cus_PV4wiC3EIR7hQu");
+        req.setPaymentMethodId("pm_1Og5NhBMUZ8hfYAiCz3NeKd2");
+        req.setCustomerId("cus_PV5XlCMUopMplz");
         req.setPaymentType(PaymentTypeEnum.card.name());
         req.setAmount(new BigDecimal(3680));
         req.setTax(new BigDecimal("320"));
         req.setFees(new BigDecimal(1800));
-        req.setToken("tok_1Og4UABMUZ8hfYAi5wBOkTOF");
+        // req.setToken("tok_1Og4UABMUZ8hfYAi5wBOkTOF");
 
-        paymentLambdaFunctions.createInvoice(req);
+        System.out.println(paymentLambdaFunctions.createInvoice(req));
     }
+
+
+    @Test
+    void updatePaymentMethod() {
+        paymentLambdaFunctions.updatePaymentMethod("cus_PV5XlCMUopMplz", "pm_1Og5NhBMUZ8hfYAiCz3NeKd2");
+    }
+
 }

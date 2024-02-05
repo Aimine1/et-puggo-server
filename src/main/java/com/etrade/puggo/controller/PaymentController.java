@@ -4,6 +4,7 @@ import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.weblog.WebLog;
 import com.etrade.puggo.service.payment.CustomerAddressService;
 import com.etrade.puggo.service.payment.CustomerCardService;
+import com.etrade.puggo.service.payment.PaymentMethodService;
 import com.etrade.puggo.service.payment.PaymentService;
 import com.etrade.puggo.service.payment.pojo.*;
 import com.etrade.puggo.utils.JsonUtils;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -24,6 +26,7 @@ import java.util.List;
  * @date 2024/1/19 11:30
  */
 @Slf4j
+@Validated
 @Api(value = "支付接口", tags = "支付接口")
 @RestController
 @RequestMapping("/payment")
@@ -38,6 +41,9 @@ public class PaymentController {
 
     @Resource
     private PaymentService paymentService;
+
+    @Resource
+    private PaymentMethodService paymentMethodService;
 
 
     @WebLog
@@ -135,5 +141,21 @@ public class PaymentController {
         return Result.ok(paymentService.createSellerAccount());
     }
 
+
+    @WebLog
+    @GetMapping("/customer/paymentMethod/list")
+    @ApiOperation("获取买家支付方式列表")
+    public Result<List<String>> listPaymentMethod() {
+        return Result.ok(paymentMethodService.listPaymentMethod());
+    }
+
+
+    @WebLog
+    @PutMapping("/customer/paymentMethod/bind")
+    @ApiOperation("将买家与支付方式进行绑定")
+    public Result<?> updatePaymentMethod(@NotBlank @RequestParam("paymentMethodId") String paymentMethodId) {
+        paymentMethodService.updatePaymentMethod(paymentMethodId);
+        return Result.ok();
+    }
 
 }

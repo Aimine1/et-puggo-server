@@ -1,6 +1,7 @@
 package com.etrade.puggo.service.payment;
 
 import com.etrade.puggo.common.enums.*;
+import com.etrade.puggo.common.exception.CommonErrorV2;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.user.UserDao;
@@ -16,6 +17,7 @@ import com.etrade.puggo.service.payment.pojo.PaymentParam;
 import com.etrade.puggo.service.setting.SettingService;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
 import com.etrade.puggo.third.aws.pojo.CreateInvoiceReq;
+import com.etrade.puggo.third.aws.pojo.PaymentMethodDTO;
 import com.etrade.puggo.third.aws.pojo.SellerAccountDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author zhenyu
@@ -182,15 +187,9 @@ public class PaymentService extends BaseService {
         req.setSellerAccountId(paymentSellerId);
         req.setToken(token);
 
-        try {
-            String payload = paymentLambdaFunctions.createInvoice(req);
-            log.info("支付结果为: {}", payload);
-            return payload;
-        } catch (Exception e) {
-            log.error("支付失败，userId={}，原因={}", userId(), e.getMessage());
-        }
-
-        return null;
+        String invoiceId = paymentLambdaFunctions.createInvoice(req);
+        log.info("支付成功 invoiceId: {}", invoiceId);
+        return invoiceId;
     }
 
 
@@ -280,5 +279,7 @@ public class PaymentService extends BaseService {
 
         return sellerAccountLinkURL;
     }
+
+
 
 }
