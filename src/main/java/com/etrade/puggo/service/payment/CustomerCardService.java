@@ -29,13 +29,19 @@ public class CustomerCardService extends BaseService {
     @Resource
     private CustomerCardDao customerCardDao;
 
-    public void save(CreditCardDO param) {
+    public Integer save(CreditCardDO param) {
 
         checkCardNumber(param.getCardNumber());
 
         checkExpireYearAndMonth(param.getExpireYear(), param.getExpireMonth());
 
-        customerCardDao.save(param, userId());
+        PaymentCardRecord paymentCardRecord = customerCardDao.selectOne(param.getCardNumber(), userId());
+
+        if (paymentCardRecord != null) {
+            return paymentCardRecord.getId();
+        }
+
+        return customerCardDao.save(param, userId());
     }
 
 

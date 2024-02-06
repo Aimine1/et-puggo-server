@@ -50,8 +50,7 @@ public class PaymentController {
     @PostMapping("/customerCard/save")
     @ApiOperation("保存信用卡/借记卡信息")
     public Result<?> saveCustomerCard(@Validated @RequestBody CreditCardDO creditCardDO) {
-        customerCardService.save(creditCardDO);
-        return Result.ok();
+        return Result.ok(customerCardService.save(creditCardDO));
     }
 
 
@@ -85,8 +84,7 @@ public class PaymentController {
     @PostMapping("/customerAddress/save")
     @ApiOperation("保存买家收货地址/账单地址")
     public Result<?> saveCustomerAddress(@Validated @RequestBody CustomerAddressDO customerAddressDO) {
-        customerAddressService.save(customerAddressDO);
-        return Result.ok();
+        return Result.ok(customerAddressService.save(customerAddressDO));
     }
 
 

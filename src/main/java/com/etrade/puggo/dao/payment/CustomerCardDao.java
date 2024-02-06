@@ -26,9 +26,10 @@ public class CustomerCardDao extends BaseDao {
     private static final byte IS_DEFAULT = 1;
 
 
-    public void save(CreditCardDO param, Long userId) {
+    public Integer save(CreditCardDO param, Long userId) {
         PaymentCardRecord record = newRecord(param, userId);
         record.insert();
+        return record.getId();
     }
 
 
@@ -74,6 +75,13 @@ public class CustomerCardDao extends BaseDao {
 
     public PaymentCardRecord selectOne(Integer id) {
         return db.selectFrom(PAYMENT_CARD).where(PAYMENT_CARD.ID.eq(id)).fetchAnyInto(PaymentCardRecord.class);
+    }
+
+
+    public PaymentCardRecord selectOne(String cardNumber, Long userId) {
+        return db.selectFrom(PAYMENT_CARD)
+                .where(PAYMENT_CARD.CARD_NUMBER.eq(cardNumber).and(PAYMENT_CARD.USER_ID.eq(userId)))
+                .fetchAnyInto(PaymentCardRecord.class);
     }
 
 }
