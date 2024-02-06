@@ -3,11 +3,14 @@ package com.etrade.puggo.service.payment;
 import com.etrade.puggo.common.enums.*;
 import com.etrade.puggo.common.exception.PaymentException;
 import com.etrade.puggo.service.account.UserAccountService;
+import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
+import com.etrade.puggo.third.aws.pojo.CreateInvoiceReq;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 /**
  * @author zhenyu
@@ -17,7 +20,9 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-public class PaymentCheckUtils {
+public class PaymentUtils {
+
+    private static final BigDecimal Dollar2CentUnit = new BigDecimal(100);
 
     @Resource
     private CustomerAddressService customerAddressService;
@@ -27,6 +32,9 @@ public class PaymentCheckUtils {
 
     @Resource
     private UserAccountService userAccountService;
+
+    @Resource
+    private PaymentLambdaFunctions paymentLambdaFunctions;
 
 
     public void checkPaymentType(String paymentType) {
@@ -81,7 +89,7 @@ public class PaymentCheckUtils {
 
         if (StringUtils.isBlank(paymentCustomerId)) {
             log.error("支付失败，paymentCustomerId is null，customerId={}", customerId);
-            throw new PaymentException(LangErrorEnum.INVALID_PAYMENT_SELLER.lang());
+            throw new PaymentException(LangErrorEnum.INVALID_PAYMENT_CUSTOMER.lang());
         }
 
         return paymentCustomerId;
@@ -93,11 +101,33 @@ public class PaymentCheckUtils {
 
         if (StringUtils.isBlank(paymentSellerId)) {
             log.error("支付失败，paymentSellerId is null，sellerId={}", sellerId);
-            throw new PaymentException(LangErrorEnum.PAYMENT_FAILED.lang());
+            throw new PaymentException(LangErrorEnum.INVALID_PAYMENT_SELLER.lang());
         }
 
         return paymentSellerId;
     }
 
+
+    public String execute(BigDecimal amount, BigDecimal tax, BigDecimal shippingFees,
+                          String paymentCustomerId, String paymentSellerId, String paymentType, String paymentMethodId,
+                          String token) {
+
+        CreateInvoiceReq req = new CreateInvoiceReq();
+        // 商品金额，单位:分
+        req.setAmount(amount.multiply(Dollar2CentUnit));
+        // 税，单位:分
+        req.setTax(tax.multiply(Dollar2CentUnit));
+        // 邮费，单位:分
+        req.setFees(shippingFees.multiply(Dollar2CentUnit));
+        req.setCustomerId(paymentCustomerId);
+        req.setPaymentType(paymentType);
+        req.setPaymentMethodId(paymentMethodId);
+        req.setSellerAccountId(paymentSellerId);
+        req.setToken(token);
+
+        String invoiceId = paymentLambdaFunctions.createInvoice(req);
+        log.info("支付成功 invoiceId: {}", invoiceId);
+        return invoiceId;
+    }
 
 }

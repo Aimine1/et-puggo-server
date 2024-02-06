@@ -35,17 +35,7 @@ public class GoodsTradeDTO {
 
     private Integer shippingMethod;
 
-    private String paymentMethodId;
-
-    private String paymentType;
-
     private Integer deliveryAddressId;
-
-    private Integer billingAddressId;
-
-    private Byte isSameAsDeliveryAddress;
-
-    private Integer paymentCardId;
 
     private String title;
 

@@ -14,15 +14,12 @@ import javax.validation.constraints.NotNull;
 @Data
 public class GetTradeParam {
 
-    @NotNull
     @ApiModelProperty("买家用户id")
     protected Long customerId;
 
-    @NotNull
     @ApiModelProperty("卖家用户id")
     protected Long sellerId;
 
-    @NotNull
     @ApiModelProperty("商品id")
     protected Long goodsId;
 

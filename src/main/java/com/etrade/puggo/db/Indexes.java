@@ -10,6 +10,7 @@ import com.etrade.puggo.db.tables.AiOverallAppraisal;
 import com.etrade.puggo.db.tables.AiPointList;
 import com.etrade.puggo.db.tables.AiSeriesList;
 import com.etrade.puggo.db.tables.AiSingleAppraisal;
+import com.etrade.puggo.db.tables.AiUserAvailableBalance;
 import com.etrade.puggo.db.tables.Goods;
 import com.etrade.puggo.db.tables.GoodsClass;
 import com.etrade.puggo.db.tables.GoodsComment;
@@ -31,6 +32,7 @@ import com.etrade.puggo.db.tables.Message;
 import com.etrade.puggo.db.tables.MsgNews;
 import com.etrade.puggo.db.tables.PaymentCard;
 import com.etrade.puggo.db.tables.PaymentCustomerAddress;
+import com.etrade.puggo.db.tables.PaymentInvoice;
 import com.etrade.puggo.db.tables.PaymentRecord;
 import com.etrade.puggo.db.tables.Setting;
 import com.etrade.puggo.db.tables.StatisticsUserCommentScore;
@@ -67,6 +69,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index AI_AVAILABLE_BALANCE_PRIMARY = Indexes0.AI_AVAILABLE_BALANCE_PRIMARY;
+    public static final Index AI_AVAILABLE_BALANCE_UX_KIND_ID = Indexes0.AI_AVAILABLE_BALANCE_UX_KIND_ID;
     public static final Index AI_BRAND_LIST_PRIMARY = Indexes0.AI_BRAND_LIST_PRIMARY;
     public static final Index AI_OVERALL_APPRAISAL_IDX_USER_OPERATION_ID = Indexes0.AI_OVERALL_APPRAISAL_IDX_USER_OPERATION_ID;
     public static final Index AI_OVERALL_APPRAISAL_PRIMARY = Indexes0.AI_OVERALL_APPRAISAL_PRIMARY;
@@ -75,6 +78,8 @@ public class Indexes {
     public static final Index AI_SERIES_LIST_PRIMARY = Indexes0.AI_SERIES_LIST_PRIMARY;
     public static final Index AI_SINGLE_APPRAISAL_IDX_USER_OPERATION_ID = Indexes0.AI_SINGLE_APPRAISAL_IDX_USER_OPERATION_ID;
     public static final Index AI_SINGLE_APPRAISAL_PRIMARY = Indexes0.AI_SINGLE_APPRAISAL_PRIMARY;
+    public static final Index AI_USER_AVAILABLE_BALANCE_PRIMARY = Indexes0.AI_USER_AVAILABLE_BALANCE_PRIMARY;
+    public static final Index AI_USER_AVAILABLE_BALANCE_UX_USER_KIND_ID = Indexes0.AI_USER_AVAILABLE_BALANCE_UX_USER_KIND_ID;
     public static final Index GOODS_IDX_GOODS_AI_IDENTIFY_NO = Indexes0.GOODS_IDX_GOODS_AI_IDENTIFY_NO;
     public static final Index GOODS_IDX_GOODS_CLASS_PATH = Indexes0.GOODS_IDX_GOODS_CLASS_PATH;
     public static final Index GOODS_IDX_GOODS_IS_FREE = Indexes0.GOODS_IDX_GOODS_IS_FREE;
@@ -123,6 +128,8 @@ public class Indexes {
     public static final Index PAYMENT_CARD_PRIMARY = Indexes0.PAYMENT_CARD_PRIMARY;
     public static final Index PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID = Indexes0.PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID;
     public static final Index PAYMENT_CUSTOMER_ADDRESS_PRIMARY = Indexes0.PAYMENT_CUSTOMER_ADDRESS_PRIMARY;
+    public static final Index PAYMENT_INVOICE_IDX_PAYMENT_INVOICE_USER_ID = Indexes0.PAYMENT_INVOICE_IDX_PAYMENT_INVOICE_USER_ID;
+    public static final Index PAYMENT_INVOICE_PRIMARY = Indexes0.PAYMENT_INVOICE_PRIMARY;
     public static final Index PAYMENT_RECORD_IDX_TRANSACTION_NO = Indexes0.PAYMENT_RECORD_IDX_TRANSACTION_NO;
     public static final Index PAYMENT_RECORD_IDX_USER_ID = Indexes0.PAYMENT_RECORD_IDX_USER_ID;
     public static final Index SETTING_PRIMARY = Indexes0.SETTING_PRIMARY;
@@ -151,6 +158,7 @@ public class Indexes {
 
     private static class Indexes0 {
         public static Index AI_AVAILABLE_BALANCE_PRIMARY = Internal.createIndex("PRIMARY", AiAvailableBalance.AI_AVAILABLE_BALANCE, new OrderField[] { AiAvailableBalance.AI_AVAILABLE_BALANCE.ID }, true);
+        public static Index AI_AVAILABLE_BALANCE_UX_KIND_ID = Internal.createIndex("ux_kind_id", AiAvailableBalance.AI_AVAILABLE_BALANCE, new OrderField[] { AiAvailableBalance.AI_AVAILABLE_BALANCE.KIND_ID }, true);
         public static Index AI_BRAND_LIST_PRIMARY = Internal.createIndex("PRIMARY", AiBrandList.AI_BRAND_LIST, new OrderField[] { AiBrandList.AI_BRAND_LIST.ID }, true);
         public static Index AI_OVERALL_APPRAISAL_IDX_USER_OPERATION_ID = Internal.createIndex("idx_user_operation_id", AiOverallAppraisal.AI_OVERALL_APPRAISAL, new OrderField[] { AiOverallAppraisal.AI_OVERALL_APPRAISAL.USER_ID, AiOverallAppraisal.AI_OVERALL_APPRAISAL.OPERATION_ID }, false);
         public static Index AI_OVERALL_APPRAISAL_PRIMARY = Internal.createIndex("PRIMARY", AiOverallAppraisal.AI_OVERALL_APPRAISAL, new OrderField[] { AiOverallAppraisal.AI_OVERALL_APPRAISAL.ID }, true);
@@ -159,6 +167,8 @@ public class Indexes {
         public static Index AI_SERIES_LIST_PRIMARY = Internal.createIndex("PRIMARY", AiSeriesList.AI_SERIES_LIST, new OrderField[] { AiSeriesList.AI_SERIES_LIST.ID }, true);
         public static Index AI_SINGLE_APPRAISAL_IDX_USER_OPERATION_ID = Internal.createIndex("idx_user_operation_id", AiSingleAppraisal.AI_SINGLE_APPRAISAL, new OrderField[] { AiSingleAppraisal.AI_SINGLE_APPRAISAL.USER_ID, AiSingleAppraisal.AI_SINGLE_APPRAISAL.OPERATION_ID }, false);
         public static Index AI_SINGLE_APPRAISAL_PRIMARY = Internal.createIndex("PRIMARY", AiSingleAppraisal.AI_SINGLE_APPRAISAL, new OrderField[] { AiSingleAppraisal.AI_SINGLE_APPRAISAL.ID }, true);
+        public static Index AI_USER_AVAILABLE_BALANCE_PRIMARY = Internal.createIndex("PRIMARY", AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE, new OrderField[] { AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE.ID }, true);
+        public static Index AI_USER_AVAILABLE_BALANCE_UX_USER_KIND_ID = Internal.createIndex("ux_user_kind_id", AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE, new OrderField[] { AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE.USER_ID, AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE.KIND_ID }, true);
         public static Index GOODS_IDX_GOODS_AI_IDENTIFY_NO = Internal.createIndex("idx_goods_ai_identify_no", Goods.GOODS, new OrderField[] { Goods.GOODS.AI_IDENTIFY_NO }, false);
         public static Index GOODS_IDX_GOODS_CLASS_PATH = Internal.createIndex("idx_goods_class_path", Goods.GOODS, new OrderField[] { Goods.GOODS.CLASS_PATH }, false);
         public static Index GOODS_IDX_GOODS_IS_FREE = Internal.createIndex("idx_goods_is_free", Goods.GOODS, new OrderField[] { Goods.GOODS.IS_FREE }, false);
@@ -207,6 +217,8 @@ public class Indexes {
         public static Index PAYMENT_CARD_PRIMARY = Internal.createIndex("PRIMARY", PaymentCard.PAYMENT_CARD, new OrderField[] { PaymentCard.PAYMENT_CARD.ID }, true);
         public static Index PAYMENT_CUSTOMER_ADDRESS_IDX_USER_ID = Internal.createIndex("idx_user_id", PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS, new OrderField[] { PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS.USER_ID }, false);
         public static Index PAYMENT_CUSTOMER_ADDRESS_PRIMARY = Internal.createIndex("PRIMARY", PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS, new OrderField[] { PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS.ID }, true);
+        public static Index PAYMENT_INVOICE_IDX_PAYMENT_INVOICE_USER_ID = Internal.createIndex("idx_payment_invoice_user_id", PaymentInvoice.PAYMENT_INVOICE, new OrderField[] { PaymentInvoice.PAYMENT_INVOICE.USER_ID }, false);
+        public static Index PAYMENT_INVOICE_PRIMARY = Internal.createIndex("PRIMARY", PaymentInvoice.PAYMENT_INVOICE, new OrderField[] { PaymentInvoice.PAYMENT_INVOICE.ID }, true);
         public static Index PAYMENT_RECORD_IDX_TRANSACTION_NO = Internal.createIndex("idx_transaction_no", PaymentRecord.PAYMENT_RECORD, new OrderField[] { PaymentRecord.PAYMENT_RECORD.TRANSACTION_NO }, false);
         public static Index PAYMENT_RECORD_IDX_USER_ID = Internal.createIndex("idx_user_id", PaymentRecord.PAYMENT_RECORD, new OrderField[] { PaymentRecord.PAYMENT_RECORD.USER_ID }, false);
         public static Index SETTING_PRIMARY = Internal.createIndex("PRIMARY", Setting.SETTING, new OrderField[] { Setting.SETTING.ID }, true);

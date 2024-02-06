@@ -22,6 +22,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 商品交易
+ * 商品交易表
  */
 @Generated(
     value = {
@@ -43,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsTrade extends TableImpl<GoodsTradeRecord> {
 
-    private static final long serialVersionUID = -1687275069;
+    private static final long serialVersionUID = 1731350639;
 
     /**
      * The reference instance of <code>etrade_goods.goods_trade</code>
@@ -69,9 +70,9 @@ public class GoodsTrade extends TableImpl<GoodsTradeRecord> {
     public final TableField<GoodsTradeRecord, String> TRADE_NO = createField(DSL.name("trade_no"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单编号");
 
     /**
-     * The column <code>etrade_goods.goods_trade.title</code>. 支付标题
+     * The column <code>etrade_goods.goods_trade.title</code>. 抬头
      */
-    public final TableField<GoodsTradeRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付标题");
+    public final TableField<GoodsTradeRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "抬头");
 
     /**
      * The column <code>etrade_goods.goods_trade.goods_id</code>. 商品id
@@ -114,9 +115,9 @@ public class GoodsTrade extends TableImpl<GoodsTradeRecord> {
     public final TableField<GoodsTradeRecord, Integer> SHIPPING_METHOD = createField(DSL.name("shipping_method"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "交易方式：1面交 2快递 4当日达 等等");
 
     /**
-     * The column <code>etrade_goods.goods_trade.other_fees</code>. 邮寄费用、AI检测费用等额外费用
+     * The column <code>etrade_goods.goods_trade.shipping_fees</code>. 邮寄费用、AI检测费用等额外费用
      */
-    public final TableField<GoodsTradeRecord, BigDecimal> OTHER_FEES = createField(DSL.name("other_fees"), org.jooq.impl.SQLDataType.DECIMAL(19, 4).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "邮寄费用、AI检测费用等额外费用");
+    public final TableField<GoodsTradeRecord, BigDecimal> SHIPPING_FEES = createField(DSL.name("shipping_fees"), org.jooq.impl.SQLDataType.DECIMAL(19, 4).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "邮寄费用、AI检测费用等额外费用");
 
     /**
      * The column <code>etrade_goods.goods_trade.tax</code>. 商品税，或者叫佣金，系统所得费用
@@ -129,39 +130,14 @@ public class GoodsTrade extends TableImpl<GoodsTradeRecord> {
     public final TableField<GoodsTradeRecord, BigDecimal> SUBTOTAL = createField(DSL.name("subtotal"), org.jooq.impl.SQLDataType.DECIMAL(19, 4).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "商家所得费用，如商品费用");
 
     /**
-     * The column <code>etrade_goods.goods_trade.payment_method_id</code>. 买家支付方式
-     */
-    public final TableField<GoodsTradeRecord, String> PAYMENT_METHOD_ID = createField(DSL.name("payment_method_id"), org.jooq.impl.SQLDataType.VARCHAR(25).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "买家支付方式");
-
-    /**
-     * The column <code>etrade_goods.goods_trade.payment_type</code>. 买家支付类型
-     */
-    public final TableField<GoodsTradeRecord, String> PAYMENT_TYPE = createField(DSL.name("payment_type"), org.jooq.impl.SQLDataType.VARCHAR(25).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "买家支付类型");
-
-    /**
      * The column <code>etrade_goods.goods_trade.delivery_address_id</code>. 收货地址id
      */
     public final TableField<GoodsTradeRecord, Integer> DELIVERY_ADDRESS_ID = createField(DSL.name("delivery_address_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "收货地址id");
 
     /**
-     * The column <code>etrade_goods.goods_trade.billing_address_id</code>. 账单地址id
+     * The column <code>etrade_goods.goods_trade.payment_invoice_id</code>. 支付id
      */
-    public final TableField<GoodsTradeRecord, Integer> BILLING_ADDRESS_ID = createField(DSL.name("billing_address_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "账单地址id");
-
-    /**
-     * The column <code>etrade_goods.goods_trade.is_same_as_delivery_address</code>. 当账单地址同收货地址时，账单地址id为0
-     */
-    public final TableField<GoodsTradeRecord, Byte> IS_SAME_AS_DELIVERY_ADDRESS = createField(DSL.name("is_same_as_delivery_address"), org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "当账单地址同收货地址时，账单地址id为0");
-
-    /**
-     * The column <code>etrade_goods.goods_trade.invoice_id</code>. 支付成功后发票id
-     */
-    public final TableField<GoodsTradeRecord, String> INVOICE_ID = createField(DSL.name("invoice_id"), org.jooq.impl.SQLDataType.VARCHAR(25).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付成功后发票id");
-
-    /**
-     * The column <code>etrade_goods.goods_trade.payment_card_id</code>. 如果付款方式是card，支付卡号id
-     */
-    public final TableField<GoodsTradeRecord, Integer> PAYMENT_CARD_ID = createField(DSL.name("payment_card_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "如果付款方式是card，支付卡号id");
+    public final TableField<GoodsTradeRecord, Long> PAYMENT_INVOICE_ID = createField(DSL.name("payment_invoice_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "支付id");
 
     /**
      * The column <code>etrade_goods.goods_trade.created</code>.
@@ -199,7 +175,7 @@ public class GoodsTrade extends TableImpl<GoodsTradeRecord> {
     }
 
     private GoodsTrade(Name alias, Table<GoodsTradeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("商品交易"));
+        super(alias, null, aliased, parameters, DSL.comment("商品交易表"));
     }
 
     public <O extends Record> GoodsTrade(Table<O> child, ForeignKey<O, GoodsTradeRecord> key) {
@@ -255,5 +231,14 @@ public class GoodsTrade extends TableImpl<GoodsTradeRecord> {
     @Override
     public GoodsTrade rename(Name name) {
         return new GoodsTrade(name, null);
+    }
+
+    // -------------------------------------------------------------------------
+    // Row18 type methods
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Row18<Long, String, String, Long, Long, String, Long, BigDecimal, LocalDateTime, String, Integer, BigDecimal, BigDecimal, BigDecimal, Integer, Long, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }

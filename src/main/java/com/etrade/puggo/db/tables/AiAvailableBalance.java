@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AiAvailableBalance extends TableImpl<AiAvailableBalanceRecord> {
 
-    private static final long serialVersionUID = 1959232736;
+    private static final long serialVersionUID = 1196992398;
 
     /**
      * The reference instance of <code>etrade_goods.ai_available_balance</code>
@@ -128,7 +128,7 @@ public class AiAvailableBalance extends TableImpl<AiAvailableBalanceRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.AI_AVAILABLE_BALANCE_PRIMARY);
+        return Arrays.<Index>asList(Indexes.AI_AVAILABLE_BALANCE_PRIMARY, Indexes.AI_AVAILABLE_BALANCE_UX_KIND_ID);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class AiAvailableBalance extends TableImpl<AiAvailableBalanceRecord> {
 
     @Override
     public List<UniqueKey<AiAvailableBalanceRecord>> getKeys() {
-        return Arrays.<UniqueKey<AiAvailableBalanceRecord>>asList(Keys.KEY_AI_AVAILABLE_BALANCE_PRIMARY);
+        return Arrays.<UniqueKey<AiAvailableBalanceRecord>>asList(Keys.KEY_AI_AVAILABLE_BALANCE_PRIMARY, Keys.KEY_AI_AVAILABLE_BALANCE_UX_KIND_ID);
     }
 
     @Override
