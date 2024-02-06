@@ -30,13 +30,13 @@ public class CustomerAddressService extends BaseService {
     private CustomerAddressDao customerAddressDao;
 
 
-    public void save(CustomerAddressDO param) {
+    public Integer save(CustomerAddressDO param) {
 
         checkAddressType(param.getType());
 
         checkPhoneNumber(param.getPhoneNumber());
 
-        customerAddressDao.save(param, userId());
+        return customerAddressDao.save(param, userId());
     }
 
 

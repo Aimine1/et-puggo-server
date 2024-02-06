@@ -26,9 +26,10 @@ public class CustomerAddressDao extends BaseDao {
     private static final byte IS_DEFAULT = 1;
 
 
-    public void save(CustomerAddressDO param, Long userId) {
+    public Integer save(CustomerAddressDO param, Long userId) {
         PaymentCustomerAddressRecord record = newRecord(param, userId);
         record.insert();
+        return record.getId();
     }
 
 
