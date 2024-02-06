@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -15,8 +16,8 @@ import java.math.BigDecimal;
  * @date 2024/1/18 15:25
  */
 @Data
-@ApiModel("发起支付参数")
-public class PaymentParam {
+@ApiModel("AI可用次数支付参数")
+public class PaymentAIParam {
 
     @NotNull(message = "Invalid paymentType")
     @NotBlank(message = "Invalid paymentType")
@@ -33,24 +34,24 @@ public class PaymentParam {
     @ApiModelProperty("客户端发起支付之前生成")
     private String token;
 
-    @NotNull(message = "Invalid trade")
-    @ApiModelProperty("商品交易订单id")
-    private Long tradeId;
-
-    @NotNull(message = "Invalid delivery address")
-    @ApiModelProperty("收货地址id")
-    private Integer deliveryAddressId;
-
+    @NotNull(message = "Invalid billingAddressId")
     @ApiModelProperty("账单地址id，当勾选\"Same as delivery address\"选项时，此值不生效")
     private Integer billingAddressId;
 
-    @ApiModelProperty("账单地址同收货地址")
-    private Boolean isSameAsDeliveryAddress;
-
-    @NotNull(message = "Invalid shipping method")
-    @ApiModelProperty("邮寄方式，可选项：1 Public Meetup，2 Standard Shipping，4 Puggo Same-day Delivery，同发布时的选项")
-    private Integer shippingMethod;
-
     @ApiModelProperty("如果支付方式是card，信用卡id")
     private Integer paymentCardId;
+
+    @NotNull(message = "Invalid kindId")
+    @ApiModelProperty("AI鉴定品类")
+    private Integer kindId;
+
+    @NotNull(message = "Invalid availableTimes")
+    @ApiModelProperty("购买可用额度")
+    @Min(value = 1, message = "购买次数不能小于一次")
+    private Integer availableTimes;
+
+    @NotNull(message = "Invalid amount")
+    @ApiModelProperty("金额")
+    private BigDecimal amount;
+
 }

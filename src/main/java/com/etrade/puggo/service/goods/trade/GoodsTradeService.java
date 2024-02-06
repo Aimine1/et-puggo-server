@@ -3,7 +3,6 @@ package com.etrade.puggo.service.goods.trade;
 import com.etrade.puggo.common.constants.GoodsState;
 import com.etrade.puggo.common.constants.GoodsTradeState;
 import com.etrade.puggo.common.enums.LangErrorEnum;
-import com.etrade.puggo.common.enums.PaymentTargetEnum;
 import com.etrade.puggo.common.enums.PaymentTypeEnum;
 import com.etrade.puggo.common.exception.CommonErrorV2;
 import com.etrade.puggo.common.exception.PaymentException;
@@ -12,6 +11,7 @@ import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.dao.goods.GoodsPictureDao;
 import com.etrade.puggo.dao.goods.GoodsTradeDao;
+import com.etrade.puggo.dao.payment.PaymentInvoiceDao;
 import com.etrade.puggo.db.tables.records.GoodsRecord;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.UserAccountService;
@@ -21,7 +21,8 @@ import com.etrade.puggo.service.goods.sales.pojo.GoodsTradeDTO;
 import com.etrade.puggo.service.goods.sales.pojo.LaunchUserDO;
 import com.etrade.puggo.service.goods.sales.pojo.TradeNoVO;
 import com.etrade.puggo.service.goods.trade.pojo.*;
-import com.etrade.puggo.service.payment.PaymentCheckUtils;
+import com.etrade.puggo.service.payment.PaymentUtils;
+import com.etrade.puggo.service.payment.pojo.PaymentInvoiceDTO;
 import com.etrade.puggo.utils.DateTimeUtils;
 import com.etrade.puggo.utils.IncrTradeNoUtils;
 import com.etrade.puggo.utils.OptionalUtils;
@@ -34,10 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -60,16 +58,19 @@ public class GoodsTradeService extends BaseService {
     private GoodsDao goodsDao;
 
     @Resource
-    private UpdateGoodsStateService updateGoodsStateService;
+    private PaymentInvoiceDao paymentInvoiceDao;
 
     @Resource
-    private IncrTradeNoUtils incrTradeNoUtils;
+    private UpdateGoodsStateService updateGoodsStateService;
 
     @Resource
     private UserAccountService userAccountService;
 
     @Resource
-    private PaymentCheckUtils paymentCheckUtils;
+    private IncrTradeNoUtils incrTradeNoUtils;
+
+    @Resource
+    private PaymentUtils paymentUtils;
 
 
     /**
@@ -83,19 +84,7 @@ public class GoodsTradeService extends BaseService {
 
         Long customerId = param.getCustomerId();
         Long sellerId = param.getSellerId();
-        BigDecimal price = param.getPrice();
         Long goodsId = param.getGoodsId();
-
-        // published状态的商品才允许开单
-        GoodsRecord goods = goodsDao.findOne(goodsId);
-
-        if (goods == null) {
-            throw new ServiceException(LangErrorEnum.INVALID_GOODS.lang());
-        }
-
-        if (!goods.getState().equals(GoodsState.PUBLISHED)) {
-            throw new ServiceException(CommonErrorV2.GOODS_IS_RESERVED);
-        }
 
         // 检查支付信息
         checkParameter(param);
@@ -121,33 +110,65 @@ public class GoodsTradeService extends BaseService {
             throw new ServiceException("Invalid customer");
         }
 
-        String title = param.getTarget().equals(PaymentTargetEnum.product.name()) ? "商品交易" : "AI鉴定支付";
+        // 生成支付发票信息
+        long paymentInvoiceId = savePaymentInvoice(param, sellerId);
 
-        GoodsTradeDTO trade = GoodsTradeDTO.builder()
-                .state(GoodsTradeState.PAY_PENDING)
-                .goodsId(goodsId)
-                .customerId(customer.getUserId())
-                .customer(customer.getNickname())
-                .sellerId(sellerId)
-                .tradingTime(DateTimeUtils.now())
-                .tradingPrice(price)
-                .shippingMethod(OptionalUtils.valueOrDefault(param.getShippingMethod(), 0))
-                .paymentMethodId(OptionalUtils.valueOrDefault(param.getPaymentMethodId(), ""))
-                .paymentType(OptionalUtils.valueOrDefault(param.getPaymentType(), ""))
-                .deliveryAddressId(OptionalUtils.valueOrDefault(param.getDeliveryAddressId(), 0))
-                .billingAddressId(OptionalUtils.valueOrDefault(param.getBillingAddressId(), 0))
-                .isSameAsDeliveryAddress(BooleanUtils.isTrue(param.getIsSameAsDeliveryAddress()) ? (byte) 1 : (byte) 0)
-                .paymentCardId(OptionalUtils.valueOrDefault(param.getPaymentCardId(), 0))
-                .title(title)
-                .build();
-
-        String tradeNo = incrTradeNoUtils.get("P");
-        Long tradeId = goodsTradeDao.save(trade, tradeNo);
+        // 生成商品交易订单
+        TradeNoVO tradeNoVO = saveGoodsTrade(param, customer, paymentInvoiceId);
 
         // 更新货品状态为已预售，防止重复抢占
         updateGoodsStateService.updateStateInner(goodsId, GoodsState.OCCUPY);
 
+        return tradeNoVO;
+    }
+
+
+    private void checkGoodsState(Long goodsId) {
+        GoodsRecord goods = goodsDao.findOne(goodsId);
+
+        if (goods == null) {
+            throw new ServiceException(LangErrorEnum.INVALID_GOODS.lang());
+        }
+
+        if (!goods.getState().equals(GoodsState.PUBLISHED)) {
+            throw new ServiceException(CommonErrorV2.GOODS_IS_RESERVED);
+        }
+    }
+
+
+    private TradeNoVO saveGoodsTrade(SaveTradeParam param, LaunchUserDO customer, long paymentInvoiceId) {
+        GoodsTradeDTO trade = GoodsTradeDTO.builder()
+                .state(GoodsTradeState.PAY_PENDING)
+                .goodsId(param.getGoodsId())
+                .customerId(customer.getUserId())
+                .customer(customer.getNickname())
+                .sellerId(param.getSellerId())
+                .tradingTime(DateTimeUtils.now())
+                .tradingPrice(param.getPrice())
+                .shippingMethod(OptionalUtils.valueOrDefault(param.getShippingMethod(), 0))
+                .deliveryAddressId(OptionalUtils.valueOrDefault(param.getDeliveryAddressId(), 0))
+                .title("商品交易")
+                .build();
+
+        String tradeNo = incrTradeNoUtils.get("P");
+        Long tradeId = goodsTradeDao.save(trade, tradeNo, paymentInvoiceId);
+
         return new TradeNoVO(tradeId, tradeNo);
+    }
+
+    private long savePaymentInvoice(SaveTradeParam param, Long sellerId) {
+        PaymentInvoiceDTO paymentInvoiceDTO = PaymentInvoiceDTO.builder()
+                .payNo(UUID.randomUUID().toString())
+                .userId(userId())
+                .paymentMethodId(OptionalUtils.valueOrDefault(param.getPaymentMethodId(), ""))
+                .paymentType(OptionalUtils.valueOrDefault(param.getPaymentType(), ""))
+                .billingAddressId(OptionalUtils.valueOrDefault(param.getBillingAddressId(), 0))
+                .paymentCardId(OptionalUtils.valueOrDefault(param.getPaymentCardId(), 0))
+                .paymentSellerId(paymentUtils.getPaymentSellerId(sellerId))
+                .title("商品交易")
+                .build();
+
+        return paymentInvoiceDao.save(paymentInvoiceDTO);
     }
 
 
@@ -174,12 +195,6 @@ public class GoodsTradeService extends BaseService {
         Map<Long, LaunchUserDO> userMap = userList.stream()
                 .collect(Collectors.toMap(LaunchUserDO::getUserId, Function.identity()));
 
-        for (MyTradeVO vo : list) {
-            if (userMap.containsKey(vo.getLaunchUserId())) {
-                vo.setLaunchUser(userMap.get(vo.getLaunchUserId()));
-            }
-        }
-
         // 商品主图
         List<Long> goodsIdList = list.stream().map(MyTradeVO::getGoodsId).collect(Collectors.toList());
 
@@ -189,8 +204,20 @@ public class GoodsTradeService extends BaseService {
                 .collect(Collectors.toMap(GoodsMainPicUrlDTO::getGoodsId, GoodsMainPicUrlDTO::getUrl, (o1, o2) -> o1));
 
         for (MyTradeVO vo : list) {
+
+            // 发布人
+            if (userMap.containsKey(vo.getLaunchUserId())) {
+                vo.setLaunchUser(userMap.get(vo.getLaunchUserId()));
+            }
+
+            // 主图
             if (mainPicMap.containsKey(vo.getGoodsId())) {
                 vo.setMainImgUrl(mainPicMap.get(vo.getGoodsId()));
+            }
+
+            // 收货地址=账单地址
+            if (vo.getBillingAddressId().equals(vo.getDeliveryAddressId())) {
+                vo.setSameAsDeliveryAddress(true);
             }
         }
 
@@ -218,38 +245,41 @@ public class GoodsTradeService extends BaseService {
 
     private void checkParameter(SaveTradeParam param) {
 
+        // published状态的商品才允许开单
+        checkGoodsState(param.getGoodsId());
+
         if (param.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new PaymentException(LangErrorEnum.INVALID_AMOUNT.lang());
         }
 
         // 检查类型
-        paymentCheckUtils.checkTarget(param.getTarget());
+        paymentUtils.checkTarget(param.getTarget());
 
         // 检查支付方式
         if (!StringUtils.isBlank(param.getPaymentType())) {
-            paymentCheckUtils.checkPaymentType(param.getPaymentType());
+            paymentUtils.checkPaymentType(param.getPaymentType());
         }
 
         // 检查交易方式
         if (param.getShippingMethod() != null) {
-            paymentCheckUtils.checkShippingMethod(param.getShippingMethod());
+            paymentUtils.checkShippingMethod(param.getShippingMethod());
         }
 
         // 检查收货地址
         if (param.getDeliveryAddressId() != null) {
-            paymentCheckUtils.checkDeliveryAddress(param.getDeliveryAddressId());
+            paymentUtils.checkDeliveryAddress(param.getDeliveryAddressId());
         }
 
         // 检查账单地址
         if (BooleanUtils.isNotTrue(param.getIsSameAsDeliveryAddress())) {
             if (param.getBillingAddressId() != null) {
-                paymentCheckUtils.checkBillingAddress(param.getBillingAddressId());
+                paymentUtils.checkBillingAddress(param.getBillingAddressId());
             }
         }
 
         // 检查银行卡信息
         if (Objects.equals(param.getPaymentType(), PaymentTypeEnum.card.name())) {
-            paymentCheckUtils.checkCardInfo(param.getPaymentCardId());
+            paymentUtils.checkCardInfo(param.getPaymentCardId());
         }
     }
 }

@@ -20,7 +20,16 @@ public enum CommonErrorV2 implements ErrorMsg {
      */
     PAYMENT_ERROR(3000, LangErrorEnum.PAYMENT_FAILED),
     PAYMENT_CUSTOMER_ERROR(3001, LangErrorEnum.INVALID_PAYMENT_CUSTOMER),
+
+
+    /**
+     * AI鉴定异常
+     */
+    AI_INSUFFICIENT_AVAILABLE_TIMES(4001, LangErrorEnum.AI_INSUFFICIENT_AVAILABLE_TIMES),
+    AI_INSUFFICIENT_AVAILABLE_TIME2(4002, LangErrorEnum.AI_INSUFFICIENT_AVAILABLE_TIMES2),
+
     ;
+
 
     private Integer code;
     private LangErrorEnum msg;

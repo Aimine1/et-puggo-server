@@ -29,9 +29,12 @@ public enum LangErrorEnum {
      */
     RESULT_IS_TRUE("商品鉴定结果为真", "The authentication result is true"),
     UNKNOWN_POINT("未知的鉴定点", "Unknown authentication point"),
+    UNKNOWN_KIND("未知的AI鉴定品类", "Unknown AI Category"),
     RE_UPLOAD("未检测到鉴别点，请您选择合适的角度重新上传图片", "Please choose an appropriate angle to upload again"),
     MUST_POINT("请您上传必须的鉴定点", "Please upload the crucial authentication points"),
     UNKNOWN_AUTHENTICATION_CODE("AI鉴定编号不存在或者已绑定其他商品", "Unknown Authentication Code"),
+    AI_INSUFFICIENT_AVAILABLE_TIMES("AI鉴定可用次数不足，请及时充值", "Insufficient available times, please recharge in a timely manner"),
+    AI_INSUFFICIENT_AVAILABLE_TIMES2("不可超过系统所有的可用次数", "Cannot exceed the remaining available times of the system"),
 
     /**
      * 支付
@@ -49,7 +52,7 @@ public enum LangErrorEnum {
     INVALID_SHIPPING_METHOD("未知的交易方式", "Invalid shipping method"),
     INVALID_PRODUCT_PRICE("商品成交价格异常", "Invalid product price"),
     INVALID_TARGET("未知的支付目的", "Invalid pay target"),
-    PAYMENT_FAILED("支付失败，请您联系客服解决", "Payment failed，please contact customer service for resolution"),
+    PAYMENT_FAILED("支付失败，请您联系客服解决", "Payment failed，please contact the administrator"),
     INVALID_COMMENT_TYPE("未知的评论类型", "Invalid review type"),
     INVALID_TRADE("未知的待支付订单", "Invalid payment pending trade"),
     INVALID_PAYMENT_CUSTOMER("支付账号异常，请您退出重新登录", "The payment account is abnormal. Please log out and log in again."),

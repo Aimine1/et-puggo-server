@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Setting extends TableImpl<SettingRecord> {
 
-    private static final long serialVersionUID = 370397940;
+    private static final long serialVersionUID = -510005198;
 
     /**
      * The reference instance of <code>etrade_goods.setting</code>
@@ -71,7 +71,7 @@ public class Setting extends TableImpl<SettingRecord> {
     /**
      * The column <code>etrade_goods.setting.value</code>. value
      */
-    public final TableField<SettingRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "value");
+    public final TableField<SettingRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "value");
 
     /**
      * The column <code>etrade_goods.setting.comment</code>. comment

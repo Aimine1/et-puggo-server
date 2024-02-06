@@ -82,4 +82,7 @@ public class MyTradeVO {
     @ApiModelProperty("如果支付方式是card，信用卡id")
     private Integer paymentCardId;
 
+    @ApiModelProperty("支付发票表id")
+    private Long paymentInvoiceId;
+
 }

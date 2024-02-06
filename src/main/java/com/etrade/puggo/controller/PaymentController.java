@@ -2,10 +2,7 @@ package com.etrade.puggo.controller;
 
 import com.etrade.puggo.common.Result;
 import com.etrade.puggo.common.weblog.WebLog;
-import com.etrade.puggo.service.payment.CustomerAddressService;
-import com.etrade.puggo.service.payment.CustomerCardService;
-import com.etrade.puggo.service.payment.PaymentMethodService;
-import com.etrade.puggo.service.payment.PaymentService;
+import com.etrade.puggo.service.payment.*;
 import com.etrade.puggo.service.payment.pojo.*;
 import com.etrade.puggo.utils.JsonUtils;
 import io.swagger.annotations.Api;
@@ -41,6 +38,9 @@ public class PaymentController {
 
     @Resource
     private PaymentService paymentService;
+
+    @Resource
+    private PaymentAIService paymentAIService;
 
     @Resource
     private PaymentMethodService paymentMethodService;
@@ -118,7 +118,16 @@ public class PaymentController {
     @PostMapping("/customer/pay")
     @ApiOperation("用户支付")
     public Result<?> pay(@Validated @RequestBody PaymentParam param) {
-        String payload = paymentService.pay(param);
+        String payload = paymentService.payForProduct(param);
+        return Result.ok(payload);
+    }
+
+
+    @WebLog
+    @PostMapping("/customer/payForAI")
+    @ApiOperation("用户支付-AI鉴定额度支付")
+    public Result<?> payForAI(@Validated @RequestBody PaymentAIParam param) {
+        String payload = paymentAIService.payForAI(param);
         return Result.ok(payload);
     }
 

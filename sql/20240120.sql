@@ -76,32 +76,66 @@ CREATE TABLE `statistics_user_comment_score`
 DROP TABLE IF EXISTS `goods_trade`;
 CREATE TABLE `goods_trade`
 (
-    `id`                          bigint         NOT NULL AUTO_INCREMENT,
-    `trade_no`                    varchar(32)    NOT NULL DEFAULT '' COMMENT '订单编号',
-    `title`                       varchar(50)    NOT NULL DEFAULT '' COMMENT '支付标题',
-    `goods_id`                    bigint         NOT NULL DEFAULT '0' COMMENT '商品id',
-    `customer_id`                 bigint         NOT NULL DEFAULT '0' COMMENT '买家用户id',
-    `customer`                    varchar(64)    NOT NULL DEFAULT '' COMMENT '买家昵称',
-    `seller_id`                   bigint         NOT NULL DEFAULT '0' COMMENT '卖家用户id',
-    `trading_price`               decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '商品成交金额，不包括额外的运费',
-    `trading_time`                timestamp      NOT NULL COMMENT '开单时间',
-    `state`                       varchar(25)    NOT NULL DEFAULT '' COMMENT '交易状态：Pending payment、Payment failed、Completed 等等',
-    `shipping_method`             int            NOT NULL DEFAULT '0' COMMENT '交易方式：1面交 2快递 4当日达 等等',
-    `other_fees`                  decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '邮寄费用、AI检测费用等额外费用',
-    `tax`                         decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '商品税，或者叫佣金，系统所得费用',
-    `subtotal`                    decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '商家所得费用，如商品费用',
-    `payment_method_id`           varchar(50)    NOT NULL DEFAULT '0' COMMENT '买家支付方式',
-    `payment_type`                varchar(25)    NOT NULL DEFAULT '0' COMMENT '买家支付类型',
-    `delivery_address_id`         int            NOT NULL DEFAULT '0' COMMENT '收货地址id',
-    `billing_address_id`          int            NOT NULL DEFAULT '0' COMMENT '账单地址id',
-    `is_same_as_delivery_address` tinyint        NOT NULL DEFAULT '0' COMMENT '当账单地址同收货地址时，账单地址id为0',
-    `invoice_id`                  varchar(50)    NOT NULL DEFAULT '' COMMENT '支付成功后发票id',
-    `payment_card_id`             int            NOT NULL DEFAULT '0' COMMENT '如果付款方式是card，支付卡号id',
-    `created`                     timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `modified`                    timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id`                  bigint         NOT NULL AUTO_INCREMENT,
+    `trade_no`            varchar(32)    NOT NULL DEFAULT '' COMMENT '订单编号',
+    `title`               varchar(50)    NOT NULL DEFAULT '' COMMENT '抬头',
+    `goods_id`            bigint         NOT NULL DEFAULT '0' COMMENT '商品id',
+    `customer_id`         bigint         NOT NULL DEFAULT '0' COMMENT '买家用户id',
+    `customer`            varchar(64)    NOT NULL DEFAULT '' COMMENT '买家昵称',
+    `seller_id`           bigint         NOT NULL DEFAULT '0' COMMENT '卖家用户id',
+    `trading_price`       decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '商品成交金额，不包括额外的运费',
+    `trading_time`        timestamp      NOT NULL COMMENT '开单时间',
+    `state`               varchar(25)    NOT NULL DEFAULT '' COMMENT '交易状态：Pending payment、Payment failed、Completed 等等',
+    `shipping_method`     int            NOT NULL DEFAULT '0' COMMENT '交易方式：1面交 2快递 4当日达 等等',
+    `shipping_fees`       decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '邮寄费用、AI检测费用等额外费用',
+    `tax`                 decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '商品税，或者叫佣金，系统所得费用',
+    `subtotal`            decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '商家所得费用，如商品费用',
+    `delivery_address_id` int            NOT NULL DEFAULT '0' COMMENT '收货地址id',
+    `payment_invoice_id`  bigint         NOT NULL DEFAULT '0' COMMENT '支付id',
+    `created`             timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified`            timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE,
-    KEY                           `idx_goods_trade_goods_id` (`goods_id`) USING BTREE
-) COMMENT='商品交易';
+    KEY                   `idx_goods_trade_goods_id` (`goods_id`) USING BTREE
+) COMMENT='商品交易表';
+
+DROP TABLE IF EXISTS `payment_invoice`;
+CREATE TABLE `payment_invoice`
+(
+    `id`                 bigint         NOT NULL AUTO_INCREMENT,
+    `pay_no`             varchar(100)   NOT NULL DEFAULT '' COMMENT '支付编号',
+    `user_id`            bigint         NOT NULL DEFAULT '0' COMMENT '买家用户id',
+    `title`              varchar(50)    NOT NULL DEFAULT '' COMMENT '支付抬头',
+    `other_fees`         decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '其他系统所得费用',
+    `tax`                decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '商品税或者叫佣金，系统所得费用',
+    `amount`             decimal(19, 4) NOT NULL DEFAULT '0.0000' COMMENT '商家所得费用，如商品费用',
+    `payment_method_id`  varchar(50)    NOT NULL DEFAULT '0' COMMENT '买家支付方式id',
+    `payment_type`       varchar(25)    NOT NULL DEFAULT '0' COMMENT '买家支付类型',
+    `billing_address_id` int            NOT NULL DEFAULT '0' COMMENT '账单地址id',
+    `invoice_id`         varchar(50)    NOT NULL DEFAULT '' COMMENT '支付成功后发票id',
+    `payment_card_id`    int            NOT NULL DEFAULT '0' COMMENT '如果付款方式是card，支付卡号id',
+    `payment_seller_id`  varchar(50)    NOT NULL DEFAULT '' COMMENT '商家支付账号id',
+    `created`            timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified`           timestamp      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`) USING BTREE,
+    KEY                  `idx_payment_invoice_user_id` (`user_id`) USING BTREE
+) COMMENT='支付发票表';
+
+DROP TABLE IF EXISTS `ai_user_available_balance`;
+CREATE TABLE `ai_user_available_balance`
+(
+    `id`              int       NOT NULL AUTO_INCREMENT,
+    `user_id`         bigint    NOT NULL DEFAULT '0' COMMENT '用户id',
+    `kind_id`         int       NOT NULL DEFAULT '0' COMMENT '品类id，值取自接口返回',
+    `used_times`      int       NOT NULL DEFAULT '0' COMMENT '已调用次数',
+    `available_times` int       NOT NULL DEFAULT '0' COMMENT '可用次数',
+    `created`         timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified`        timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `ux_user_kind_id` (`user_id`,`kind_id`) USING BTREE
+) ENGINE=InnoDB  COMMENT='AI鉴定用户可用次数';
+
+alter table ai_available_balance
+    add UNIQUE KEY `ux_kind_id` (`kind_id`) USING BTREE;
 
 alter table goods_trade
     add seller_id bigint NOT NULL DEFAULT '0' COMMENT '卖家id' after customer;
@@ -134,4 +168,7 @@ update goods
 set state = 'RESERVED'
 where state = 'OCCUPY';
 
+alter table setting modify `value` varchar(1024) NOT NULL DEFAULT '' COMMENT 'value';
+insert into setting(`key`, `value`, `comment`)
+values ('AIQuotations', '[{"kind_id":"83","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"84","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"85","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"88","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"90","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"93","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]}]', 'AI套餐报价');
 

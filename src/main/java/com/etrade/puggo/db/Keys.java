@@ -10,6 +10,7 @@ import com.etrade.puggo.db.tables.AiOverallAppraisal;
 import com.etrade.puggo.db.tables.AiPointList;
 import com.etrade.puggo.db.tables.AiSeriesList;
 import com.etrade.puggo.db.tables.AiSingleAppraisal;
+import com.etrade.puggo.db.tables.AiUserAvailableBalance;
 import com.etrade.puggo.db.tables.Goods;
 import com.etrade.puggo.db.tables.GoodsClass;
 import com.etrade.puggo.db.tables.GoodsComment;
@@ -31,6 +32,7 @@ import com.etrade.puggo.db.tables.Message;
 import com.etrade.puggo.db.tables.MsgNews;
 import com.etrade.puggo.db.tables.PaymentCard;
 import com.etrade.puggo.db.tables.PaymentCustomerAddress;
+import com.etrade.puggo.db.tables.PaymentInvoice;
 import com.etrade.puggo.db.tables.Setting;
 import com.etrade.puggo.db.tables.StatisticsUserCommentScore;
 import com.etrade.puggo.db.tables.User;
@@ -46,6 +48,7 @@ import com.etrade.puggo.db.tables.records.AiOverallAppraisalRecord;
 import com.etrade.puggo.db.tables.records.AiPointListRecord;
 import com.etrade.puggo.db.tables.records.AiSeriesListRecord;
 import com.etrade.puggo.db.tables.records.AiSingleAppraisalRecord;
+import com.etrade.puggo.db.tables.records.AiUserAvailableBalanceRecord;
 import com.etrade.puggo.db.tables.records.GoodsClassRecord;
 import com.etrade.puggo.db.tables.records.GoodsCommentRecord;
 import com.etrade.puggo.db.tables.records.GoodsDataRecord;
@@ -67,6 +70,7 @@ import com.etrade.puggo.db.tables.records.MessageRecord;
 import com.etrade.puggo.db.tables.records.MsgNewsRecord;
 import com.etrade.puggo.db.tables.records.PaymentCardRecord;
 import com.etrade.puggo.db.tables.records.PaymentCustomerAddressRecord;
+import com.etrade.puggo.db.tables.records.PaymentInvoiceRecord;
 import com.etrade.puggo.db.tables.records.SettingRecord;
 import com.etrade.puggo.db.tables.records.StatisticsUserCommentScoreRecord;
 import com.etrade.puggo.db.tables.records.UserAccountRecord;
@@ -105,6 +109,7 @@ public class Keys {
     public static final Identity<AiAvailableBalanceRecord, Integer> IDENTITY_AI_AVAILABLE_BALANCE = Identities0.IDENTITY_AI_AVAILABLE_BALANCE;
     public static final Identity<AiOverallAppraisalRecord, Integer> IDENTITY_AI_OVERALL_APPRAISAL = Identities0.IDENTITY_AI_OVERALL_APPRAISAL;
     public static final Identity<AiSingleAppraisalRecord, Integer> IDENTITY_AI_SINGLE_APPRAISAL = Identities0.IDENTITY_AI_SINGLE_APPRAISAL;
+    public static final Identity<AiUserAvailableBalanceRecord, Integer> IDENTITY_AI_USER_AVAILABLE_BALANCE = Identities0.IDENTITY_AI_USER_AVAILABLE_BALANCE;
     public static final Identity<GoodsRecord, Long> IDENTITY_GOODS = Identities0.IDENTITY_GOODS;
     public static final Identity<GoodsClassRecord, Integer> IDENTITY_GOODS_CLASS = Identities0.IDENTITY_GOODS_CLASS;
     public static final Identity<GoodsCommentRecord, Long> IDENTITY_GOODS_COMMENT = Identities0.IDENTITY_GOODS_COMMENT;
@@ -126,6 +131,7 @@ public class Keys {
     public static final Identity<MsgNewsRecord, Long> IDENTITY_MSG_NEWS = Identities0.IDENTITY_MSG_NEWS;
     public static final Identity<PaymentCardRecord, Integer> IDENTITY_PAYMENT_CARD = Identities0.IDENTITY_PAYMENT_CARD;
     public static final Identity<PaymentCustomerAddressRecord, Integer> IDENTITY_PAYMENT_CUSTOMER_ADDRESS = Identities0.IDENTITY_PAYMENT_CUSTOMER_ADDRESS;
+    public static final Identity<PaymentInvoiceRecord, Long> IDENTITY_PAYMENT_INVOICE = Identities0.IDENTITY_PAYMENT_INVOICE;
     public static final Identity<SettingRecord, Long> IDENTITY_SETTING = Identities0.IDENTITY_SETTING;
     public static final Identity<StatisticsUserCommentScoreRecord, Long> IDENTITY_STATISTICS_USER_COMMENT_SCORE = Identities0.IDENTITY_STATISTICS_USER_COMMENT_SCORE;
     public static final Identity<UserRecord, Long> IDENTITY_USER = Identities0.IDENTITY_USER;
@@ -141,11 +147,14 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<AiAvailableBalanceRecord> KEY_AI_AVAILABLE_BALANCE_PRIMARY = UniqueKeys0.KEY_AI_AVAILABLE_BALANCE_PRIMARY;
+    public static final UniqueKey<AiAvailableBalanceRecord> KEY_AI_AVAILABLE_BALANCE_UX_KIND_ID = UniqueKeys0.KEY_AI_AVAILABLE_BALANCE_UX_KIND_ID;
     public static final UniqueKey<AiBrandListRecord> KEY_AI_BRAND_LIST_PRIMARY = UniqueKeys0.KEY_AI_BRAND_LIST_PRIMARY;
     public static final UniqueKey<AiOverallAppraisalRecord> KEY_AI_OVERALL_APPRAISAL_PRIMARY = UniqueKeys0.KEY_AI_OVERALL_APPRAISAL_PRIMARY;
     public static final UniqueKey<AiPointListRecord> KEY_AI_POINT_LIST_PRIMARY = UniqueKeys0.KEY_AI_POINT_LIST_PRIMARY;
     public static final UniqueKey<AiSeriesListRecord> KEY_AI_SERIES_LIST_PRIMARY = UniqueKeys0.KEY_AI_SERIES_LIST_PRIMARY;
     public static final UniqueKey<AiSingleAppraisalRecord> KEY_AI_SINGLE_APPRAISAL_PRIMARY = UniqueKeys0.KEY_AI_SINGLE_APPRAISAL_PRIMARY;
+    public static final UniqueKey<AiUserAvailableBalanceRecord> KEY_AI_USER_AVAILABLE_BALANCE_PRIMARY = UniqueKeys0.KEY_AI_USER_AVAILABLE_BALANCE_PRIMARY;
+    public static final UniqueKey<AiUserAvailableBalanceRecord> KEY_AI_USER_AVAILABLE_BALANCE_UX_USER_KIND_ID = UniqueKeys0.KEY_AI_USER_AVAILABLE_BALANCE_UX_USER_KIND_ID;
     public static final UniqueKey<GoodsRecord> KEY_GOODS_PRIMARY = UniqueKeys0.KEY_GOODS_PRIMARY;
     public static final UniqueKey<GoodsClassRecord> KEY_GOODS_CLASS_PRIMARY = UniqueKeys0.KEY_GOODS_CLASS_PRIMARY;
     public static final UniqueKey<GoodsCommentRecord> KEY_GOODS_COMMENT_PRIMARY = UniqueKeys0.KEY_GOODS_COMMENT_PRIMARY;
@@ -167,6 +176,7 @@ public class Keys {
     public static final UniqueKey<MsgNewsRecord> KEY_MSG_NEWS_PRIMARY = UniqueKeys0.KEY_MSG_NEWS_PRIMARY;
     public static final UniqueKey<PaymentCardRecord> KEY_PAYMENT_CARD_PRIMARY = UniqueKeys0.KEY_PAYMENT_CARD_PRIMARY;
     public static final UniqueKey<PaymentCustomerAddressRecord> KEY_PAYMENT_CUSTOMER_ADDRESS_PRIMARY = UniqueKeys0.KEY_PAYMENT_CUSTOMER_ADDRESS_PRIMARY;
+    public static final UniqueKey<PaymentInvoiceRecord> KEY_PAYMENT_INVOICE_PRIMARY = UniqueKeys0.KEY_PAYMENT_INVOICE_PRIMARY;
     public static final UniqueKey<SettingRecord> KEY_SETTING_PRIMARY = UniqueKeys0.KEY_SETTING_PRIMARY;
     public static final UniqueKey<SettingRecord> KEY_SETTING_UK_SETTING_KEY = UniqueKeys0.KEY_SETTING_UK_SETTING_KEY;
     public static final UniqueKey<StatisticsUserCommentScoreRecord> KEY_STATISTICS_USER_COMMENT_SCORE_PRIMARY = UniqueKeys0.KEY_STATISTICS_USER_COMMENT_SCORE_PRIMARY;
@@ -194,6 +204,7 @@ public class Keys {
         public static Identity<AiAvailableBalanceRecord, Integer> IDENTITY_AI_AVAILABLE_BALANCE = Internal.createIdentity(AiAvailableBalance.AI_AVAILABLE_BALANCE, AiAvailableBalance.AI_AVAILABLE_BALANCE.ID);
         public static Identity<AiOverallAppraisalRecord, Integer> IDENTITY_AI_OVERALL_APPRAISAL = Internal.createIdentity(AiOverallAppraisal.AI_OVERALL_APPRAISAL, AiOverallAppraisal.AI_OVERALL_APPRAISAL.ID);
         public static Identity<AiSingleAppraisalRecord, Integer> IDENTITY_AI_SINGLE_APPRAISAL = Internal.createIdentity(AiSingleAppraisal.AI_SINGLE_APPRAISAL, AiSingleAppraisal.AI_SINGLE_APPRAISAL.ID);
+        public static Identity<AiUserAvailableBalanceRecord, Integer> IDENTITY_AI_USER_AVAILABLE_BALANCE = Internal.createIdentity(AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE, AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE.ID);
         public static Identity<GoodsRecord, Long> IDENTITY_GOODS = Internal.createIdentity(Goods.GOODS, Goods.GOODS.ID);
         public static Identity<GoodsClassRecord, Integer> IDENTITY_GOODS_CLASS = Internal.createIdentity(GoodsClass.GOODS_CLASS, GoodsClass.GOODS_CLASS.ID);
         public static Identity<GoodsCommentRecord, Long> IDENTITY_GOODS_COMMENT = Internal.createIdentity(GoodsComment.GOODS_COMMENT, GoodsComment.GOODS_COMMENT.ID);
@@ -215,6 +226,7 @@ public class Keys {
         public static Identity<MsgNewsRecord, Long> IDENTITY_MSG_NEWS = Internal.createIdentity(MsgNews.MSG_NEWS, MsgNews.MSG_NEWS.ID);
         public static Identity<PaymentCardRecord, Integer> IDENTITY_PAYMENT_CARD = Internal.createIdentity(PaymentCard.PAYMENT_CARD, PaymentCard.PAYMENT_CARD.ID);
         public static Identity<PaymentCustomerAddressRecord, Integer> IDENTITY_PAYMENT_CUSTOMER_ADDRESS = Internal.createIdentity(PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS, PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS.ID);
+        public static Identity<PaymentInvoiceRecord, Long> IDENTITY_PAYMENT_INVOICE = Internal.createIdentity(PaymentInvoice.PAYMENT_INVOICE, PaymentInvoice.PAYMENT_INVOICE.ID);
         public static Identity<SettingRecord, Long> IDENTITY_SETTING = Internal.createIdentity(Setting.SETTING, Setting.SETTING.ID);
         public static Identity<StatisticsUserCommentScoreRecord, Long> IDENTITY_STATISTICS_USER_COMMENT_SCORE = Internal.createIdentity(StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE, StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE.ID);
         public static Identity<UserRecord, Long> IDENTITY_USER = Internal.createIdentity(User.USER, User.USER.ID);
@@ -228,11 +240,14 @@ public class Keys {
 
     private static class UniqueKeys0 {
         public static final UniqueKey<AiAvailableBalanceRecord> KEY_AI_AVAILABLE_BALANCE_PRIMARY = Internal.createUniqueKey(AiAvailableBalance.AI_AVAILABLE_BALANCE, "KEY_ai_available_balance_PRIMARY", AiAvailableBalance.AI_AVAILABLE_BALANCE.ID);
+        public static final UniqueKey<AiAvailableBalanceRecord> KEY_AI_AVAILABLE_BALANCE_UX_KIND_ID = Internal.createUniqueKey(AiAvailableBalance.AI_AVAILABLE_BALANCE, "KEY_ai_available_balance_ux_kind_id", AiAvailableBalance.AI_AVAILABLE_BALANCE.KIND_ID);
         public static final UniqueKey<AiBrandListRecord> KEY_AI_BRAND_LIST_PRIMARY = Internal.createUniqueKey(AiBrandList.AI_BRAND_LIST, "KEY_ai_brand_list_PRIMARY", AiBrandList.AI_BRAND_LIST.ID);
         public static final UniqueKey<AiOverallAppraisalRecord> KEY_AI_OVERALL_APPRAISAL_PRIMARY = Internal.createUniqueKey(AiOverallAppraisal.AI_OVERALL_APPRAISAL, "KEY_ai_overall_appraisal_PRIMARY", AiOverallAppraisal.AI_OVERALL_APPRAISAL.ID);
         public static final UniqueKey<AiPointListRecord> KEY_AI_POINT_LIST_PRIMARY = Internal.createUniqueKey(AiPointList.AI_POINT_LIST, "KEY_ai_point_list_PRIMARY", AiPointList.AI_POINT_LIST.ID);
         public static final UniqueKey<AiSeriesListRecord> KEY_AI_SERIES_LIST_PRIMARY = Internal.createUniqueKey(AiSeriesList.AI_SERIES_LIST, "KEY_ai_series_list_PRIMARY", AiSeriesList.AI_SERIES_LIST.ID);
         public static final UniqueKey<AiSingleAppraisalRecord> KEY_AI_SINGLE_APPRAISAL_PRIMARY = Internal.createUniqueKey(AiSingleAppraisal.AI_SINGLE_APPRAISAL, "KEY_ai_single_appraisal_PRIMARY", AiSingleAppraisal.AI_SINGLE_APPRAISAL.ID);
+        public static final UniqueKey<AiUserAvailableBalanceRecord> KEY_AI_USER_AVAILABLE_BALANCE_PRIMARY = Internal.createUniqueKey(AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE, "KEY_ai_user_available_balance_PRIMARY", AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE.ID);
+        public static final UniqueKey<AiUserAvailableBalanceRecord> KEY_AI_USER_AVAILABLE_BALANCE_UX_USER_KIND_ID = Internal.createUniqueKey(AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE, "KEY_ai_user_available_balance_ux_user_kind_id", AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE.USER_ID, AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE.KIND_ID);
         public static final UniqueKey<GoodsRecord> KEY_GOODS_PRIMARY = Internal.createUniqueKey(Goods.GOODS, "KEY_goods_PRIMARY", Goods.GOODS.ID);
         public static final UniqueKey<GoodsClassRecord> KEY_GOODS_CLASS_PRIMARY = Internal.createUniqueKey(GoodsClass.GOODS_CLASS, "KEY_goods_class_PRIMARY", GoodsClass.GOODS_CLASS.ID);
         public static final UniqueKey<GoodsCommentRecord> KEY_GOODS_COMMENT_PRIMARY = Internal.createUniqueKey(GoodsComment.GOODS_COMMENT, "KEY_goods_comment_PRIMARY", GoodsComment.GOODS_COMMENT.ID);
@@ -254,6 +269,7 @@ public class Keys {
         public static final UniqueKey<MsgNewsRecord> KEY_MSG_NEWS_PRIMARY = Internal.createUniqueKey(MsgNews.MSG_NEWS, "KEY_msg_news_PRIMARY", MsgNews.MSG_NEWS.ID);
         public static final UniqueKey<PaymentCardRecord> KEY_PAYMENT_CARD_PRIMARY = Internal.createUniqueKey(PaymentCard.PAYMENT_CARD, "KEY_payment_card_PRIMARY", PaymentCard.PAYMENT_CARD.ID);
         public static final UniqueKey<PaymentCustomerAddressRecord> KEY_PAYMENT_CUSTOMER_ADDRESS_PRIMARY = Internal.createUniqueKey(PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS, "KEY_payment_customer_address_PRIMARY", PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS.ID);
+        public static final UniqueKey<PaymentInvoiceRecord> KEY_PAYMENT_INVOICE_PRIMARY = Internal.createUniqueKey(PaymentInvoice.PAYMENT_INVOICE, "KEY_payment_invoice_PRIMARY", PaymentInvoice.PAYMENT_INVOICE.ID);
         public static final UniqueKey<SettingRecord> KEY_SETTING_PRIMARY = Internal.createUniqueKey(Setting.SETTING, "KEY_setting_PRIMARY", Setting.SETTING.ID);
         public static final UniqueKey<SettingRecord> KEY_SETTING_UK_SETTING_KEY = Internal.createUniqueKey(Setting.SETTING, "KEY_setting_uk_setting_key", Setting.SETTING.KEY);
         public static final UniqueKey<StatisticsUserCommentScoreRecord> KEY_STATISTICS_USER_COMMENT_SCORE_PRIMARY = Internal.createUniqueKey(StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE, "KEY_statistics_user_comment_score_PRIMARY", StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE.ID);

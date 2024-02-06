@@ -2,10 +2,10 @@ package com.etrade.puggo.service.payment;
 
 import com.etrade.puggo.common.constants.GoodsState;
 import com.etrade.puggo.common.enums.LangErrorEnum;
-import com.etrade.puggo.common.enums.PaymentTargetEnum;
 import com.etrade.puggo.common.enums.PaymentTypeEnum;
 import com.etrade.puggo.common.enums.SettingsEnum;
 import com.etrade.puggo.common.exception.ServiceException;
+import com.etrade.puggo.dao.payment.PaymentInvoiceDao;
 import com.etrade.puggo.dao.user.UserDao;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.pojo.UserInfoVO;
@@ -14,10 +14,10 @@ import com.etrade.puggo.service.goods.trade.GoodsTradeService;
 import com.etrade.puggo.service.goods.trade.pojo.MyTradeVO;
 import com.etrade.puggo.service.goods.trade.pojo.UpdateTradeParam;
 import com.etrade.puggo.service.payment.pojo.PayResult;
+import com.etrade.puggo.service.payment.pojo.PaymentInvoiceDTO;
 import com.etrade.puggo.service.payment.pojo.PaymentParam;
 import com.etrade.puggo.service.setting.SettingService;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
-import com.etrade.puggo.third.aws.pojo.CreateInvoiceReq;
 import com.etrade.puggo.third.aws.pojo.SellerAccountDTO;
 import com.etrade.puggo.utils.OptionalUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +47,6 @@ public class PaymentService extends BaseService {
 
     private static final String default_currency = "CAD";
 
-    private static final BigDecimal Dollar2CentUnit = new BigDecimal(100);
-
     @Resource
     private PaymentLambdaFunctions paymentLambdaFunctions;
 
@@ -59,7 +57,7 @@ public class PaymentService extends BaseService {
     private GoodsTradeService goodsTradeService;
 
     @Resource
-    private PaymentCheckUtils paymentCheckUtils;
+    private PaymentUtils paymentUtils;
 
     @Resource
     private UpdateGoodsStateService updateGoodsSale;
@@ -67,13 +65,15 @@ public class PaymentService extends BaseService {
     @Resource
     private UserDao userDao;
 
+    @Resource
+    private PaymentInvoiceDao paymentInvoiceDao;
+
 
     @Transactional(rollbackFor = Throwable.class)
-    public String pay(PaymentParam param) {
+    public String payForProduct(PaymentParam param) {
 
         // 参数验证
         checkParameter(param);
-
 
         // 验证支付订单
         MyTradeVO payTrade = goodsTradeService.getOne(param.getTradeId());
@@ -82,55 +82,61 @@ public class PaymentService extends BaseService {
         }
 
         // 发起支付
-        PayResult payResult;
-        if (PaymentTargetEnum.product.name().equals(param.getTarget())) {
-            payResult = payForProduct(param, payTrade);
-        } else {
-            payResult = payForAI(param);
-        }
+        PayResult payResult = doPay(param, payTrade);
 
-        // 后续步骤
+        // 后续步骤：
         // 1. 更新支付订单信息
-        UpdateTradeParam updateTradeParam = buildUpdateTradeParam(param, payResult);
-
-        goodsTradeService.updateTradePaymentInfo(updateTradeParam);
+        goodsTradeService.updateTradePaymentInfo(buildUpdateTradeParam(param, payResult));
 
         // 2. 更新商品状态为已售
         updateGoodsSale.updateStateInner(payTrade.getGoodsId(), GoodsState.SOLD);
+
+        // 3. 更新支付信息
+        updatePaymentInvoice(param, payResult, payTrade);
 
         return payResult.getInvoiceId();
     }
 
 
+    private void updatePaymentInvoice(PaymentParam param, PayResult payResult, MyTradeVO payTrade) {
+        PaymentInvoiceDTO paymentInvoiceDTO = PaymentInvoiceDTO.builder()
+                .paymentMethodId(OptionalUtils.valueOrDefault(param.getPaymentMethodId(), ""))
+                .paymentType(OptionalUtils.valueOrDefault(param.getPaymentType(), ""))
+                .billingAddressId(OptionalUtils.valueOrDefault(param.getBillingAddressId(), 0))
+                .paymentCardId(OptionalUtils.valueOrDefault(param.getPaymentCardId(), 0))
+                .otherFees(payResult.getOtherFees())
+                .tax(payResult.getTax())
+                .amount(payResult.getSubtotal())
+                .invoiceId(payResult.getInvoiceId())
+                .id(payTrade.getPaymentInvoiceId())
+                .build();
+
+        paymentInvoiceDao.updateGoodsTrade(paymentInvoiceDTO);
+    }
+
+
     private static UpdateTradeParam buildUpdateTradeParam(PaymentParam param, PayResult payResult) {
         UpdateTradeParam updateTradeParam = new UpdateTradeParam();
-        updateTradeParam.setPaymentType(param.getPaymentType());
-        updateTradeParam.setPaymentMethodId(param.getPaymentMethodId());
         updateTradeParam.setDeliveryAddressId(param.getDeliveryAddressId());
-        updateTradeParam.setBillingAddressId(param.getBillingAddressId());
-        updateTradeParam.setIsSameAsDeliveryAddress(param.getIsSameAsDeliveryAddress());
         updateTradeParam.setShippingMethod(param.getShippingMethod());
-        updateTradeParam.setPaymentCardId(OptionalUtils.valueOrDefault(param.getPaymentCardId()));
         updateTradeParam.setSubtotal(payResult.getSubtotal());
         updateTradeParam.setTax(payResult.getTax());
         updateTradeParam.setOtherFees(payResult.getOtherFees());
-        updateTradeParam.setInvoiceId(payResult.getInvoiceId());
         updateTradeParam.setTradeId(param.getTradeId());
         return updateTradeParam;
     }
 
 
-    private PayResult payForProduct(PaymentParam param, MyTradeVO oneTrade) {
-
+    private PayResult doPay(PaymentParam param, MyTradeVO oneTrade) {
 
         // 商品成交总金额
         BigDecimal totalAmount = oneTrade.getTradingPrice();
 
         // 买家支付账号
-        String paymentCustomerId = paymentCheckUtils.getPaymentCustomerId(oneTrade.getCustomerId());
+        String paymentCustomerId = paymentUtils.getPaymentCustomerId(oneTrade.getCustomerId());
 
         // 卖家支付账号
-        String paymentSellerId = paymentCheckUtils.getPaymentSellerId(oneTrade.getSellerId());
+        String paymentSellerId = paymentUtils.getPaymentSellerId(oneTrade.getSellerId());
 
         // 邮费，这个给系统
         String shippingSetting = settingService.k(SettingsEnum.sameDayDeliveryCharge.v());
@@ -146,7 +152,7 @@ public class PaymentService extends BaseService {
         BigDecimal amount = totalAmount.subtract(tax);
 
         // 发起支付
-        String invoiceId = execute(
+        String invoiceId = paymentUtils.execute(
                 amount.setScale(0, RoundingMode.UP),
                 tax.setScale(0, RoundingMode.UP),
                 shippingFees,
@@ -161,64 +167,26 @@ public class PaymentService extends BaseService {
     }
 
 
-    private PayResult payForAI(PaymentParam param) {
-
-        BigDecimal amount = BigDecimal.ZERO;
-
-        execute(amount, BigDecimal.ZERO, BigDecimal.ZERO, null, null, param.getPaymentType(),
-                param.getPaymentMethodId(), param.getToken());
-
-        return null;
-    }
-
-
-    private String execute(BigDecimal amount, BigDecimal tax, BigDecimal shippingFees,
-                           String paymentCustomerId, String paymentSellerId, String paymentType, String paymentMethodId,
-                           String token) {
-
-        CreateInvoiceReq req = new CreateInvoiceReq();
-        // 商品金额，单位:分
-        req.setAmount(amount.multiply(Dollar2CentUnit));
-        // 税，单位:分
-        req.setTax(tax.multiply(Dollar2CentUnit));
-        // 邮费，单位:分
-        req.setFees(shippingFees.multiply(Dollar2CentUnit));
-        req.setCustomerId(paymentCustomerId);
-        req.setPaymentType(paymentType);
-        req.setPaymentMethodId(paymentMethodId);
-        req.setSellerAccountId(paymentSellerId);
-        req.setToken(token);
-
-        String invoiceId = paymentLambdaFunctions.createInvoice(req);
-        log.info("支付成功 invoiceId: {}", invoiceId);
-        return invoiceId;
-    }
-
-
     private void checkParameter(PaymentParam param) {
 
         // 检查支付方式
-        paymentCheckUtils.checkPaymentType(param.getPaymentType());
+        paymentUtils.checkPaymentType(param.getPaymentType());
 
         // 检查交易方式
-        paymentCheckUtils.checkShippingMethod(param.getShippingMethod());
+        paymentUtils.checkShippingMethod(param.getShippingMethod());
 
         // 检查收货地址
-        paymentCheckUtils.checkDeliveryAddress(param.getDeliveryAddressId());
+        paymentUtils.checkDeliveryAddress(param.getDeliveryAddressId());
 
         // 检查账单地址
         if (BooleanUtils.isNotTrue(param.getIsSameAsDeliveryAddress())) {
-            paymentCheckUtils.checkBillingAddress(param.getBillingAddressId());
+            paymentUtils.checkBillingAddress(param.getBillingAddressId());
         }
-
-        // 检查类型
-        paymentCheckUtils.checkTarget(param.getTarget());
 
         // 检查银行卡信息
         if (param.getPaymentType().equals(PaymentTypeEnum.card.name())) {
-            paymentCheckUtils.checkCardInfo(param.getPaymentCardId());
+            paymentUtils.checkCardInfo(param.getPaymentCardId());
         }
-
     }
 
 

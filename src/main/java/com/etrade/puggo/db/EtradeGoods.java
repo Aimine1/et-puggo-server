@@ -11,6 +11,7 @@ import com.etrade.puggo.db.tables.AiOverallAppraisal;
 import com.etrade.puggo.db.tables.AiPointList;
 import com.etrade.puggo.db.tables.AiSeriesList;
 import com.etrade.puggo.db.tables.AiSingleAppraisal;
+import com.etrade.puggo.db.tables.AiUserAvailableBalance;
 import com.etrade.puggo.db.tables.Goods;
 import com.etrade.puggo.db.tables.GoodsClass;
 import com.etrade.puggo.db.tables.GoodsComment;
@@ -32,6 +33,7 @@ import com.etrade.puggo.db.tables.Message;
 import com.etrade.puggo.db.tables.MsgNews;
 import com.etrade.puggo.db.tables.PaymentCard;
 import com.etrade.puggo.db.tables.PaymentCustomerAddress;
+import com.etrade.puggo.db.tables.PaymentInvoice;
 import com.etrade.puggo.db.tables.PaymentRecord;
 import com.etrade.puggo.db.tables.Setting;
 import com.etrade.puggo.db.tables.StatisticsUserCommentScore;
@@ -67,7 +69,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EtradeGoods extends SchemaImpl {
 
-    private static final long serialVersionUID = 755980585;
+    private static final long serialVersionUID = 451473049;
 
     /**
      * The reference instance of <code>etrade_goods</code>
@@ -110,6 +112,11 @@ public class EtradeGoods extends SchemaImpl {
     public final AiSingleAppraisal AI_SINGLE_APPRAISAL = com.etrade.puggo.db.tables.AiSingleAppraisal.AI_SINGLE_APPRAISAL;
 
     /**
+     * AI鉴定用户可用次数
+     */
+    public final AiUserAvailableBalance AI_USER_AVAILABLE_BALANCE = com.etrade.puggo.db.tables.AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE;
+
+    /**
      * 发布的商品
      */
     public final Goods GOODS = com.etrade.puggo.db.tables.Goods.GOODS;
@@ -150,7 +157,7 @@ public class EtradeGoods extends SchemaImpl {
     public final GoodsQuality GOODS_QUALITY = com.etrade.puggo.db.tables.GoodsQuality.GOODS_QUALITY;
 
     /**
-     * 商品交易
+     * 商品交易表
      */
     public final GoodsTrade GOODS_TRADE = com.etrade.puggo.db.tables.GoodsTrade.GOODS_TRADE;
 
@@ -213,6 +220,11 @@ public class EtradeGoods extends SchemaImpl {
      * 账单地址/买家收货地址
      */
     public final PaymentCustomerAddress PAYMENT_CUSTOMER_ADDRESS = com.etrade.puggo.db.tables.PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS;
+
+    /**
+     * 支付发票表
+     */
+    public final PaymentInvoice PAYMENT_INVOICE = com.etrade.puggo.db.tables.PaymentInvoice.PAYMENT_INVOICE;
 
     /**
      * 支付记录
@@ -293,6 +305,7 @@ public class EtradeGoods extends SchemaImpl {
             AiPointList.AI_POINT_LIST,
             AiSeriesList.AI_SERIES_LIST,
             AiSingleAppraisal.AI_SINGLE_APPRAISAL,
+            AiUserAvailableBalance.AI_USER_AVAILABLE_BALANCE,
             Goods.GOODS,
             GoodsClass.GOODS_CLASS,
             GoodsComment.GOODS_COMMENT,
@@ -314,6 +327,7 @@ public class EtradeGoods extends SchemaImpl {
             MsgNews.MSG_NEWS,
             PaymentCard.PAYMENT_CARD,
             PaymentCustomerAddress.PAYMENT_CUSTOMER_ADDRESS,
+            PaymentInvoice.PAYMENT_INVOICE,
             PaymentRecord.PAYMENT_RECORD,
             Setting.SETTING,
             StatisticsUserCommentScore.STATISTICS_USER_COMMENT_SCORE,

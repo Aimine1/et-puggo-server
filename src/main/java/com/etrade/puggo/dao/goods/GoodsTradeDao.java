@@ -8,10 +8,7 @@ import com.etrade.puggo.service.goods.trade.pojo.*;
 import com.etrade.puggo.utils.DateTimeUtils;
 import com.etrade.puggo.utils.SQLUtils;
 import com.etrade.puggo.utils.StrUtils;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.BooleanUtils;
 import org.jooq.SelectConditionStep;
-import org.jooq.SelectFieldOrAsterisk;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -28,27 +25,8 @@ import static com.etrade.puggo.db.Tables.*;
 @Repository
 public class GoodsTradeDao extends BaseDao {
 
-    private static final List<? extends SelectFieldOrAsterisk> MY_TRADE_FIELDS =
-            Lists.newArrayList(
-                    GOODS_TRADE.GOODS_ID,
-                    GOODS_TRADE.ID.as("tradeId"),
-                    GOODS_TRADE.TRADE_NO,
-                    GOODS_TRADE.TRADING_PRICE,
-                    GOODS_TRADE.TRADING_TIME,
-                    GOODS_TRADE.STATE,
-                    GOODS_TRADE.CUSTOMER_ID,
-                    GOODS_TRADE.SELLER_ID,
-                    GOODS_TRADE.SHIPPING_METHOD,
-                    GOODS_TRADE.PAYMENT_METHOD_ID,
-                    GOODS_TRADE.PAYMENT_TYPE,
-                    GOODS_TRADE.DELIVERY_ADDRESS_ID,
-                    GOODS_TRADE.BILLING_ADDRESS_ID,
-                    GOODS_TRADE.IS_SAME_AS_DELIVERY_ADDRESS,
-                    GOODS_TRADE.PAYMENT_CARD_ID,
-                    GOODS_TRADE.TITLE);
 
-
-    public long save(GoodsTradeDTO trade, String tradeNo) {
+    public long save(GoodsTradeDTO trade, String tradeNo, Long paymentInvoiceId) {
         return db.insertInto(
                         GOODS_TRADE,
                         GOODS_TRADE.TRADE_NO,
@@ -60,13 +38,9 @@ public class GoodsTradeDao extends BaseDao {
                         GOODS_TRADE.TRADING_TIME,
                         GOODS_TRADE.STATE,
                         GOODS_TRADE.SHIPPING_METHOD,
-                        GOODS_TRADE.PAYMENT_METHOD_ID,
-                        GOODS_TRADE.PAYMENT_TYPE,
                         GOODS_TRADE.DELIVERY_ADDRESS_ID,
-                        GOODS_TRADE.BILLING_ADDRESS_ID,
-                        GOODS_TRADE.IS_SAME_AS_DELIVERY_ADDRESS,
-                        GOODS_TRADE.PAYMENT_CARD_ID,
-                        GOODS_TRADE.TITLE
+                        GOODS_TRADE.TITLE,
+                        GOODS_TRADE.PAYMENT_INVOICE_ID
                 )
                 .values(
                         tradeNo,
@@ -78,21 +52,36 @@ public class GoodsTradeDao extends BaseDao {
                         trade.getTradingTime(),
                         trade.getState(),
                         trade.getShippingMethod(),
-                        trade.getPaymentMethodId(),
-                        trade.getPaymentType(),
                         trade.getDeliveryAddressId(),
-                        trade.getBillingAddressId(),
-                        trade.getIsSameAsDeliveryAddress(),
-                        trade.getPaymentCardId(),
-                        trade.getTitle()
+                        trade.getTitle(),
+                        paymentInvoiceId
                 )
                 .returning(GOODS_TRADE.ID).fetchOne().getId();
     }
 
 
     public MyTradeVO getOne(Long customerId, Long sellerId, Long goodsId) {
-        return db.select(MY_TRADE_FIELDS)
+        return db.select(
+                        GOODS_TRADE.GOODS_ID,
+                        GOODS_TRADE.ID.as("tradeId"),
+                        GOODS_TRADE.TRADE_NO,
+                        GOODS_TRADE.TRADING_PRICE,
+                        GOODS_TRADE.TRADING_TIME,
+                        GOODS_TRADE.STATE,
+                        GOODS_TRADE.CUSTOMER_ID,
+                        GOODS_TRADE.SELLER_ID,
+                        GOODS_TRADE.DELIVERY_ADDRESS_ID,
+                        GOODS_TRADE.TITLE,
+                        GOODS_TRADE.SHIPPING_METHOD,
+
+                        PAYMENT_INVOICE.PAYMENT_METHOD_ID,
+                        PAYMENT_INVOICE.PAYMENT_TYPE,
+                        PAYMENT_INVOICE.BILLING_ADDRESS_ID,
+                        PAYMENT_INVOICE.PAYMENT_CARD_ID
+                )
                 .from(GOODS_TRADE)
+                .innerJoin(PAYMENT_INVOICE)
+                .on(GOODS_TRADE.PAYMENT_INVOICE_ID.eq(PAYMENT_INVOICE.ID))
                 .where(GOODS_TRADE.CUSTOMER_ID.eq(customerId)
                         .and(GOODS_TRADE.SELLER_ID.eq(sellerId))
                         .and(GOODS_TRADE.GOODS_ID.eq(goodsId))
@@ -102,7 +91,13 @@ public class GoodsTradeDao extends BaseDao {
 
 
     public MyTradeVO getOne(Long tradeId) {
-        return db.select(MY_TRADE_FIELDS)
+        return db.select(
+                        GOODS_TRADE.GOODS_ID,
+                        GOODS_TRADE.SELLER_ID,
+                        GOODS_TRADE.CUSTOMER_ID,
+                        GOODS_TRADE.TRADING_PRICE,
+                        GOODS_TRADE.PAYMENT_INVOICE_ID
+                )
                 .from(GOODS_TRADE)
                 .where(GOODS_TRADE.ID.eq(tradeId))
                 .fetchAnyInto(MyTradeVO.class);
@@ -157,13 +152,13 @@ public class GoodsTradeDao extends BaseDao {
                         GOODS_TRADE.CUSTOMER_ID,
                         GOODS_TRADE.SELLER_ID,
                         GOODS_TRADE.SHIPPING_METHOD,
-                        GOODS_TRADE.PAYMENT_METHOD_ID,
-                        GOODS_TRADE.PAYMENT_TYPE,
                         GOODS_TRADE.DELIVERY_ADDRESS_ID,
-                        GOODS_TRADE.BILLING_ADDRESS_ID,
-                        GOODS_TRADE.IS_SAME_AS_DELIVERY_ADDRESS,
-                        GOODS_TRADE.PAYMENT_CARD_ID,
                         GOODS_TRADE.TITLE,
+
+                        PAYMENT_INVOICE.PAYMENT_METHOD_ID,
+                        PAYMENT_INVOICE.PAYMENT_TYPE,
+                        PAYMENT_INVOICE.BILLING_ADDRESS_ID,
+                        PAYMENT_INVOICE.PAYMENT_CARD_ID,
 
                         GOODS.TITLE.as("goodsTitle"),
                         GOODS.MONEY_KIND,
@@ -200,16 +195,11 @@ public class GoodsTradeDao extends BaseDao {
     public void updateGoodsTrade(UpdateTradeParam param) {
         db.update(GOODS_TRADE)
                 .set(GOODS_TRADE.SHIPPING_METHOD, param.getShippingMethod())
-                .set(GOODS_TRADE.PAYMENT_METHOD_ID, param.getPaymentMethodId())
-                .set(GOODS_TRADE.PAYMENT_TYPE, param.getPaymentType())
                 .set(GOODS_TRADE.DELIVERY_ADDRESS_ID, param.getDeliveryAddressId())
-                .set(GOODS_TRADE.BILLING_ADDRESS_ID, param.getBillingAddressId())
-                .set(GOODS_TRADE.IS_SAME_AS_DELIVERY_ADDRESS, BooleanUtils.isTrue(param.getIsSameAsDeliveryAddress()) ? (byte) 1 : (byte) 0)
-                .set(GOODS_TRADE.PAYMENT_CARD_ID, param.getPaymentCardId())
                 .set(GOODS_TRADE.SUBTOTAL, param.getSubtotal())
                 .set(GOODS_TRADE.TAX, param.getTax())
-                .set(GOODS_TRADE.INVOICE_ID, param.getInvoiceId())
                 .where(GOODS_TRADE.ID.eq(param.getTradeId()))
                 .execute();
     }
+
 }

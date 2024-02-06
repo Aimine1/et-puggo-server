@@ -1,10 +1,12 @@
 package com.etrade.puggo.service.ai;
 
 import com.alibaba.fastjson.JSONObject;
-import com.etrade.puggo.common.enums.LangErrorEnum;
-import com.etrade.puggo.common.exception.ServiceException;
-import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.common.constants.AIState;
+import com.etrade.puggo.common.enums.LangErrorEnum;
+import com.etrade.puggo.common.exception.CommonErrorV2;
+import com.etrade.puggo.common.exception.ServiceException;
+import com.etrade.puggo.common.filter.AuthContext;
+import com.etrade.puggo.common.page.PageContentContainer;
 import com.etrade.puggo.dao.ai.AiAvailableBalanceDao;
 import com.etrade.puggo.dao.ai.AiOverallAppraisalDao;
 import com.etrade.puggo.dao.ai.AiPointListDao;
@@ -12,20 +14,17 @@ import com.etrade.puggo.dao.ai.AiSingleAppraisalDao;
 import com.etrade.puggo.dao.goods.GoodsDao;
 import com.etrade.puggo.db.tables.records.AiOverallAppraisalRecord;
 import com.etrade.puggo.db.tables.records.AiSingleAppraisalRecord;
-import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.BaseService;
-import com.etrade.puggo.service.ai.pojo.AIIdentifyRecord;
-import com.etrade.puggo.service.ai.pojo.AiIdentificationRecordParam;
-import com.etrade.puggo.service.ai.pojo.AiPointDTO;
-import com.etrade.puggo.service.ai.pojo.IdentifyOverallAppraisal;
-import com.etrade.puggo.service.ai.pojo.IdentifyOverallParam;
-import com.etrade.puggo.service.ai.pojo.IdentifyReportVO;
-import com.etrade.puggo.service.ai.pojo.IdentifySingleAppraisal;
-import com.etrade.puggo.service.ai.pojo.IdentifySingleParam;
-import com.etrade.puggo.service.ai.pojo.UpdateAvailableParam;
+import com.etrade.puggo.service.ai.pojo.*;
 import com.etrade.puggo.third.ai.AIService;
 import com.etrade.puggo.utils.StrUtils;
 import com.etrade.puggo.utils.VerifyCodeUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -33,11 +32,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -59,6 +53,8 @@ public class AiIdentityService extends BaseService {
     private AiAvailableBalanceDao aiAvailableBalanceDao;
     @Resource
     private AIService aiService;
+    @Resource
+    private AiUserAvailableBalanceService aiUserAvailableBalanceService;
     @Resource
     private GoodsDao goodsDao;
 
@@ -90,7 +86,7 @@ public class AiIdentityService extends BaseService {
         Integer pointId = param.getPointId();
         String imageUrl = param.getImageUrl();
         String operationId =
-            StrUtils.isBlank(param.getOperationId()) ? UUID.randomUUID().toString() : param.getOperationId();
+                StrUtils.isBlank(param.getOperationId()) ? UUID.randomUUID().toString() : param.getOperationId();
 
         AiPointDTO pointRecord = aiPointListDao.getOne(pointId);
         if (pointRecord == null) {
@@ -201,18 +197,18 @@ public class AiIdentityService extends BaseService {
         }
 
         List<IdentifySingleAppraisal> singleList = aiSingleAppraisalDao.getGenuineSaidList(userId(), operationId,
-            mustPointList);
+                mustPointList);
 
         if (singleList.size() < mustPointList.size()) {
             throw new ServiceException(LangErrorEnum.MUST_POINT.lang(AuthContext.getLang()));
         }
 
         // 可用余额
-//        Integer availableBalance = aiAvailableBalanceDao.getAvailableBalance(kindId);
-//
-//        if (availableBalance <= 0) {
-//            throw new ServiceException("Insufficient available times for AI identification.");
-//        }
+        Integer availableBalance = aiUserAvailableBalanceService.getAvailableBalance(userId(), kindId);
+
+        if (availableBalance <= 0) {
+            throw new ServiceException(CommonErrorV2.AI_INSUFFICIENT_AVAILABLE_TIMES);
+        }
 
         List<String> saidList = singleList.stream().map(IdentifySingleAppraisal::getSaid).collect(Collectors.toList());
 
@@ -226,11 +222,7 @@ public class AiIdentityService extends BaseService {
         }
 
         // 扣除AI鉴定可用次数
-//        Integer row = aiAvailableBalanceDao.deductAvailableBalance(kindId);
-//
-//        if (row == 0) {
-//            throw new ServiceException("Available times deduction failed.");
-//        }
+        aiUserAvailableBalanceService.deductAvailableBalance(userId(), kindId);
 
         // 保存到db
         AiOverallAppraisalRecord record = buildAiOverallAppraisalRecord(kindId, brandId, seriesId, operationId, result);
@@ -251,7 +243,7 @@ public class AiIdentityService extends BaseService {
 
 
     private AiOverallAppraisalRecord buildAiOverallAppraisalLocalRecord(Integer kindId, Integer brandId,
-        Integer seriesId, String operationId) {
+                                                                        Integer seriesId, String operationId) {
 
         AiOverallAppraisalRecord record = new AiOverallAppraisalRecord();
         record.setUserId(userId());
@@ -270,7 +262,7 @@ public class AiIdentityService extends BaseService {
 
 
     private AiOverallAppraisalRecord buildAiOverallAppraisalRecord(Integer kindId, Integer brandId, Integer seriesId,
-        String operationId, JSONObject result) {
+                                                                   String operationId, JSONObject result) {
 
         AiOverallAppraisalRecord record = new AiOverallAppraisalRecord();
         record.setUserId(userId());
@@ -302,7 +294,7 @@ public class AiIdentityService extends BaseService {
         Integer kindId = param.getKindId();
         Integer availableBalance = param.getAvailableBalance();
 
-        aiAvailableBalanceDao.update(kindId, availableBalance);
+        aiAvailableBalanceDao.plus(kindId, availableBalance);
     }
 
 
@@ -330,7 +322,7 @@ public class AiIdentityService extends BaseService {
     public Boolean checkAiIdentifyNo(String aiIdentifyNo) {
         // ai鉴定记录中存在并且商品没有绑定
         return aiOverallAppraisalDao.checkAiIdentifyNo(aiIdentifyNo) != null
-            && goodsDao.findAnyGoodsByAiIdentifyNo(aiIdentifyNo) == null;
+                && goodsDao.findAnyGoodsByAiIdentifyNo(aiIdentifyNo) == null;
     }
 
 }
