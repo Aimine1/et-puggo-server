@@ -24,13 +24,9 @@ public class PaymentAIParam {
     @ApiModelProperty("付款类型，枚举值有：card、apple_pay、google_pay、wechat、alipay")
     private String paymentType;
 
-    @NotNull(message = "Invalid paymentMethodId")
-    @NotBlank(message = "Invalid paymentMethodId")
     @ApiModelProperty("客户端发起支付之前生成")
     private String paymentMethodId;
 
-    @NotNull(message = "Invalid token")
-    @NotBlank(message = "Invalid token")
     @ApiModelProperty("客户端发起支付之前生成")
     private String token;
 

@@ -159,8 +159,8 @@ public class PaymentService extends BaseService {
                 paymentCustomerId,
                 paymentSellerId,
                 param.getPaymentType(),
-                param.getPaymentMethodId(),
-                param.getToken()
+                OptionalUtils.valueOrDefault(param.getPaymentMethodId()),
+                OptionalUtils.valueOrDefault(param.getToken())
         );
 
         return PayResult.builder().subtotal(amount).tax(tax).otherFees(shippingFees).invoiceId(invoiceId).build();
