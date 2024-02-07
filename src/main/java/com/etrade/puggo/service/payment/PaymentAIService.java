@@ -75,8 +75,8 @@ public class PaymentAIService extends BaseService {
                 paymentCustomerId,
                 null,
                 param.getPaymentType(),
-                param.getPaymentMethodId(),
-                param.getToken()
+                OptionalUtils.valueOrDefault(param.getPaymentMethodId()),
+                OptionalUtils.valueOrDefault(param.getToken())
         );
 
         // 更新额度
