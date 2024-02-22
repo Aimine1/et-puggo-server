@@ -1,5 +1,6 @@
 package com.etrade.puggo.common.weblog;
 
+import com.alibaba.fastjson.JSONObject;
 import com.etrade.puggo.common.filter.AuthContext;
 import com.etrade.puggo.service.AuthDTO;
 import com.etrade.puggo.service.BaseService;
@@ -94,7 +95,7 @@ public class WebLogAspect extends BaseService {
         Object result = proceedingJoinPoint.proceed();
 
         if (parseMethodResponse(proceedingJoinPoint, RESPONSE)) {
-            log.info("URL Response {} {} auth {}", requestURI, JsonUtils.toJson(result), authDTO);
+            log.info("URL Response {} {} auth {}", requestURI, JSONObject.toJSON(result), authDTO);
         }
 
         sw.stop();
