@@ -167,6 +167,8 @@ public class GoodsTradeDao extends BaseDao {
                 .from(GOODS_TRADE)
                 .join(GOODS)
                 .on(GOODS.ID.eq(GOODS_TRADE.GOODS_ID))
+                .join(PAYMENT_INVOICE)
+                .on(PAYMENT_INVOICE.ID.eq(GOODS_TRADE.PAYMENT_INVOICE_ID))
                 .where(GOODS_TRADE.CUSTOMER_ID.eq(userId()));
 
         if (!StrUtils.isBlank(param.getState())) {
