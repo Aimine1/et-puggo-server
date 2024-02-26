@@ -168,7 +168,15 @@ update goods
 set state = 'RESERVED'
 where state = 'OCCUPY';
 
-alter table setting modify `value` varchar(1024) NOT NULL DEFAULT '' COMMENT 'value';
+alter table setting modify `value` varchar (1024) NOT NULL DEFAULT '' COMMENT 'value';
 insert into setting(`key`, `value`, `comment`)
-values ('AIQuotations', '[{"kind_id":"83","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"84","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"85","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"88","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"90","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"93","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]}]', 'AI套餐报价');
+values ('AIQuotations',
+        '[{"kind_id":"83","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"84","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"85","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"88","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"90","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]},{"kind_id":"93","quotation":[{"times":1,"price":3.99},{"times":10,"price":9.99},{"times":50,"price":59.99}]}]',
+        'AI套餐报价');
 
+
+alter table payment_invoice
+    add column payment_intent_id varchar(50) NOT NULL DEFAULT '' COMMENT '支付意向id' after payment_seller_id,
+    add column client_secret varchar(100) NOT NULL DEFAULT '' COMMENT '客户端秘钥' after payment_intent_id,
+    add column ai_kind_id int NOT NULL DEFAULT 0 COMMENT 'ai鉴定类别' after client_secret,
+    add column ai_plus_available_times int NOT NULL DEFAULT 0 COMMENT 'ai鉴定次数' after ai_kind_id;

@@ -230,6 +230,11 @@ public class GoodsTradeService extends BaseService {
     }
 
 
+    public MyTradeVO getOneByPaymentInvoiceId(Long paymentInvoiceId) {
+        return goodsTradeDao.getOneByPaymentInvoiceId(paymentInvoiceId);
+    }
+
+
     public MyTradeVO getOne(Long tradeId) {
         if (tradeId == null) {
             return null;
@@ -240,6 +245,11 @@ public class GoodsTradeService extends BaseService {
 
     public void updateTradePaymentInfo(UpdateTradeParam param) {
         goodsTradeDao.updateGoodsTrade(param);
+    }
+
+
+    public void updateStatus(Long tradeId, String state) {
+        goodsTradeDao.updateState(tradeId, state);
     }
 
 

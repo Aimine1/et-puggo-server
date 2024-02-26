@@ -1,5 +1,6 @@
 package com.etrade.puggo.service.payment;
 
+import com.alibaba.fastjson.JSONObject;
 import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.common.enums.PaymentTypeEnum;
 import com.etrade.puggo.common.exception.CommonErrorV2;
@@ -8,6 +9,7 @@ import com.etrade.puggo.dao.payment.PaymentInvoiceDao;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.ai.AiUserAvailableBalanceService;
 import com.etrade.puggo.service.payment.pojo.PayResult;
+import com.etrade.puggo.service.payment.pojo.PayVO;
 import com.etrade.puggo.service.payment.pojo.PaymentAIParam;
 import com.etrade.puggo.service.payment.pojo.PaymentInvoiceDTO;
 import com.etrade.puggo.utils.OptionalUtils;
@@ -39,7 +41,7 @@ public class PaymentAIService extends BaseService {
 
 
     @Transactional(rollbackFor = Throwable.class)
-    public String payForAI(PaymentAIParam param) {
+    public PayVO payForAI(PaymentAIParam param) {
 
         // 参数验证
         checkParameter(param);
@@ -48,15 +50,17 @@ public class PaymentAIService extends BaseService {
         String paymentCustomerId = paymentUtils.getPaymentCustomerId(userId());
 
         // 发起支付，防止抢占资源
-        PayResult payResult;
-        synchronized (param.getKindId()) {
-            payResult = doPay(param, paymentCustomerId);
-        }
+        PayResult payResult = doPay(param, paymentCustomerId);
 
         // 保存支付信息
-        savePaymentInvoice(param, payResult.getInvoiceId());
+        long payId = savePaymentInvoice(param, payResult);
 
-        return payResult.getInvoiceId();
+        // 如果是信用卡支付直接更新额度
+        if (param.getPaymentType().equals(PaymentTypeEnum.card.name())) {
+            aiUserAvailableBalanceService.plusAvailableBalance(userId(), param.getKindId(), param.getAvailableTimes());
+        }
+
+        return PayVO.builder().payId(payId).clientSecret(payResult.getClientSecret()).build();
     }
 
 
@@ -68,7 +72,7 @@ public class PaymentAIService extends BaseService {
             throw new PaymentException(CommonErrorV2.AI_INSUFFICIENT_AVAILABLE_TIME2);
         }
 
-        String invoiceId = paymentUtils.execute(
+        JSONObject jsonObject = paymentUtils.execute(
                 param.getAmount().setScale(0, RoundingMode.UP),
                 BigDecimal.ZERO,
                 BigDecimal.ZERO,
@@ -76,13 +80,23 @@ public class PaymentAIService extends BaseService {
                 null,
                 param.getPaymentType(),
                 OptionalUtils.valueOrDefault(param.getPaymentMethodId()),
-                OptionalUtils.valueOrDefault(param.getToken())
+                OptionalUtils.valueOrDefault(param.getToken()),
+                param.getPaymentType().equals(PaymentTypeEnum.card.name())
         );
 
-        // 更新额度
-        aiUserAvailableBalanceService.deductAvailableBalance(userId(), param.getKindId());
+        PayResult payResult = PayResult.builder().otherFees(param.getAmount()).build();
 
-        return PayResult.builder().otherFees(param.getAmount()).invoiceId(invoiceId).build();
+        if (jsonObject.containsKey("invoiceId")) {
+            payResult.setInvoiceId((String) jsonObject.get("invoiceId"));
+        }
+        if (jsonObject.containsKey("clientSecret")) {
+            payResult.setClientSecret((String) jsonObject.get("clientSecret"));
+        }
+        if (jsonObject.containsKey("paymentIntent")) {
+            payResult.setPaymentIntent((String) jsonObject.get("paymentIntent"));
+        }
+
+        return payResult;
     }
 
 
@@ -105,7 +119,7 @@ public class PaymentAIService extends BaseService {
         }
     }
 
-    private void savePaymentInvoice(PaymentAIParam param, String invoiceId) {
+    private long savePaymentInvoice(PaymentAIParam param, PayResult payResult) {
         PaymentInvoiceDTO paymentInvoiceDTO = PaymentInvoiceDTO.builder()
                 .payNo(UUID.randomUUID().toString())
                 .userId(userId())
@@ -116,9 +130,13 @@ public class PaymentAIService extends BaseService {
                 .paymentSellerId("")
                 .title("购买AI鉴定额度")
                 .otherFees(param.getAmount())
-                .invoiceId(invoiceId)
+                .invoiceId(payResult.getInvoiceId())
+                .paymentIntentId(payResult.getPaymentIntent())
+                .clientSecret(payResult.getClientSecret())
+                .aiKindId(param.getKindId())
+                .aiPlusAvailableTimes(param.getAvailableTimes())
                 .build();
 
-        paymentInvoiceDao.save(paymentInvoiceDTO);
+        return paymentInvoiceDao.save(paymentInvoiceDTO);
     }
 }

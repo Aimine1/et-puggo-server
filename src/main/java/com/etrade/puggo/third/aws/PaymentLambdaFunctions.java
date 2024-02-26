@@ -142,10 +142,9 @@ public class PaymentLambdaFunctions {
     }
 
 
-    public String createInvoice(@Valid CreateInvoiceReq req) {
+    public JSONObject createInvoice(@Valid CreateInvoiceReq req) {
         String payload = AwsLambdaUtils.invokeFunction("create_invoice", req);
-        JSONObject jsonObject = JSONObject.parseObject(payload);
-        return (String) jsonObject.get("invoiceId");
+        return JSONObject.parseObject(payload);
     }
 
 

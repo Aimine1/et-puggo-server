@@ -91,6 +91,7 @@ public class AwsLambdaUnitTest {
         req.setAmount(new BigDecimal(3680));
         req.setTax(new BigDecimal("320"));
         req.setFees(new BigDecimal(1800));
+        req.setConfirm(false);
         // req.setToken("tok_1Og4UABMUZ8hfYAi5wBOkTOF");
 
         System.out.println(paymentLambdaFunctions.createInvoice(req));

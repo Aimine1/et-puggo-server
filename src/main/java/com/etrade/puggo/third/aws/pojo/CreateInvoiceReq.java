@@ -29,4 +29,6 @@ public class CreateInvoiceReq {
 
     private BigDecimal tax;
 
+    private Boolean confirm;
+
 }

@@ -22,7 +22,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row19;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentInvoice extends TableImpl<PaymentInvoiceRecord> {
 
-    private static final long serialVersionUID = 1106588573;
+    private static final long serialVersionUID = 244753163;
 
     /**
      * The reference instance of <code>etrade_goods.payment_invoice</code>
@@ -123,6 +123,26 @@ public class PaymentInvoice extends TableImpl<PaymentInvoiceRecord> {
      * The column <code>etrade_goods.payment_invoice.payment_seller_id</code>. 商家支付账号id
      */
     public final TableField<PaymentInvoiceRecord, String> PAYMENT_SELLER_ID = createField(DSL.name("payment_seller_id"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "商家支付账号id");
+
+    /**
+     * The column <code>etrade_goods.payment_invoice.payment_intent_id</code>. 支付意向id
+     */
+    public final TableField<PaymentInvoiceRecord, String> PAYMENT_INTENT_ID = createField(DSL.name("payment_intent_id"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付意向id");
+
+    /**
+     * The column <code>etrade_goods.payment_invoice.client_secret</code>. 客户端秘钥
+     */
+    public final TableField<PaymentInvoiceRecord, String> CLIENT_SECRET = createField(DSL.name("client_secret"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "客户端秘钥");
+
+    /**
+     * The column <code>etrade_goods.payment_invoice.ai_kind_id</code>. ai鉴定类别
+     */
+    public final TableField<PaymentInvoiceRecord, Integer> AI_KIND_ID = createField(DSL.name("ai_kind_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "ai鉴定类别");
+
+    /**
+     * The column <code>etrade_goods.payment_invoice.ai_plus_available_times</code>. ai鉴定次数
+     */
+    public final TableField<PaymentInvoiceRecord, Integer> AI_PLUS_AVAILABLE_TIMES = createField(DSL.name("ai_plus_available_times"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "ai鉴定次数");
 
     /**
      * The column <code>etrade_goods.payment_invoice.created</code>.
@@ -219,11 +239,11 @@ public class PaymentInvoice extends TableImpl<PaymentInvoiceRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row19 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, String, Long, String, BigDecimal, BigDecimal, BigDecimal, String, String, Integer, String, Integer, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row19<Long, String, Long, String, BigDecimal, BigDecimal, BigDecimal, String, String, Integer, String, Integer, String, String, String, Integer, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row19) super.fieldsRow();
     }
 }

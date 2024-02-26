@@ -1,5 +1,6 @@
 package com.etrade.puggo.service.payment;
 
+import com.alibaba.fastjson.JSONObject;
 import com.etrade.puggo.common.enums.*;
 import com.etrade.puggo.common.exception.PaymentException;
 import com.etrade.puggo.service.account.UserAccountService;
@@ -108,9 +109,9 @@ public class PaymentUtils {
     }
 
 
-    public String execute(BigDecimal amount, BigDecimal tax, BigDecimal shippingFees,
+    public JSONObject execute(BigDecimal amount, BigDecimal tax, BigDecimal shippingFees,
                           String paymentCustomerId, String paymentSellerId, String paymentType, String paymentMethodId,
-                          String token) {
+                          String token, boolean confirm) {
 
         CreateInvoiceReq req = new CreateInvoiceReq();
         // 商品金额，单位:分
@@ -124,10 +125,9 @@ public class PaymentUtils {
         req.setPaymentMethodId(paymentMethodId);
         req.setSellerAccountId(paymentSellerId);
         req.setToken(token);
+        req.setConfirm(confirm);
 
-        String invoiceId = paymentLambdaFunctions.createInvoice(req);
-        log.info("支付成功 invoiceId: {}", invoiceId);
-        return invoiceId;
+        return paymentLambdaFunctions.createInvoice(req);
     }
 
 }
