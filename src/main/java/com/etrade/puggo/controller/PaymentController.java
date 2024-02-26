@@ -116,19 +116,26 @@ public class PaymentController {
 
     @WebLog
     @PostMapping("/customer/pay")
-    @ApiOperation("用户支付")
-    public Result<?> pay(@Validated @RequestBody PaymentParam param) {
-        String payload = paymentService.payForProduct(param);
-        return Result.ok(payload);
+    @ApiOperation("用户支付，返回支付id")
+    public Result<PayVO> pay(@Validated @RequestBody PaymentParam param) {
+        return Result.ok(paymentService.payForProduct(param));
     }
 
 
     @WebLog
     @PostMapping("/customer/payForAI")
-    @ApiOperation("用户支付-AI鉴定额度支付")
-    public Result<?> payForAI(@Validated @RequestBody PaymentAIParam param) {
-        String payload = paymentAIService.payForAI(param);
-        return Result.ok(payload);
+    @ApiOperation("用户支付-AI鉴定额度支付，返回支付id")
+    public Result<PayVO> payForAI(@Validated @RequestBody PaymentAIParam param) {
+        return Result.ok(paymentAIService.payForAI(param));
+    }
+
+
+    @WebLog
+    @PutMapping("/customer/pay/callback")
+    @ApiOperation("调起第三方支付后的回调接口，最终才能完成支付")
+    public Result<?> payCallback(@RequestParam("payId") Long payId) {
+        paymentService.confirmPaymentIntent(payId);
+        return Result.ok();
     }
 
 

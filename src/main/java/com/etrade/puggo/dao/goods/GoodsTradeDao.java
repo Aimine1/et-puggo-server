@@ -104,6 +104,21 @@ public class GoodsTradeDao extends BaseDao {
     }
 
 
+    public MyTradeVO getOneByPaymentInvoiceId(Long paymentInvoiceId) {
+        return db.select(
+                        GOODS_TRADE.ID.as("tradeId"),
+                        GOODS_TRADE.GOODS_ID,
+                        GOODS_TRADE.SELLER_ID,
+                        GOODS_TRADE.CUSTOMER_ID,
+                        GOODS_TRADE.TRADING_PRICE,
+                        GOODS_TRADE.PAYMENT_INVOICE_ID
+                )
+                .from(GOODS_TRADE)
+                .where(GOODS_TRADE.PAYMENT_INVOICE_ID.eq(paymentInvoiceId))
+                .fetchAnyInto(MyTradeVO.class);
+    }
+
+
     public PageContentContainer<GoodsTradeVO> listTradePage(GoodsTradeParam param) {
         SelectConditionStep<?> sql = db
                 .select(
@@ -186,6 +201,11 @@ public class GoodsTradeDao extends BaseDao {
                 .where(GOODS_TRADE.STATE.eq(GoodsTradeState.PAY_PENDING)
                         .and(GOODS_TRADE.CREATED.lt(deadline)))
                 .fetchInto(Long.class);
+    }
+
+
+    public void updateState(Long tradeId, String state) {
+        db.update(GOODS_TRADE).set(GOODS_TRADE.STATE, state).where(GOODS_TRADE.ID.eq(tradeId)).execute();
     }
 
 

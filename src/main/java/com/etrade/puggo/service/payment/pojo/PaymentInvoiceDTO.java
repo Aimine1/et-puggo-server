@@ -47,4 +47,12 @@ public class PaymentInvoiceDTO {
 
     private String paymentSellerId;
 
+    private String paymentIntentId;
+
+    private String clientSecret;
+
+    private Integer aiKindId;
+
+    private Integer aiPlusAvailableTimes;
+
 }

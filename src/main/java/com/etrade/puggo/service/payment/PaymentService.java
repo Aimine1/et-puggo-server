@@ -1,24 +1,32 @@
 package com.etrade.puggo.service.payment;
 
+import com.alibaba.fastjson.JSONObject;
 import com.etrade.puggo.common.constants.GoodsState;
+import com.etrade.puggo.common.constants.GoodsTradeState;
 import com.etrade.puggo.common.enums.LangErrorEnum;
 import com.etrade.puggo.common.enums.PaymentTypeEnum;
 import com.etrade.puggo.common.enums.SettingsEnum;
+import com.etrade.puggo.common.exception.CommonErrorV2;
+import com.etrade.puggo.common.exception.PaymentException;
 import com.etrade.puggo.common.exception.ServiceException;
 import com.etrade.puggo.dao.payment.PaymentInvoiceDao;
 import com.etrade.puggo.dao.user.UserDao;
+import com.etrade.puggo.db.tables.records.PaymentInvoiceRecord;
 import com.etrade.puggo.service.BaseService;
 import com.etrade.puggo.service.account.pojo.UserInfoVO;
+import com.etrade.puggo.service.ai.AiUserAvailableBalanceService;
 import com.etrade.puggo.service.goods.opt.UpdateGoodsStateService;
 import com.etrade.puggo.service.goods.trade.GoodsTradeService;
 import com.etrade.puggo.service.goods.trade.pojo.MyTradeVO;
 import com.etrade.puggo.service.goods.trade.pojo.UpdateTradeParam;
 import com.etrade.puggo.service.payment.pojo.PayResult;
+import com.etrade.puggo.service.payment.pojo.PayVO;
 import com.etrade.puggo.service.payment.pojo.PaymentInvoiceDTO;
 import com.etrade.puggo.service.payment.pojo.PaymentParam;
 import com.etrade.puggo.service.setting.SettingService;
 import com.etrade.puggo.third.aws.PaymentLambdaFunctions;
 import com.etrade.puggo.third.aws.pojo.SellerAccountDTO;
+import com.etrade.puggo.third.aws.pojo.UpdatePaymentIntentReq;
 import com.etrade.puggo.utils.OptionalUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
@@ -45,8 +53,6 @@ public class PaymentService extends BaseService {
 
     private static final BigDecimal default_tax_percentage = new BigDecimal("0.08");
 
-    private static final String default_currency = "CAD";
-
     @Resource
     private PaymentLambdaFunctions paymentLambdaFunctions;
 
@@ -68,9 +74,12 @@ public class PaymentService extends BaseService {
     @Resource
     private PaymentInvoiceDao paymentInvoiceDao;
 
+    @Resource
+    private AiUserAvailableBalanceService aiUserAvailableBalanceService;
+
 
     @Transactional(rollbackFor = Throwable.class)
-    public String payForProduct(PaymentParam param) {
+    public PayVO payForProduct(PaymentParam param) {
 
         // 参数验证
         checkParameter(param);
@@ -88,13 +97,24 @@ public class PaymentService extends BaseService {
         // 1. 更新支付订单信息
         goodsTradeService.updateTradePaymentInfo(buildUpdateTradeParam(param, payResult));
 
-        // 2. 更新商品状态为已售
-        updateGoodsSale.updateStateInner(payTrade.getGoodsId(), GoodsState.SOLD);
-
-        // 3. 更新支付信息
+        // 2. 更新支付信息
         updatePaymentInvoice(param, payResult, payTrade);
 
-        return payResult.getInvoiceId();
+        // 支付成功后，卡号方式认为是直接成功
+        if (param.getPaymentType().equals(PaymentTypeEnum.card.name())) {
+            afterPaySuccess(payTrade.getGoodsId(), param.getTradeId());
+        }
+
+        return PayVO.builder().payId(payTrade.getPaymentInvoiceId()).clientSecret(payResult.getClientSecret()).build();
+    }
+
+
+    private void afterPaySuccess(Long goodsId, Long tradeId) {
+        // 1. 更新商品状态为已售
+        updateGoodsSale.updateStateInner(goodsId, GoodsState.SOLD);
+
+        // 2. 商品状态更新为已完成
+        goodsTradeService.updateStatus(tradeId, GoodsTradeState.COMPLETE);
     }
 
 
@@ -109,6 +129,8 @@ public class PaymentService extends BaseService {
                 .amount(payResult.getSubtotal())
                 .invoiceId(payResult.getInvoiceId())
                 .id(payTrade.getPaymentInvoiceId())
+                .paymentIntentId(payResult.getPaymentIntent())
+                .clientSecret(payResult.getClientSecret())
                 .build();
 
         paymentInvoiceDao.updateGoodsTrade(paymentInvoiceDTO);
@@ -152,7 +174,7 @@ public class PaymentService extends BaseService {
         BigDecimal amount = totalAmount.subtract(tax);
 
         // 发起支付
-        String invoiceId = paymentUtils.execute(
+        JSONObject jsonObject = paymentUtils.execute(
                 amount.setScale(0, RoundingMode.UP),
                 tax.setScale(0, RoundingMode.UP),
                 shippingFees,
@@ -160,10 +182,25 @@ public class PaymentService extends BaseService {
                 paymentSellerId,
                 param.getPaymentType(),
                 OptionalUtils.valueOrDefault(param.getPaymentMethodId()),
-                OptionalUtils.valueOrDefault(param.getToken())
+                OptionalUtils.valueOrDefault(param.getToken()),
+                param.getPaymentType().equals(PaymentTypeEnum.card.name())
         );
 
-        return PayResult.builder().subtotal(amount).tax(tax).otherFees(shippingFees).invoiceId(invoiceId).build();
+        PayResult payResult = PayResult.builder().subtotal(amount).tax(tax).otherFees(shippingFees).build();
+
+        if (jsonObject.containsKey("invoiceId")) {
+            payResult.setInvoiceId((String) jsonObject.get("invoiceId"));
+        }
+
+        if (jsonObject.containsKey("clientSecret")) {
+            payResult.setClientSecret((String) jsonObject.get("clientSecret"));
+        }
+
+        if (jsonObject.containsKey("paymentIntent")) {
+            payResult.setPaymentIntent((String) jsonObject.get("paymentIntent"));
+        }
+
+        return payResult;
     }
 
 
@@ -242,5 +279,38 @@ public class PaymentService extends BaseService {
         return sellerAccountLinkURL;
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
+    public void confirmPaymentIntent(Long payId) {
+
+        PaymentInvoiceRecord payRecord = paymentInvoiceDao.getOne(payId);
+
+        if (payRecord == null) {
+            throw new PaymentException(CommonErrorV2.PAYMENT_ERROR);
+        }
+
+        UpdatePaymentIntentReq updatePaymentIntentReq = new UpdatePaymentIntentReq();
+        updatePaymentIntentReq.setPaymentIntentId(payRecord.getPaymentIntentId());
+        updatePaymentIntentReq.setCustomerId(userDao.getPaymentCustomerId(payRecord.getUserId()));
+
+        // call ’update_payment_intent‘
+        paymentLambdaFunctions.updatePaymentIntent(updatePaymentIntentReq);
+
+        // call ’confirm_payment_intent‘
+        paymentLambdaFunctions.confirmPaymentIntent(payRecord.getPaymentIntentId());
+
+        // 支付成功后的处理
+        String title = payRecord.getTitle();
+        if (title.equals("购买AI鉴定额度")) {
+            aiUserAvailableBalanceService.plusAvailableBalance(payRecord.getUserId(), payRecord.getAiKindId(), payRecord.getAiPlusAvailableTimes());
+        }
+
+        if (title.equals("商品交易")) {
+            MyTradeVO tradeVO = goodsTradeService.getOneByPaymentInvoiceId(payId);
+
+            afterPaySuccess(tradeVO.getGoodsId(), tradeVO.getTradeId());
+        }
+
+    }
 
 }

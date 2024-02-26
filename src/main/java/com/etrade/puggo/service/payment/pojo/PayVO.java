@@ -5,30 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 /**
  * @author zhenyu
  * @version 1.0
- * @description: 支付结果
- * @date 2024/2/5 16:20
+ * @description: 支付接口返回
+ * @date 2024/2/26 15:33
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class PayResult {
+public class PayVO {
 
-    private BigDecimal tax;
-
-    private BigDecimal subtotal;
-
-    private BigDecimal otherFees;
+    private Long payId;
 
     private String clientSecret;
-
-    private String invoiceId;
-
-    private String paymentIntent;
 
 }
