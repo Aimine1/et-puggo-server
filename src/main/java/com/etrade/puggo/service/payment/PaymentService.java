@@ -281,7 +281,7 @@ public class PaymentService extends BaseService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void confirmPaymentIntent(Long payId) {
+    public void confirmPaymentIntent(Long payId, String token) {
 
         PaymentInvoiceRecord payRecord = paymentInvoiceDao.getOne(payId);
 
@@ -292,6 +292,7 @@ public class PaymentService extends BaseService {
         UpdatePaymentIntentReq updatePaymentIntentReq = new UpdatePaymentIntentReq();
         updatePaymentIntentReq.setPaymentIntentId(payRecord.getPaymentIntentId());
         updatePaymentIntentReq.setCustomerId(userDao.getPaymentCustomerId(payRecord.getUserId()));
+        updatePaymentIntentReq.setToken(token);
 
         // call ’update_payment_intent‘
         paymentLambdaFunctions.updatePaymentIntent(updatePaymentIntentReq);
