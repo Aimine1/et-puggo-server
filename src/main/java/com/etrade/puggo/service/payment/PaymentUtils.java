@@ -110,8 +110,8 @@ public class PaymentUtils {
 
 
     public JSONObject execute(BigDecimal amount, BigDecimal tax, BigDecimal shippingFees,
-                          String paymentCustomerId, String paymentSellerId, String paymentType, String paymentMethodId,
-                          String token, boolean confirm) {
+                              String paymentCustomerId, String paymentSellerId, String paymentType, String paymentMethodId,
+                              String token, boolean confirm) {
 
         CreateInvoiceReq req = new CreateInvoiceReq();
         // 商品金额，单位:分
@@ -126,6 +126,8 @@ public class PaymentUtils {
         req.setSellerAccountId(paymentSellerId);
         req.setToken(token);
         req.setConfirm(confirm);
+        // 默认加币
+        req.setCurrency("cad");
 
         return paymentLambdaFunctions.createInvoice(req);
     }

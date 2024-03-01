@@ -31,4 +31,6 @@ public class CreateInvoiceReq {
 
     private Boolean confirm;
 
+    private String currency;
+
 }
