@@ -131,10 +131,19 @@ public class PaymentController {
 
 
     @WebLog
-    @PutMapping("/customer/pay/callback")
-    @ApiOperation("调起第三方支付后的回调接口，最终才能完成支付")
-    public Result<?> payCallback(@RequestParam("payId") Long payId, @RequestParam(value = "token", required = false) String token) {
-        paymentService.confirmPaymentIntent(payId, token);
+    @PutMapping("/customer/pay/confirmPaymentIntent")
+    @ApiOperation("confirmPaymentIntent")
+    public Result<?> confirmPaymentIntent(@RequestParam("payId") Long payId, @RequestParam(value = "token", required = false) String token) {
+        paymentService.updatePaymentIntent(payId, token);
+        return Result.ok();
+    }
+
+
+    @WebLog
+    @PutMapping("/customer/pay/updatePaymentIntent")
+    @ApiOperation("updatePaymentIntent")
+    public Result<?> updatePaymentIntent(@RequestParam("payId") Long payId) {
+        paymentService.confirmPaymentIntent(payId);
         return Result.ok();
     }
 
