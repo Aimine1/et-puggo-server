@@ -81,7 +81,7 @@ public class PaymentAIService extends BaseService {
                 param.getPaymentType(),
                 OptionalUtils.valueOrDefault(param.getPaymentMethodId()),
                 OptionalUtils.valueOrDefault(param.getToken()),
-                param.getPaymentType().equals(PaymentTypeEnum.card.name())
+                param.getPaymentType().equals(PaymentTypeEnum.card.name()) && param.getPaymentCardId() != null
         );
 
         PayResult payResult = PayResult.builder().otherFees(param.getAmount()).build();

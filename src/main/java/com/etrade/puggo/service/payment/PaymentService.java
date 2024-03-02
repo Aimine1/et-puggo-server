@@ -183,7 +183,7 @@ public class PaymentService extends BaseService {
                 param.getPaymentType(),
                 OptionalUtils.valueOrDefault(param.getPaymentMethodId()),
                 OptionalUtils.valueOrDefault(param.getToken()),
-                param.getPaymentType().equals(PaymentTypeEnum.card.name())
+                param.getPaymentType().equals(PaymentTypeEnum.card.name()) && param.getPaymentCardId() != null
         );
 
         PayResult payResult = PayResult.builder().subtotal(amount).tax(tax).otherFees(shippingFees).build();
