@@ -280,8 +280,7 @@ public class PaymentService extends BaseService {
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
-    public void confirmPaymentIntent(Long payId, String token) {
+    public void updatePaymentIntent(Long payId, String token) {
 
         PaymentInvoiceRecord payRecord = paymentInvoiceDao.getOne(payId);
 
@@ -296,6 +295,17 @@ public class PaymentService extends BaseService {
 
         // call ’update_payment_intent‘
         paymentLambdaFunctions.updatePaymentIntent(updatePaymentIntentReq);
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void confirmPaymentIntent(Long payId) {
+
+        PaymentInvoiceRecord payRecord = paymentInvoiceDao.getOne(payId);
+
+        if (payRecord == null) {
+            throw new PaymentException(CommonErrorV2.PAYMENT_ERROR);
+        }
 
         // call ’confirm_payment_intent‘
         paymentLambdaFunctions.confirmPaymentIntent(payRecord.getPaymentIntentId());

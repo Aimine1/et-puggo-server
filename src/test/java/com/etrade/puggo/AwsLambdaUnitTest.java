@@ -86,12 +86,13 @@ public class AwsLambdaUnitTest {
         CreateInvoiceReq req = new CreateInvoiceReq();
         req.setSellerAccountId("acct_1Og4DrPnpvYQXaZD");
         req.setPaymentMethodId("");
-        req.setCustomerId("cus_PV5XlCMUopMplz");
+        req.setCustomerId("cus_Pf2JjM9QifBjFB");
         req.setPaymentType(PaymentTypeEnum.alipay.name());
         req.setAmount(new BigDecimal(3680));
         req.setTax(new BigDecimal("320"));
         req.setFees(new BigDecimal(1800));
         req.setConfirm(false);
+        req.setCurrency("cad");
 //        req.setToken("pii_1Oo71EBMUZ8hfYAiPnPcF6c8");
 
         System.out.println(paymentLambdaFunctions.createInvoice(req));
