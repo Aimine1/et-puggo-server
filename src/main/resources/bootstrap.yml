@@ -10,11 +10,11 @@ spring:
       username: nacos
       password: mgHnwnY4hz1ou4Nl1pNA5WWjHfrJhRQ2
       config:
-        namespace: puggo-test
+        namespace: puggo-prod
         file-extension: yaml
       discovery:
-        namespace: puggo-test
+        namespace: puggo-prod
 
 log:
   file:
-    path: /home/puggodev/data/et-puggo-server/logs
+    path: /home/jenkins/data/et-puggo-server/logs
