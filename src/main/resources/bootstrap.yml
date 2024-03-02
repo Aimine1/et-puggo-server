@@ -17,4 +17,4 @@ spring:
 
 log:
   file:
-    path: /home/puggodev/data/et-puggo-server/logs
+    path: /home/jenkins/data/et-puggo-server/logs
