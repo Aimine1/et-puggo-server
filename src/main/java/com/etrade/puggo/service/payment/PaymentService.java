@@ -221,7 +221,7 @@ public class PaymentService extends BaseService {
         }
 
         // 检查银行卡信息
-        if (param.getPaymentType().equals(PaymentTypeEnum.card.name())) {
+        if (param.getPaymentCardId() != null) {
             paymentUtils.checkCardInfo(param.getPaymentCardId());
         }
     }
