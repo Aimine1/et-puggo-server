@@ -14,3 +14,7 @@ spring:
         file-extension: yaml
       discovery:
         namespace: puggo-test
+
+log:
+  file:
+    path: /home/puggodev/data/et-puggo-server
