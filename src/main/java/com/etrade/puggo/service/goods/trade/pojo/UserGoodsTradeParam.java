@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class UserGoodsTradeParam extends PageParam {
 
-    @ApiModelProperty("商品状态，TO_USE=待完成，COMPLETE=已完成，不存默认全部")
+    @ApiModelProperty("商品状态，Pending payment=待完成，Completed=已完成，不存默认全部")
     private String state;
 
 }

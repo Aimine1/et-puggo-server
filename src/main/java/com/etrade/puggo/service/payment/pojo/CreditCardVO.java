@@ -2,10 +2,6 @@ package com.etrade.puggo.service.payment.pojo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * @author zhenyu
@@ -33,5 +29,14 @@ public class CreditCardVO {
 
     @ApiModelProperty(value = "卡类型：借记卡为debit，信用卡为credit", example = "credit", required = true)
     private String type;
+
+    @ApiModelProperty(value = "cvs", example = "1234")
+    private String cvs;
+
+    @ApiModelProperty(value = "过期年份")
+    private String expireYear;
+
+    @ApiModelProperty(value = "过期月份")
+    private String expireMonth;
 
 }
