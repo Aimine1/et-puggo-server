@@ -13,13 +13,12 @@ import com.etrade.puggo.service.payment.pojo.PayVO;
 import com.etrade.puggo.service.payment.pojo.PaymentAIParam;
 import com.etrade.puggo.service.payment.pojo.PaymentInvoiceDTO;
 import com.etrade.puggo.utils.OptionalUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author zhenyu
@@ -73,15 +72,15 @@ public class PaymentAIService extends BaseService {
         }
 
         JSONObject jsonObject = paymentUtils.execute(
-                param.getAmount().setScale(0, RoundingMode.UP),
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                paymentCustomerId,
-                null,
-                param.getPaymentType(),
-                OptionalUtils.valueOrDefault(param.getPaymentMethodId()),
-                OptionalUtils.valueOrDefault(param.getToken()),
-                param.getPaymentType().equals(PaymentTypeEnum.card.name()) && param.getPaymentCardId() != null
+            param.getAmount().setScale(0, RoundingMode.UP),
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            paymentCustomerId,
+            null,
+            param.getPaymentType(),
+            OptionalUtils.valueOrDefault(param.getPaymentMethodId()),
+            OptionalUtils.valueOrDefault(param.getToken()),
+            param.getPaymentType().equals(PaymentTypeEnum.card.name()) && param.getPaymentCardId() != null
         );
 
         PayResult payResult = PayResult.builder().otherFees(param.getAmount()).build();
@@ -109,11 +108,11 @@ public class PaymentAIService extends BaseService {
         paymentUtils.checkBillingAddress(param.getBillingAddressId());
 
         // 检查银行卡信息
-        if (param.getPaymentType().equals(PaymentTypeEnum.card.name())) {
+        if (param.getPaymentCardId() != null) {
             paymentUtils.checkCardInfo(param.getPaymentCardId());
         }
 
-        // 检查金额 TODO
+        // 检查金额
         if (param.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new PaymentException(LangErrorEnum.INVALID_AMOUNT.lang());
         }
@@ -121,21 +120,21 @@ public class PaymentAIService extends BaseService {
 
     private long savePaymentInvoice(PaymentAIParam param, PayResult payResult) {
         PaymentInvoiceDTO paymentInvoiceDTO = PaymentInvoiceDTO.builder()
-                .payNo(UUID.randomUUID().toString())
-                .userId(userId())
-                .paymentMethodId(OptionalUtils.valueOrDefault(param.getPaymentMethodId(), ""))
-                .paymentType(OptionalUtils.valueOrDefault(param.getPaymentType(), ""))
-                .billingAddressId(OptionalUtils.valueOrDefault(param.getBillingAddressId(), 0))
-                .paymentCardId(OptionalUtils.valueOrDefault(param.getPaymentCardId(), 0))
-                .paymentSellerId("")
-                .title("购买AI鉴定额度")
-                .otherFees(param.getAmount())
-                .invoiceId(payResult.getInvoiceId())
-                .paymentIntentId(payResult.getPaymentIntent())
-                .clientSecret(payResult.getClientSecret())
-                .aiKindId(param.getKindId())
-                .aiPlusAvailableTimes(param.getAvailableTimes())
-                .build();
+            .payNo(UUID.randomUUID().toString())
+            .userId(userId())
+            .paymentMethodId(OptionalUtils.valueOrDefault(param.getPaymentMethodId(), ""))
+            .paymentType(OptionalUtils.valueOrDefault(param.getPaymentType(), ""))
+            .billingAddressId(OptionalUtils.valueOrDefault(param.getBillingAddressId(), 0))
+            .paymentCardId(OptionalUtils.valueOrDefault(param.getPaymentCardId(), 0))
+            .paymentSellerId("")
+            .title("购买AI鉴定额度")
+            .otherFees(param.getAmount())
+            .invoiceId(payResult.getInvoiceId())
+            .paymentIntentId(payResult.getPaymentIntent())
+            .clientSecret(payResult.getClientSecret())
+            .aiKindId(param.getKindId())
+            .aiPlusAvailableTimes(param.getAvailableTimes())
+            .build();
 
         return paymentInvoiceDao.save(paymentInvoiceDTO);
     }
