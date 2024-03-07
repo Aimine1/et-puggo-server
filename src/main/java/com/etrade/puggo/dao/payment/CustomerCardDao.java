@@ -48,6 +48,9 @@ public class CustomerCardDao extends BaseDao {
     public List<CreditCardVO> list(Long userId) {
         return db.select(
                         PAYMENT_CARD.ID.as("cardId"),
+                        PAYMENT_CARD.CVS,
+                        PAYMENT_CARD.EXPIRE_YEAR,
+                        PAYMENT_CARD.EXPIRE_MONTH,
                         PAYMENT_CARD.CARD_NUMBER,
                         PAYMENT_CARD.TITLE,
                         PAYMENT_CARD.TYPE,

@@ -3,15 +3,21 @@ package com.etrade.puggo.third.aws;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.shaded.com.google.common.collect.ImmutableMap;
-import com.etrade.puggo.third.aws.pojo.*;
-import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import com.etrade.puggo.third.aws.pojo.CreateCustomerReq;
+import com.etrade.puggo.third.aws.pojo.CreateInvoiceReq;
+import com.etrade.puggo.third.aws.pojo.CreatePaymentIntentReq;
+import com.etrade.puggo.third.aws.pojo.PaymentMethodDTO;
+import com.etrade.puggo.third.aws.pojo.SellerAccountDTO;
+import com.etrade.puggo.third.aws.pojo.UpdateCustomerReq;
+import com.etrade.puggo.third.aws.pojo.UpdatePaymentIntentReq;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * @author zhenyu
@@ -22,6 +28,10 @@ import java.util.regex.Pattern;
 @Component
 @Validated
 public class PaymentLambdaFunctions {
+
+
+    @Value("${spring.profiles.active}")
+    private String profile;
 
 
     /**
@@ -37,7 +47,7 @@ public class PaymentLambdaFunctions {
         param.setDescription(username);
 
         // Customer created: cus_PNt6qcCNTZFOO4
-        String payload = AwsLambdaUtils.invokeFunction("create_customer", param);
+        String payload = AwsLambdaUtils.invokeFunction("create_customer", param, profile);
 
         String patternString = "(cus_[\\w]+)";
         Pattern pattern = Pattern.compile(patternString);
@@ -58,7 +68,7 @@ public class PaymentLambdaFunctions {
          * {"address":{"city":"","country":"","line1":"","line2":"","postal_code":"","state":""},"balance":0,"created":1705392275,"currency":"","default_source":null,"deleted":false,"delinquent":false,"description":"Aimin","discount":null,"email":"niuzhenyuself@163.com","id":"cus_PNtQgQvpacHLMP","invoice_prefix":"75C6667A","invoice_settings":{"custom_fields":null,"default_payment_method":null,"footer":""},"livemode":false,"metadata":{},"name":"","next_invoice_sequence":1,"phone":"","preferred_locales":[],"shipping":null,"sources":{"has_more":false,"total_count":0,"url":"/v1/customers/cus_PNtQgQvpacHLMP/sources","data":[]},"subscriptions":{"has_more":false,"total_count":0,"url":"/v1/customers/cus_PNtQgQvpacHLMP/subscriptions","data":[]},"tax_exempt":"none","tax_ids":{"has_more":false,"total_count":0,"url":"/v1/customers/cus_PNtQgQvpacHLMP/tax_ids","data":[]}}
          */
         ImmutableMap<String, String> param = ImmutableMap.of("customerId", customerId);
-        return AwsLambdaUtils.invokeFunction("retrieve_customer", param);
+        return AwsLambdaUtils.invokeFunction("retrieve_customer", param, profile);
     }
 
 
@@ -70,19 +80,19 @@ public class PaymentLambdaFunctions {
      */
     public String deleteCustomer(@NotNull String customerId) {
         ImmutableMap<String, String> param = ImmutableMap.of("customerId", customerId);
-        return AwsLambdaUtils.invokeFunction("delete_customer", param);
+        return AwsLambdaUtils.invokeFunction("delete_customer", param, profile);
     }
 
 
     public String confirmPaymentIntent(@NotNull String paymentIntentId) {
         ImmutableMap<String, String> param = ImmutableMap.of("paymentIntentId", paymentIntentId);
-        return AwsLambdaUtils.invokeFunction("confirm_payment_intent", param);
+        return AwsLambdaUtils.invokeFunction("confirm_payment_intent", param, profile);
     }
 
 
     @Deprecated
     public String createPaymentIntent(@Valid CreatePaymentIntentReq param) {
-        return AwsLambdaUtils.invokeFunction("create_payment_intent", param);
+        return AwsLambdaUtils.invokeFunction("create_payment_intent", param, profile);
     }
 
 
@@ -96,7 +106,7 @@ public class PaymentLambdaFunctions {
         ImmutableMap<String, String> param = ImmutableMap.of("customerId", customerId);
 
         // {"has_more":false,"total_count":0,"url":"","data":null}
-        String payload = AwsLambdaUtils.invokeFunction("list_payment_methods", param);
+        String payload = AwsLambdaUtils.invokeFunction("list_payment_methods", param, profile);
 
         JSONObject jsonObject = JSONObject.parseObject(payload);
 
@@ -112,18 +122,18 @@ public class PaymentLambdaFunctions {
 
 
     public String updateCustomer(@Valid UpdateCustomerReq req) {
-        return AwsLambdaUtils.invokeFunction("update_customer", req);
+        return AwsLambdaUtils.invokeFunction("update_customer", req, profile);
     }
 
 
     public String updatePaymentIntent(@Valid UpdatePaymentIntentReq req) {
-        return AwsLambdaUtils.invokeFunction("update_payment_intent", req);
+        return AwsLambdaUtils.invokeFunction("update_payment_intent", req, profile);
     }
 
 
     public String retrievePaymentIntent(@NotNull String paymentIntentId) {
         ImmutableMap<String, String> param = ImmutableMap.of("paymentIntentId", paymentIntentId);
-        return AwsLambdaUtils.invokeFunction("retrieve_payment_intent", param);
+        return AwsLambdaUtils.invokeFunction("retrieve_payment_intent", param, profile);
     }
 
 
@@ -132,18 +142,18 @@ public class PaymentLambdaFunctions {
      */
     public String retrievePaymentMethod(@NotNull String paymentMethodId) {
         ImmutableMap<String, String> param = ImmutableMap.of("paymentMethodId", paymentMethodId);
-        return AwsLambdaUtils.invokeFunction("retrieve_payment_method", param);
+        return AwsLambdaUtils.invokeFunction("retrieve_payment_method", param, profile);
     }
 
 
     public String deletePaymentIntent(@NotNull String paymentIntentId) {
         ImmutableMap<String, String> param = ImmutableMap.of("paymentIntentId", paymentIntentId);
-        return AwsLambdaUtils.invokeFunction("delete_payment_intent", param);
+        return AwsLambdaUtils.invokeFunction("delete_payment_intent", param, profile);
     }
 
 
     public JSONObject createInvoice(@Valid CreateInvoiceReq req) {
-        String payload = AwsLambdaUtils.invokeFunction("create_invoice", req);
+        String payload = AwsLambdaUtils.invokeFunction("create_invoice", req, profile);
         return JSONObject.parseObject(payload);
     }
 
@@ -156,7 +166,7 @@ public class PaymentLambdaFunctions {
      */
     public SellerAccountDTO createSellerAccount(@NotNull String email) {
         ImmutableMap<String, String> param = ImmutableMap.of("sellerEmail", email);
-        String payload = AwsLambdaUtils.invokeFunction("create_seller_account", param);
+        String payload = AwsLambdaUtils.invokeFunction("create_seller_account", param, profile);
         return JSONObject.parseObject(payload, SellerAccountDTO.class);
     }
 
@@ -170,7 +180,7 @@ public class PaymentLambdaFunctions {
     public String createSellerAccountLink(@NotNull String sellerAccountId) {
         // {"accountLinkURL":"https://connect.stripe.com/setup/e/acct_1OfIKYBOyCotwqNZ/RRV77ATgz9ED"}
         ImmutableMap<String, String> param = ImmutableMap.of("AccountId", sellerAccountId);
-        String payload = AwsLambdaUtils.invokeFunction("create_seller_account_link", param);
+        String payload = AwsLambdaUtils.invokeFunction("create_seller_account_link", param, profile);
         JSONObject jsonObject = JSONObject.parseObject(payload);
         return (String) jsonObject.get("accountLinkURL");
     }
@@ -188,7 +198,8 @@ public class PaymentLambdaFunctions {
                 "customerId", customerId,
                 "paymentMethodId", paymentMethodId,
                 "attach", true);
-        return AwsLambdaUtils.invokeFunction("update_payment_method", param);
+        return AwsLambdaUtils.invokeFunction("update_payment_method", param, "dev");
     }
+
 
 }

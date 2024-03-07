@@ -1,15 +1,22 @@
 package com.etrade.puggo.third.aws;
 
 import com.alibaba.fastjson.JSONObject;
+import com.etrade.puggo.common.constants.SpringProfiles;
 import com.etrade.puggo.common.exception.AwsException;
 import com.etrade.puggo.common.exception.PaymentException;
+import java.util.List;
+import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
-import software.amazon.awssdk.services.lambda.model.*;
-
-import java.util.List;
+import software.amazon.awssdk.services.lambda.model.FunctionConfiguration;
+import software.amazon.awssdk.services.lambda.model.GetFunctionRequest;
+import software.amazon.awssdk.services.lambda.model.GetFunctionResponse;
+import software.amazon.awssdk.services.lambda.model.InvokeRequest;
+import software.amazon.awssdk.services.lambda.model.InvokeResponse;
+import software.amazon.awssdk.services.lambda.model.LambdaException;
+import software.amazon.awssdk.services.lambda.model.ListFunctionsResponse;
 
 /**
  * @author niuzhenyu
@@ -22,8 +29,13 @@ public class AwsLambdaUtils {
     private static final Region US_WEST_1 = Region.US_WEST_1;
 
 
-    public static String invokeFunction(String functionName, Object object) {
+    public static String invokeFunction(String functionName, Object object, String profile) {
         InvokeResponse res;
+
+        if (!SpringProfiles.prod.name().equals(profile)) {
+            functionName = "DEV_" + functionName;
+        }
+
         try {
             String json = JSONObject.toJSONString(object);
 
@@ -34,9 +46,9 @@ public class AwsLambdaUtils {
             LambdaClient awsLambda = getLambdaClient();
 
             InvokeRequest request = InvokeRequest.builder()
-                    .functionName(functionName)
-                    .payload(payload)
-                    .build();
+                .functionName(functionName)
+                .payload(payload)
+                .build();
 
             res = awsLambda.invoke(request);
             Integer code = res.statusCode();
@@ -84,8 +96,8 @@ public class AwsLambdaUtils {
             LambdaClient awsLambda = getLambdaClient();
 
             GetFunctionRequest functionRequest = GetFunctionRequest.builder()
-                    .functionName(functionName)
-                    .build();
+                .functionName(functionName)
+                .build();
 
             GetFunctionResponse response = awsLambda.getFunction(functionRequest);
             System.out.println("The runtime of this Lambda function is " + response.configuration().runtime());
