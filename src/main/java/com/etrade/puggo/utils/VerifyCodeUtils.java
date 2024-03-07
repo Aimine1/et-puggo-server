@@ -26,7 +26,7 @@ public class VerifyCodeUtils {
         Random random = new Random();
         StringBuilder verificationCode = new StringBuilder();
         while (verificationCode.length() < GenerateVerificationCodeLength) {
-            int i = random.nextInt(MetaCode.length);
+            int i = random.nextInt(9);
             verificationCode.append(MetaCode[i]);
         }
         return verificationCode.toString();
