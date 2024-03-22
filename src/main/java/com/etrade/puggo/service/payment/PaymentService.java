@@ -291,6 +291,7 @@ public class PaymentService extends BaseService {
         UpdatePaymentIntentReq updatePaymentIntentReq = new UpdatePaymentIntentReq();
         updatePaymentIntentReq.setPaymentIntentId(payRecord.getPaymentIntentId());
         updatePaymentIntentReq.setCustomerId(userDao.getPaymentCustomerId(payRecord.getUserId()));
+        updatePaymentIntentReq.setPaymentType(payRecord.getPaymentType());
         updatePaymentIntentReq.setToken(token);
 
         // call ’update_payment_intent‘

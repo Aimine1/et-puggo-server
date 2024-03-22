@@ -24,4 +24,8 @@ public class UpdatePaymentIntentReq {
 
     private String token;
 
+    @NotNull
+    @NotBlank
+    private String paymentType;
+
 }
