@@ -77,6 +77,7 @@ public class PaymentInvoiceDao extends BaseDao {
                         PAYMENT_INVOICE.TITLE,
                         PAYMENT_INVOICE.USER_ID,
                         PAYMENT_INVOICE.PAYMENT_INTENT_ID,
+                        PAYMENT_INVOICE.PAYMENT_TYPE,
                         PAYMENT_INVOICE.AI_KIND_ID,
                         PAYMENT_INVOICE.AI_PLUS_AVAILABLE_TIMES
                 )
