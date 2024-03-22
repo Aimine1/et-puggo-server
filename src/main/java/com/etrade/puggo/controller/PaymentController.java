@@ -133,8 +133,8 @@ public class PaymentController {
     @WebLog
     @PutMapping("/customer/pay/confirmPaymentIntent")
     @ApiOperation("confirmPaymentIntent")
-    public Result<?> confirmPaymentIntent(@RequestParam("payId") Long payId, @RequestParam(value = "token", required = false) String token) {
-        paymentService.updatePaymentIntent(payId, token);
+    public Result<?> confirmPaymentIntent(@RequestParam("payId") Long payId) {
+        paymentService.confirmPaymentIntent(payId);
         return Result.ok();
     }
 
@@ -142,8 +142,9 @@ public class PaymentController {
     @WebLog
     @PutMapping("/customer/pay/updatePaymentIntent")
     @ApiOperation("updatePaymentIntent")
-    public Result<?> updatePaymentIntent(@RequestParam("payId") Long payId) {
-        paymentService.confirmPaymentIntent(payId);
+    public Result<?> updatePaymentIntent(@RequestParam("payId") Long payId,
+                                         @RequestParam(value = "token", required = false) String token) {
+        paymentService.updatePaymentIntent(payId, token);
         return Result.ok();
     }
 
