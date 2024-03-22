@@ -27,9 +27,9 @@ public class AwsLambdaUtils {
         InvokeResponse res;
 
         if (SpringProfiles.prod.name().equals(profile)) {
-            functionName = "DEV_" + functionName;
-        } else {
             functionName = "PROD_" + functionName;
+        } else {
+            functionName = "DEV_" + functionName;
         }
 
         try {
