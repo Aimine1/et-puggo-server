@@ -150,6 +150,15 @@ public class PaymentController {
 
 
     @WebLog
+    @PutMapping("/customer/pay/afterSuccess")
+    @ApiOperation("afterSuccess")
+    public Result<?> afterSuccess(@RequestParam("payId") Long payId) {
+        paymentService.afterSuccess(payId);
+        return Result.ok();
+    }
+
+
+    @WebLog
     @GetMapping("/seller/account/callback")
     @ApiOperation("商家账号回调接口")
     public Result<?> callbackSellerAccount(HttpServletRequest request) {
