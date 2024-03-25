@@ -292,14 +292,13 @@ public class PaymentService extends BaseService {
         updatePaymentIntentReq.setPaymentIntentId(payRecord.getPaymentIntentId());
         updatePaymentIntentReq.setCustomerId(userDao.getPaymentCustomerId(payRecord.getUserId()));
         updatePaymentIntentReq.setPaymentType(payRecord.getPaymentType());
-        updatePaymentIntentReq.setToken(token);
+        updatePaymentIntentReq.setToken(OptionalUtils.valueOrDefault(token));
 
         // call ’update_payment_intent‘
         paymentLambdaFunctions.updatePaymentIntent(updatePaymentIntentReq);
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
     public void confirmPaymentIntent(Long payId) {
 
         PaymentInvoiceRecord payRecord = paymentInvoiceDao.getOne(payId);
@@ -310,6 +309,17 @@ public class PaymentService extends BaseService {
 
         // call ’confirm_payment_intent‘
         paymentLambdaFunctions.confirmPaymentIntent(payRecord.getPaymentIntentId());
+
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void afterSuccess(Long payId) {
+        PaymentInvoiceRecord payRecord = paymentInvoiceDao.getOne(payId);
+
+        if (payRecord == null) {
+            throw new PaymentException(CommonErrorV2.PAYMENT_ERROR);
+        }
 
         // 支付成功后的处理
         String title = payRecord.getTitle();
@@ -322,7 +332,6 @@ public class PaymentService extends BaseService {
 
             afterPaySuccess(tradeVO.getGoodsId(), tradeVO.getTradeId());
         }
-
     }
 
 }
