@@ -292,7 +292,7 @@ public class PaymentService extends BaseService {
         updatePaymentIntentReq.setPaymentIntentId(payRecord.getPaymentIntentId());
         updatePaymentIntentReq.setCustomerId(userDao.getPaymentCustomerId(payRecord.getUserId()));
         updatePaymentIntentReq.setPaymentType(payRecord.getPaymentType());
-        updatePaymentIntentReq.setToken(token);
+        updatePaymentIntentReq.setToken(OptionalUtils.valueOrDefault(token));
 
         // call ’update_payment_intent‘
         paymentLambdaFunctions.updatePaymentIntent(updatePaymentIntentReq);
