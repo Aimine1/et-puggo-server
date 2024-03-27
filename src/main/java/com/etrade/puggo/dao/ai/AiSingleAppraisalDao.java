@@ -99,7 +99,7 @@ public class AiSingleAppraisalDao extends BaseDao {
                 AI_SINGLE_APPRAISAL.USER_ID.eq(userId)
                     .and(AI_SINGLE_APPRAISAL.OPERATION_ID.eq(operationId))
                     .and(AI_SINGLE_APPRAISAL.POINT_ID.in(ascendingOrder(pointList)))
-                    .and(AI_SINGLE_APPRAISAL.GENUINE.eq((byte) 1))
+                    .and(AI_SINGLE_APPRAISAL.DETECTION.eq((byte) 1))
             )
             .fetchInto(IdentifySingleAppraisal.class);
     }
