@@ -157,7 +157,7 @@ public class AiIdentityService extends BaseService {
         IdentifySingleAppraisal appraisal = new IdentifySingleAppraisal();
         appraisal.setPointId(pointId);
         appraisal.setPointName(record.getPointName());
-        appraisal.setGenuine(record.getGenuine());
+        appraisal.setGenuine(record.getDetection());
         appraisal.setGrade(record.getGrade());
         appraisal.setDescription(record.getDescription());
         appraisal.setOperationId(operationId);
@@ -196,6 +196,7 @@ public class AiIdentityService extends BaseService {
             throw new ServiceException(LangErrorEnum.UNKNOWN_POINT.lang(AuthContext.getLang()));
         }
 
+        // 20240327 单鉴点只需要鉴定到目标即可
         List<IdentifySingleAppraisal> singleList = aiSingleAppraisalDao.getGenuineSaidList(userId(), operationId,
                 mustPointList);
 
