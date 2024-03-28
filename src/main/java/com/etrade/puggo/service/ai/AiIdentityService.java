@@ -100,6 +100,9 @@ public class AiIdentityService extends BaseService {
             result = buildJSONObject();
         } else {
             result = aiService.identifySinglePoint(pointId, imageUrl);
+            if (result == null) {
+                throw new ServiceException();
+            }
             if ((int) result.get("error_code") != AIService.SUCCESS) {
                 throw new ServiceException((int) result.get("error_code"), (String) result.get("error_msg"));
             }
